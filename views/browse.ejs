@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <header>
+        <%= title %>
+    </header>
+
+    <main>
+        <% rowdata.forEach((card)=> { %>
+            <p>
+                <%= card.card_name %>
+            </p>
+            <% }) %>
+    </main>
+
+</body>
+
+</html>
