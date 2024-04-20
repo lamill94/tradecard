@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav class="navbar has-shadow" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img src="/pikachu.png" alt="site logo" style="max-height: 60px">
+            </a>
+
+            <a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false"
+                data-target="navbarBasicExample" id="burger">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+
+            <div class="navbar-start">
+
+                <a class="navbar-item" href="/browse">
+                    Browse Cards
+                </a>
+
+                <a class="navbar-item">
+                    Expansions
+                </a>
+
+                <a class="navbar-item">
+                    Collections
+                </a>
+
+            </div>
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+
+                        <a class="button is-primary">
+                            <strong>Sign up</strong>
+                        </a>
+
+                        <a class="button is-light">
+                            Log in
+                        </a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        const burgerIcon = document.querySelector('#burger');
+        const navbarMenu = document.querySelector('#navbarBasicExample');
+
+        burgerIcon.addEventListener('click', () => {
+            navbarMenu.classList.toggle('is-active');
+        });
+    </script>
+    
+</body>
+
+</html>
