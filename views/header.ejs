@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Header</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
 <body>
@@ -40,20 +40,54 @@
                     Collections
                 </a>
 
+                <!-- On mobile devices, display a link -->
+                <div class="is-hidden-desktop">
+
+                    <a class="navbar-item" href="#">
+                        <span class="icon-text">
+                            <span class="icon">
+                                <i class="fas fa-user-plus"></i>
+                            </span>
+                            <span>Sign up</span>
+                        </span>
+                    </a>
+                    
+                    <a class="navbar-item" href="#">
+                        <span class="icon-text">
+                            <span class="icon">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </span>
+                            <span>Log in</span>
+                        </span>
+                    </a>
+                </div>
+
             </div>
 
             <div class="navbar-end">
                 <div class="navbar-item">
-                    <div class="buttons">
+
+                    <!-- On mobile devices, hide the button -->
+                    <div class="buttons is-hidden-touch">
 
                         <a class="button is-primary">
-                            <strong>Sign up</strong>
+                            <span class="icon-text">
+                                <span class="icon">
+                                    <i class="fas fa-user-plus"></i>
+                                </span>
+                                <span><strong>Sign up</strong></span>
+                            </span>
                         </a>
 
                         <a class="button is-light">
-                            Log in
+                            <span class="icon-text">
+                                <span class="icon">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                </span>
+                                <span>Log in</span>
+                            </span>
                         </a>
-                        
+
                     </div>
                 </div>
             </div>
@@ -68,7 +102,7 @@
             navbarMenu.classList.toggle('is-active');
         });
     </script>
-    
+
 </body>
 
 </html>
