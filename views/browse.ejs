@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Browse</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
 </head>
@@ -13,17 +13,41 @@
 
     <header>
         <%- include('header')%>
-
-        <%= title %>
     </header>
 
-        <main>
-            <% rowdata.forEach((card)=> { %>
-                <p>
-                    <img src="<%= card.image_url %>">
-                </p>
-                <% }) %>
-        </main>
+    <section class="section">
+        <div class="container">
+            <h3 class="title has-text-centered is-size-4">
+                <%= title %>
+            </h3>
+            <div class="columns mt-5 is-multiline is-variable is-centered">
+                <% rowdata.forEach((card, index)=> { %>
+                    <div class="column is-6-tablet is-3-desktop">
+                        <div class="card">
+                            <div class="card-image has-text-centered px-6">
+                                <a href="/card?card_name=<%=card.card_name%>">
+                                    <img src="<%= card.image_url %>">
+                                </a>
+                            </div>
+                            <div class="card-content">
+                                <p class="title is-size-6 has-text-centered has-text-grey">
+                                    <%= card.card_name %>
+                                </p>
+                            </div>
+                            <footer class="card-footer">
+                                <p class="card-footer-item">
+                                    <a href="" class="has-text-grey">Something</a>
+                                </p>
+                                <p class="card-footer-item">
+                                    <a href="" class="has-text-grey">Something</a>
+                                </p>
+                            </footer>
+                        </div>
+                    </div>
+                    <% }) %>
+            </div>
+        </div>
+    </section>
 
 </body>
 
