@@ -16,7 +16,7 @@
             </a>
 
             <a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false"
-                data-target="navbarBasicExample" id="burger">
+                data-target="navbarBasicExample">
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
@@ -40,7 +40,7 @@
                     Collections
                 </a>
 
-                <!-- On mobile devices, display a link -->
+                <!-- On mobile devices, display a link instead of button -->
                 <div class="is-hidden-desktop">
 
                     <a class="navbar-item" href="#">
@@ -95,8 +95,8 @@
     </nav>
 
     <script>
-        const burgerIcon = document.querySelector('#burger');
-        const navbarMenu = document.querySelector('#navbarBasicExample');
+        const burgerIcon = document.querySelector('.navbar-burger');
+        const navbarMenu = document.querySelector('.navbar-menu');
 
         burgerIcon.addEventListener('click', () => {
             navbarMenu.classList.toggle('is-active');

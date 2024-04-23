@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse</title>
-    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css">
 </head>
 
 <body>
@@ -18,6 +18,26 @@
 
     <section class="section">
         <div class="container">
+
+            <div class="dropdown">
+                <div class="dropdown-trigger">
+                    <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                        <span>Sort by</span>
+                        <span class="icon is-small">
+                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                        </span>
+                    </button>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                    <div class="dropdown-content">
+                        <a href="/browse/sort?sort=release_date ASC,card_number ASC" class="dropdown-item">Card
+                            Number</a>
+                        <a href="/browse/sort?sort=card_name" class="dropdown-item">Card Name (A-Z)</a>
+                        <a href="/browse/sort?sort=card_name DESC" class="dropdown-item">Card Name (Z-A)</a>
+                    </div>
+                </div>
+            </div>
+
             <div class="columns mt-5 is-multiline is-variable is-centered">
                 <% rowdata.forEach((card, index)=> { %>
                     <div class="column is-6-tablet is-3-desktop">
@@ -28,8 +48,11 @@
                                 </a>
                             </div>
                             <div class="card-content pt-0 pb-2">
-                                <p class="title is-size-6 has-text-centered has-text-grey">
-                                    <%= card.card_number %>/<%= card.total_cards %> - <%= card.expansion_name %>
+                                <p class="has-text-centered has-text-grey">
+                                    <span class="title is-size-6 has-text-grey">
+                                        <%= card.expansion_name %>
+                                    </span>
+                                    <%= card.card_number %>/<%= card.total_cards %>
                                 </p>
                             </div>
                             <footer class="card-footer">
@@ -58,6 +81,21 @@
             </div>
         </div>
     </section>
+
+    <script>
+        const dropdownMenu = document.querySelector('.dropdown');
+
+        dropdownMenu.addEventListener('click', (event) => {
+            dropdownMenu.classList.toggle('is-active');
+            event.stopPropagation();
+        });
+
+        document.body.addEventListener('click', (event) => {
+            if (!dropdownMenu.contains(event.target)) {
+                dropdownMenu.classList.remove('is-active');
+            }
+        });
+    </script>
 
 </body>
 
