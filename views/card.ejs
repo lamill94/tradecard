@@ -15,6 +15,144 @@
         <%- include('header')%>
     </header>
 
+    <section class="section pt-1 pb-0">
+        <container class="container">
+            <div class="columns mt-1 is-multiline is-variable is-centered">
+
+                <div class="column is-3-tablet is-3-desktop">
+                    <div class="card">
+                        <div class="card-image has-text-centered">
+                            <img src="<%= card.image_url %>">
+                        </div>
+                        <footer class="card-footer">
+                            <a class="card-footer-item py-1 has-text-grey" href="">
+                                <span class="icon-text">
+                                    <span class="icon">
+                                        <i class="far fa-heart"></i>
+                                    </span>
+                                    <span>Add to Wishlist</span>
+                                </span>
+                            </a>
+                        </footer>
+                        <footer class="card-footer">
+                            <a class="card-footer-item py-1 has-text-grey" href="">
+                                <span class="icon-text">
+                                    <span class="icon">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </span>
+                                    <span>Add to Collection</span>
+                                </span>
+                            </a>
+                        </footer>
+                    </div>
+                </div>
+
+                <div class="column is-9-tablet is-9-desktop">
+
+                    <h1 class="title mt-6">
+                        <%= card.name %> <img src="<%= card.energy_type_url %>" class="energy-type-big-image">
+                    </h1>
+
+                    <div class="columns is-multiline is-variable is-centered">
+
+                        <div class="column is-4-tablet is-4-desktop">
+
+                            <div class="block">
+                                <p><strong>Hit Points (HP)</strong></p>
+                                <p>
+                                    <%= card.hp %>
+                                </p>
+                            </div>
+
+                            <div class="block">
+                                <p><strong>Stage</strong></p>
+                                <p>
+                                    <% if (card.evolves_from) { %>
+                                        <%= card.stage %> - Evolves from <%= card.evolves_from %>
+                                                <% } else { %>
+                                                    <%= card.stage %>
+                                                        <% } %>
+                                </p>
+                            </div>
+
+                            <div class="block">
+                                <p><strong>USD Market Price</strong></p>
+                                <p>
+                                    $<%= card.market_price %>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="column is-4-tablet is-4-desktop">
+
+                            <div class="block">
+                                <p><strong>Weakness</strong></p>
+                                <p>
+                                    <% if (card.weakness_energy_type_url) { %>
+                                        <img src="<%= card.weakness_energy_type_url %>" class="energy-type-image">
+                                        <% } else { %>
+                                            None
+                                            <% } %>
+                                </p>
+                            </div>
+
+                            <div class="block">
+                                <p><strong>Resistance</strong></p>
+                                <p>
+                                    <% if (card.resistance_energy_type_url) { %>
+                                        <img src="<%= card.resistance_energy_type_url %>" class="energy-type-image">
+                                        <%= card.resistance_number %>
+                                            <% } else { %>
+                                                None
+                                                <% } %>
+                                </p>
+                            </div>
+
+                            <div class="block">
+                                <p><strong>Retreat Cost</strong></p>
+                                <p>
+                                    <% if (card.retreat_cost> 0) { %>
+                                        <% for (let count=0; count < card.retreat_cost; count++) { %>
+                                            <img src="<%= card.retreat_energy_type_url %>" class="energy-type-image">
+                                            <% } %>
+                                                <% } else { %>
+                                                    None
+                                                    <% } %>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="column is-4-tablet is-4-desktop">
+
+                            <div class="block">
+                                <p><strong>Expansion</strong></p>
+                                <p>
+                                    <%= card.expansion_name %>
+                                </p>
+                            </div>
+
+                            <div class="block">
+                                <p><strong>Card Number</strong></p>
+                                <p>
+                                    <%= card.card_number %>/<%= card.total_cards %>
+                                </p>
+                            </div>
+
+                            <div class="block">
+                                <p><strong>Rarity</strong></p>
+                                <p>
+                                    <%= card.rarity_name %>
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </container>
+    </section>
+
+
 </body>
 
 </html>

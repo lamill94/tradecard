@@ -7,6 +7,7 @@
     <title>Browse</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
 <body>
@@ -17,30 +18,39 @@
 
     <section class="section">
         <div class="container">
-            <h3 class="title has-text-centered is-size-4">
-                <%= title %>
-            </h3>
             <div class="columns mt-5 is-multiline is-variable is-centered">
                 <% rowdata.forEach((card, index)=> { %>
                     <div class="column is-6-tablet is-3-desktop">
                         <div class="card">
-                            <div class="card-image has-text-centered px-6">
-                                <a href="/card?card_name=<%=card.card_name%>">
+                            <div class="card-image has-text-centered px-5 py-2">
+                                <a href="/card?card_id=<%=card.card_id%>">
                                     <img src="<%= card.image_url %>">
                                 </a>
                             </div>
-                            <div class="card-content">
+                            <div class="card-content pt-0 pb-2">
                                 <p class="title is-size-6 has-text-centered has-text-grey">
-                                    <%= card.card_name %>
+                                    <%= card.card_number %>/<%= card.total_cards %> - <%= card.expansion_name %>
                                 </p>
                             </div>
                             <footer class="card-footer">
-                                <p class="card-footer-item">
-                                    <a href="" class="has-text-grey">Something</a>
-                                </p>
-                                <p class="card-footer-item">
-                                    <a href="" class="has-text-grey">Something</a>
-                                </p>
+                                <a class="card-footer-item py-1 has-text-grey" href="">
+                                    <span class="icon-text">
+                                        <span class="icon">
+                                            <i class="far fa-heart"></i>
+                                        </span>
+                                        <span>Add to Wishlist</span>
+                                    </span>
+                                </a>
+                            </footer>
+                            <footer class="card-footer">
+                                <a class="card-footer-item py-1 has-text-grey" href="">
+                                    <span class="icon-text">
+                                        <span class="icon">
+                                            <i class="fas fa-plus-circle"></i>
+                                        </span>
+                                        <span>Add to Collection</span>
+                                    </span>
+                                </a>
                             </footer>
                         </div>
                     </div>
