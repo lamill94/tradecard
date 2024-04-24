@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+
+    <header>
+        <%- include('header')%>
+    </header>
+
+    <section class="section">
+        <container class="container">
+            <div class="columns">
+                <div class="column is-6-tablet is-6-desktop">
+
+                    <h1 class="title is-size-4">
+                        Log in to your account
+                    </h1>
+
+                    <div class="block">
+                        <p>
+                            Don't have an account?<a href="/signup"> Sign up here.</a>
+                        </p>
+                    </div>
+
+                    <form class="box" action="/login" method="POST">
+
+                        <div class="field">
+                            <label class="label">Email address</label>
+                            <div class="control">
+                                <input class="input" type="email" name="emailField" />
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Password</label>
+                            <div class="control">
+                                <input class="input" type="password" name="passwordField" />
+                            </div>
+                        </div>
+
+                        <button class="button is-primary">Log in</button>
+                    </form>
+
+                </div>
+            </div>
+        </container>
+    </section>
+
+</body>
+
+</html>

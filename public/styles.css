@@ -14,11 +14,11 @@ body {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif !important;
 }
 
-.card {
+.card.browser {
     transition: transform 0.3s;
 }
 
-.card:hover {
+.card.browser:hover {
     transform: scale(1.05);
 }
 
