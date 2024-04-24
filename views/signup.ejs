@@ -31,36 +31,60 @@
                         </p>
                     </div>
 
-                    <form class="box" action="/signup" method="POST">
-
-                        <div class="field">
-                            <label class="label">Display name</label>
-                            <div class="control">
-                                <input class="input" type="displayname" name="displayNameField" />
-                            </div>
+                    <% if (emptyFieldNotification) { %>
+                        <div class="notification is-danger">
+                            <button class="delete"></button>
+                            Please ensure that all fields are populated.
                         </div>
+                        <% } %>
 
-                        <div class="field">
-                            <label class="label">Email address</label>
-                            <div class="control">
-                                <input class="input" type="email" name="emailField" />
-                            </div>
-                        </div>
+                            <% if (userExistsNotification) { %>
+                                <div class="notification is-danger">
+                                    <button class="delete"></button>
+                                    You already have an account - please try logging in.
+                                </div>
+                                <% } %>
 
-                        <div class="field">
-                            <label class="label">Password</label>
-                            <div class="control">
-                                <input class="input" type="password" name="passwordField" />
-                            </div>
-                        </div>
+                                    <form class="box" action="/signup" method="POST">
 
-                        <button class="button is-primary">Create account</button>
-                    </form>
+                                        <div class="field">
+                                            <label class="label">Display name</label>
+                                            <div class="control">
+                                                <input class="input" type="displayname" name="displayNameField" />
+                                            </div>
+                                        </div>
+
+                                        <div class="field">
+                                            <label class="label">Email address</label>
+                                            <div class="control">
+                                                <input class="input" type="email" name="emailField" />
+                                            </div>
+                                        </div>
+
+                                        <div class="field">
+                                            <label class="label">Password</label>
+                                            <div class="control">
+                                                <input class="input" type="password" name="passwordField" />
+                                            </div>
+                                        </div>
+
+                                        <button class="button is-primary">Create account</button>
+                                    </form>
 
                 </div>
             </div>
         </container>
     </section>
+
+    <script>
+
+        const deleteButton = document.querySelector('.delete');
+
+        deleteButton.addEventListener('click', () => {
+            deleteButton.parentNode.style.display = 'none';
+        });
+
+    </script>
 
 </body>
 

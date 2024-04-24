@@ -28,7 +28,7 @@ connection.getConnection((err) => {
 
 //set up a route handler for HTTP GET requests to the "/signup" endpoint
 router.get("/signup", (req, res) => {
-    res.render('signup');
+    res.render('signup', { userExistsNotification: false, emptyFieldNotification: false, isAuthenticated: req.session.authen });
 });
 
 //set up a route handler for HTTP POST requests to the "/signup" endpoint
@@ -37,18 +37,42 @@ router.post('/signup', (req, res) => {
     const useremail = req.body.emailField;
     const password = req.body.passwordField;
 
-    let hashedPassword = bcrypt.hash(password, 10, (err, hash) => {
-        if (err) {
-            console.error(err);
-            return;
+    if (!displayname || !useremail || !password) {
+        return res.render('signup', { emptyFieldNotification: true, userExistsNotification: false, isAuthenticated: req.session.authen });
+    }
+
+    const checkuser = `SELECT * FROM member WHERE email_address = "${useremail}"`;
+
+    connection.query(checkuser, (err, rows) => {
+        if (err) throw err;
+        const numRows = rows.length;
+
+        if (numRows > 0) {
+            res.render('signup', { userExistsNotification: true, emptyFieldNotification: false, isAuthenticated: req.session.authen });
+        } else {
+            bcrypt.hash(password, 10, (err, hash) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+
+                const createsql = `INSERT INTO member (display_name, email_address, password) VALUES( ? , ? , ?);`;
+
+                connection.query(createsql, [displayname, useremail, hash], (err, rows) => {
+                    if (err) throw err;
+
+                    const checkuser = `SELECT * FROM member WHERE email_address = "${useremail}"`;
+
+                    connection.query(checkuser, (err, rows) => {
+                        if (err) throw err;
+                        const user = rows[0];
+                        const sessionobj = req.session;
+                        sessionobj.authen = true; //was user.member_id previously
+                        res.redirect('/');
+                    });
+                });
+            });
         }
-
-        const createsql = `INSERT INTO member (display_name, email_address, password) VALUES( ? , ? , ?);`;
-
-        connection.query(createsql, [displayname, useremail, hash], (err, rows) => {
-            if (err) throw err;
-            res.render('home');
-        });
     });
 });
 

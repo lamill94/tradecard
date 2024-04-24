@@ -43,7 +43,7 @@ router.get("/browse", (req, res) => {
 
     connection.query(readsql, (err, rows) => {
         if (err) throw err;
-        res.render('browse', { rowdata: rows });
+        res.render('browse', { rowdata: rows, isAuthenticated: req.session.authen });
     });
 });
 
@@ -74,7 +74,7 @@ router.get("/browse/sort", (req, res) => {
 
     connection.query(readsql, (err, rows) => {
         if (err) throw err;
-        res.render('browse', { rowdata: rows });
+        res.render('browse', { rowdata: rows, isAuthenticated: req.session.authen });
     });
 });
 

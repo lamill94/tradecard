@@ -64,7 +64,7 @@ router.get("/card", (req, res) => {
             image_url: rows[0]['image_url']
         };
 
-        res.render('card', { card: cardData });
+        res.render('card', { card: cardData, isAuthenticated: req.session.authen });
     });
 });
 

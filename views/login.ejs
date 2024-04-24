@@ -31,29 +31,60 @@
                         </p>
                     </div>
 
-                    <form class="box" action="/login" method="POST">
-
-                        <div class="field">
-                            <label class="label">Email address</label>
-                            <div class="control">
-                                <input class="input" type="email" name="emailField" />
-                            </div>
+                    <% if (emptyFieldNotification) { %>
+                        <div class="notification is-danger">
+                            <button class="delete"></button>
+                            Please ensure that all fields are populated.
                         </div>
+                        <% } %>
 
-                        <div class="field">
-                            <label class="label">Password</label>
-                            <div class="control">
-                                <input class="input" type="password" name="passwordField" />
-                            </div>
-                        </div>
+                            <% if (noEmailNotification) { %>
+                                <div class="notification is-danger">
+                                    <button class="delete"></button>
+                                    Invalid email - please try again or create an account.
+                                </div>
+                                <% } %>
 
-                        <button class="button is-primary">Log in</button>
-                    </form>
+                                    <% if (passwordNotification) { %>
+                                        <div class="notification is-danger">
+                                            <button class="delete"></button>
+                                            Invalid password - please try again.
+                                        </div>
+                                        <% } %>
+
+                                            <form class="box" action="/login" method="POST">
+
+                                                <div class="field">
+                                                    <label class="label">Email address</label>
+                                                    <div class="control">
+                                                        <input class="input" type="email" name="emailField" />
+                                                    </div>
+                                                </div>
+
+                                                <div class="field">
+                                                    <label class="label">Password</label>
+                                                    <div class="control">
+                                                        <input class="input" type="password" name="passwordField" />
+                                                    </div>
+                                                </div>
+
+                                                <button class="button is-primary">Log in</button>
+                                            </form>
 
                 </div>
             </div>
         </container>
     </section>
+
+    <script>
+
+        const deleteButton = document.querySelector('.delete');
+
+        deleteButton.addEventListener('click', () => {
+            deleteButton.parentNode.style.display = 'none';
+        });
+
+    </script>
 
 </body>
 

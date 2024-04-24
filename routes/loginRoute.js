@@ -28,13 +28,17 @@ connection.getConnection((err) => {
 
 //set up a route handler for HTTP GET requests to the "/login" endpoint
 router.get("/login", (req, res) => {
-    res.render('login');
+    res.render('login', { noEmailNotification: false, passwordNotification: false, emptyFieldNotification: false, isAuthenticated: req.session.authen });
 });
 
 //set up a route handler for HTTP POST requests to the "/login" endpoint
 router.post('/login', (req, res) => {
     const useremail = req.body.emailField;
     const password = req.body.passwordField;
+
+    if (!useremail || !password) {
+        return res.render('login', { emptyFieldNotification: true, noEmailNotification: false, passwordNotification: false, isAuthenticated: req.session.authen });
+    }
 
     const checkuser = `SELECT * FROM member WHERE email_address = "${useremail}"`;
 
@@ -47,15 +51,13 @@ router.post('/login', (req, res) => {
 
             if (bcrypt.compareSync(password, user.password)) {
                 const sessionobj = req.session;
-                sessionobj.authen = user.id;
-                res.redirect('/browse');
+                sessionobj.authen = true; //was user.member_id previously
+                res.redirect('/');
             } else {
-                res.redirect('/login');
-                console.log(password);
-                console.log(user.password);
+                res.render('login', { passwordNotification: true, noEmailNotification: false, emptyFieldNotification: false, isAuthenticated: req.session.authen });
             }
         } else {
-            res.redirect('/');
+            res.render('login', { noEmailNotification: true, passwordNotification: false, emptyFieldNotification: false, isAuthenticated: req.session.authen });
         }
     });
 });

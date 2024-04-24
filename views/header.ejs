@@ -66,31 +66,53 @@
 
             <div class="navbar-end">
                 <div class="navbar-item">
-
-                    <!-- On mobile devices, hide the button -->
                     <div class="buttons is-hidden-touch">
 
-                        <a class="button is-primary" href="/signup">
-                            <span class="icon-text">
-                                <span class="icon">
-                                    <i class="fas fa-user-plus"></i>
-                                </span>
-                                <span><strong>Sign up</strong></span>
-                            </span>
-                        </a>
+                        <% if (isAuthenticated) { %>
 
-                        <a class="button is-light" href="/login">
-                            <span class="icon-text">
-                                <span class="icon">
-                                    <i class="fas fa-sign-in-alt"></i>
+                            <a class="button is-primary" href="">
+                                <span class="icon-text">
+                                    <span class="icon">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <span><strong>View account</strong></span>
                                 </span>
-                                <span>Log in</span>
-                            </span>
-                        </a>
+                            </a>
 
+                            <a class="button is-light" href="">
+                                <span class="icon-text">
+                                    <span class="icon">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                    </span>
+                                    <span>Log out</span>
+                                </span>
+                            </a>
+
+                            <% } else { %>
+
+                                <a class="button is-primary" href="/signup">
+                                    <span class="icon-text">
+                                        <span class="icon">
+                                            <i class="fas fa-user-plus"></i>
+                                        </span>
+                                        <span><strong>Sign up</strong></span>
+                                    </span>
+                                </a>
+
+                                <a class="button is-light" href="/login">
+                                    <span class="icon-text">
+                                        <span class="icon">
+                                            <i class="fas fa-sign-in-alt"></i>
+                                        </span>
+                                        <span>Log in</span>
+                                    </span>
+                                </a>
+
+                                <% } %>
                     </div>
                 </div>
             </div>
+
         </div>
     </nav>
 
