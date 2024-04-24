@@ -5,11 +5,8 @@ const router = require("express").Router();
 router.get("/logout", (req, res) => {
 
     req.session.destroy(err => {
-        if (err) {
-            console.error("Error destroying session:", err);
-        } else {
-            res.redirect("/");
-        }
+        if (err) throw err;
+        res.redirect("/");
     });
 });
 
