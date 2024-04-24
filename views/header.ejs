@@ -43,29 +43,55 @@
                 <!-- On mobile devices, display a link instead of button -->
                 <div class="is-hidden-desktop">
 
-                    <a class="navbar-item" href="/signup">
-                        <span class="icon-text">
-                            <span class="icon">
-                                <i class="fas fa-user-plus"></i>
-                            </span>
-                            <span>Sign up</span>
-                        </span>
-                    </a>
+                    <% if (isAuthenticated) { %>
 
-                    <a class="navbar-item" href="/login">
-                        <span class="icon-text">
-                            <span class="icon">
-                                <i class="fas fa-sign-in-alt"></i>
+                        <a class="navbar-item" href="">
+                            <span class="icon-text">
+                                <span class="icon">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                                <span>View account</span>
                             </span>
-                            <span>Log in</span>
-                        </span>
-                    </a>
+                        </a>
+
+                        <a class="navbar-item" href="/logout">
+                            <span class="icon-text">
+                                <span class="icon">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </span>
+                                <span>Log out</span>
+                            </span>
+                        </a>
+
+                        <% } else { %>
+
+                            <a class="navbar-item" href="/signup">
+                                <span class="icon-text">
+                                    <span class="icon">
+                                        <i class="fas fa-user-plus"></i>
+                                    </span>
+                                    <span>Sign up</span>
+                                </span>
+                            </a>
+
+                            <a class="navbar-item" href="/login">
+                                <span class="icon-text">
+                                    <span class="icon">
+                                        <i class="fas fa-sign-in-alt"></i>
+                                    </span>
+                                    <span>Log in</span>
+                                </span>
+                            </a>
+
+                            <% } %>
                 </div>
 
             </div>
 
             <div class="navbar-end">
                 <div class="navbar-item">
+
+                    <!-- On mobile devices, hide buttons -->
                     <div class="buttons is-hidden-touch">
 
                         <% if (isAuthenticated) { %>
@@ -79,7 +105,7 @@
                                 </span>
                             </a>
 
-                            <a class="button is-light" href="">
+                            <a class="button is-light" href="/logout">
                                 <span class="icon-text">
                                     <span class="icon">
                                         <i class="fas fa-sign-out-alt"></i>
