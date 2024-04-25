@@ -67,7 +67,9 @@ router.post('/signup', (req, res) => {
                         if (err) throw err;
                         const user = rows[0];
                         const sessionobj = req.session;
-                        sessionobj.authen = true; //was user.member_id previously
+                        sessionobj.authen = true;
+                        sessionobj.displayName = user.display_name;
+                        sessionobj.memberid = user.member_id;
                         res.redirect('/');
                     });
                 });

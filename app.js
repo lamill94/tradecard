@@ -11,6 +11,8 @@ const cardRoute = require('./routes/cardRoute');
 const loginRoute = require('./routes/loginRoute');
 const signupRoute = require('./routes/signupRoute');
 const logoutRoute = require('./routes/logoutRoute');
+const accountRoute = require('./routes/accountRoute');
+const collectionRoute = require('./routes/collectionRoute');
 
 //create instance of the express application
 const app = express();
@@ -45,6 +47,8 @@ app.use(cardRoute);
 app.use(loginRoute);
 app.use(signupRoute);
 app.use(logoutRoute);
+app.use(accountRoute);
+app.use(collectionRoute);
 
 //start the server and make it listen for incoming HTTP requests on port 3000
 app.listen(3000, (err) => {

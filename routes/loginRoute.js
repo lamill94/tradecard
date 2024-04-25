@@ -51,8 +51,9 @@ router.post('/login', (req, res) => {
 
             if (bcrypt.compareSync(password, user.password)) {
                 const sessionobj = req.session;
-                sessionobj.authen = true; //was user.member_id previously
+                sessionobj.authen = true;
                 sessionobj.displayName = user.display_name;
+                sessionobj.memberid = user.member_id;
                 res.redirect('/');
             } else {
                 res.render('login', { passwordNotification: true, noEmailNotification: false, emptyFieldNotification: false, isAuthenticated: req.session.authen });

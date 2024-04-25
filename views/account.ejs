@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+
+    <header>
+        <%- include('header')%>
+    </header>
+
+    <section class="section">
+        <container class="container">
+            <div class="columns">
+                <div class="column is-6-tablet is-6-desktop">
+
+                    <h1 class="title is-size-4">
+                        Account details
+                    </h1>
+
+                    <form class="box" action="" method="POST">
+
+                        <div class="field">
+                            <label class="label">Current display name</label>
+                            <div class="control">
+                                <input class="input" type="displayname" name="displayNameField"
+                                    placeholder="<%= displayName %>" />
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">New display name</label>
+                            <div class="control">
+                                <input class="input" type="displayname" name="displayNameField" />
+                            </div>
+                        </div>
+
+                        <button class="button is-light">Change display name</button>
+
+                    </form>
+
+                    <form class="box" action="" method="POST">
+
+                        <div class="field">
+                            <label class="label">Current email address</label>
+                            <div class="control">
+                                <input class="input" type="email" name="emailField" placeholder="<%= member.email %>" />
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">New email address</label>
+                            <div class="control">
+                                <input class="input" type="email" name="emailField" />
+                            </div>
+                        </div>
+
+                        <button class="button is-light">Change email address</button>
+
+                    </form>
+
+                    <form class="box" action="" method="POST">
+
+                        <div class="field">
+                            <label class="label">Current password</label>
+                            <div class="control">
+                                <input class="input" type="password" name="passwordField" placeholder="********" />
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">New password</label>
+                            <div class="control">
+                                <input class="input" type="password" name="passwordField" />
+                            </div>
+                        </div>
+
+                        <button class="button is-light">Change password</button>
+
+                    </form>
+
+                    <button class="button is-primary"><strong>Delete account</strong></button>
+
+                </div>
+            </div>
+        </container>
+    </section>
+
+</body>
+
+</html>
