@@ -12,7 +12,7 @@ const loginRoute = require('./routes/loginRoute');
 const signupRoute = require('./routes/signupRoute');
 const logoutRoute = require('./routes/logoutRoute');
 const accountRoute = require('./routes/accountRoute');
-const collectionRoute = require('./routes/collectionRoute');
+const collectionsRoute = require('./routes/collectionsRoute');
 
 //create instance of the express application
 const app = express();
@@ -48,7 +48,7 @@ app.use(loginRoute);
 app.use(signupRoute);
 app.use(logoutRoute);
 app.use(accountRoute);
-app.use(collectionRoute);
+app.use(collectionsRoute);
 
 //start the server and make it listen for incoming HTTP requests on port 3000
 app.listen(3000, (err) => {

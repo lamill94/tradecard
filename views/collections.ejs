@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collection</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+</head>
+
+<body>
+
+    <header>
+        <%- include('header')%>
+    </header>
+
+    <section class="section">
+        <div class="container">
+
+            <% if (isAuthenticated) { %>
+
+                <% if (emptyNameNotification) { %>
+                    <div class="notification is-danger">
+                        <button class="delete"></button>
+                        Please give the new Collection a name.
+                    </div>
+                    <% } %>
+
+                        <% if (collectionExistsNotification) { %>
+                            <div class="notification is-danger">
+                                <button class="delete"></button>
+                                One of your Collections already has this name - please choose a different name.
+                            </div>
+                            <% } %>
+
+                                <% if (collectionAddedNotification) { %>
+                                    <div class="notification is-success">
+                                        <button class="delete"></button>
+                                        New Collection successfully added!
+                                    </div>
+                                    <% } %>
+
+                                        <div class="block">
+                                            <form action="/collection" method="POST">
+                                                <div class="field is-grouped">
+
+                                                    <div class="control is-expanded">
+                                                        <input class="input" type="text" name="newCollectionField"
+                                                            placeholder="New collection name...">
+                                                    </div>
+
+                                                    <div class="control">
+                                                        <button class="button is-primary">
+                                                            <span class="icon-text">
+                                                                <span class="icon">
+                                                                    <i class="fas fa-plus-circle"></i>
+                                                                </span>
+                                                                <span>New collection</span>
+                                                            </span>
+                                                        </button>
+                                                    </div>
+
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <div class="box">
+
+                                            <h1 class="title is-size-5">
+                                                My collections
+                                            </h1>
+
+                                            <div class="block">
+                                                <table class="table is-bordered is-striped">
+                                                    <tbody>
+                                                        <% myCollections.forEach((collection, index)=> { %>
+                                                            <tr>
+                                                                <td>
+                                                                    <a
+                                                                        href="/collection?collection_member_id=<%=collection.collection_member_id%>">
+                                                                        <%= collection.collection_name %>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                            <% }) %>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="box">
+
+                                            <h1 class="title is-size-5">
+                                                Members' collections
+                                            </h1>
+
+                                            <div class="block">
+                                                <table class="table is-bordered is-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Collection</th>
+                                                            <th>Member</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <% otherCollections.forEach((collection, index)=> { %>
+                                                            <tr>
+                                                                <td>
+                                                                    <a
+                                                                        href="/collection?collection_member_id=<%=collection.collection_member_id%>">
+                                                                        <%= collection.collection_name %>
+                                                                    </a>
+                                                                </td>
+                                                                <td>
+                                                                    <%= collection.display_name %>
+                                                                </td>
+                                                            </tr>
+                                                            <% }) %>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+
+                                        <% } else { %>
+
+                                            <div class="box">
+
+                                                <h1 class="title is-size-5">
+                                                    Members' collections
+                                                </h1>
+
+                                                <div class="block">
+                                                    <table class="table is-bordered is-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Collection</th>
+                                                                <th>Member</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <% allCollections.forEach((collection, index)=> { %>
+                                                                <tr>
+                                                                    <td>
+                                                                        <a
+                                                                            href="/collection?collection_member_id=<%=collection.collection_member_id%>">
+                                                                            <%= collection.collection_name %>
+                                                                        </a>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= collection.display_name %>
+                                                                    </td>
+                                                                </tr>
+                                                                <% }) %>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+
+                                            <% } %>
+
+        </div>
+    </section>
+
+    <script>
+
+        const deleteButton = document.querySelector('.delete');
+
+        deleteButton.addEventListener('click', () => {
+            deleteButton.parentNode.style.display = 'none';
+        });
+
+    </script>
+
+</body>
+
+</html>
