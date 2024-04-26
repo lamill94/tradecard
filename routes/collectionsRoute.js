@@ -25,7 +25,7 @@ connection.getConnection((err) => {
     };
 });
 
-//set up a route handler for HTTP GET requests to the "/collection" endpoint
+//set up a route handler for HTTP GET requests to the "/collections" endpoint
 router.get("/collections", (req, res) => {
 
     const memberid = req.session.memberid;
@@ -59,7 +59,7 @@ router.get("/collections", (req, res) => {
     });
 });
 
-//set up a route handler for HTTP POST requests to the "/collection" endpoint
+//set up a route handler for HTTP POST requests to the "/collections" endpoint
 router.post('/collections', (req, res) => {
 
     //check what user entered for new collection name

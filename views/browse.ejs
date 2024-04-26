@@ -18,7 +18,7 @@
     <section class="section">
         <div class="container">
 
-            <div class="dropdown">
+            <div class="dropdown" id="browse-dropdown">
                 <div class="dropdown-trigger">
                     <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
                         <span>Sort by</span>
@@ -82,16 +82,16 @@
     </section>
 
     <script>
-        const dropdownMenu = document.querySelector('.dropdown');
+        const browseDropdown = document.getElementById('browse-dropdown');
 
-        dropdownMenu.addEventListener('click', (event) => {
-            dropdownMenu.classList.toggle('is-active');
+        browseDropdown.addEventListener('click', (event) => {
+            browseDropdown.classList.toggle('is-active');
             event.stopPropagation();
         });
 
         document.body.addEventListener('click', (event) => {
-            if (!dropdownMenu.contains(event.target)) {
-                dropdownMenu.classList.remove('is-active');
+            if (!browseDropdown.contains(event.target)) {
+                browseDropdown.classList.remove('is-active');
             }
         });
     </script>

@@ -22,7 +22,7 @@
                 <div class="column is-3-tablet is-3-desktop">
                     <div class="card">
                         <div class="card-image has-text-centered">
-                            <img src="<%= card.image_url %>">
+                            <img src="<%= cardData[0].image_url %>">
                         </div>
                         <footer class="card-footer">
                             <a class="card-footer-item py-1 has-text-grey" href="">
@@ -50,7 +50,7 @@
                 <div class="column is-9-tablet is-9-desktop">
 
                     <h1 class="title mt-6">
-                        <%= card.name %> <img src="<%= card.energy_type_url %>" class="energy-type-big-image">
+                        <%= cardData[0].card_name %> <img src="<%= cardData.energy_type_url %>" class="energy-type-big-image">
                     </h1>
 
                     <div class="columns is-multiline is-variable is-centered">
@@ -60,17 +60,17 @@
                             <div class="block">
                                 <p><strong>Hit Points (HP)</strong></p>
                                 <p>
-                                    <%= card.hp %>
+                                    <%= cardData[0].hp %>
                                 </p>
                             </div>
 
                             <div class="block">
                                 <p><strong>Stage</strong></p>
                                 <p>
-                                    <% if (card.evolves_from) { %>
-                                        <%= card.stage %> - Evolves from <%= card.evolves_from %>
+                                    <% if (cardData[0].evolves_from) { %>
+                                        <%= cardData[0].stage %> - Evolves from <%= cardData[0].evolves_from %>
                                                 <% } else { %>
-                                                    <%= card.stage %>
+                                                    <%= cardData[0].stage %>
                                                         <% } %>
                                 </p>
                             </div>
@@ -78,7 +78,7 @@
                             <div class="block">
                                 <p><strong>USD Market Price</strong></p>
                                 <p>
-                                    $<%= card.market_price %>
+                                    $<%= cardData[0].market_price %>
                                 </p>
                             </div>
                         </div>
@@ -88,8 +88,8 @@
                             <div class="block">
                                 <p><strong>Weakness</strong></p>
                                 <p>
-                                    <% if (card.weakness_energy_type_url) { %>
-                                        <img src="<%= card.weakness_energy_type_url %>" class="energy-type-image">
+                                    <% if (cardData[0].weakness_energy_type_url) { %>
+                                        <img src="<%= cardData[0].weakness_energy_type_url %>" class="energy-type-image">
                                         <% } else { %>
                                             None
                                             <% } %>
@@ -99,9 +99,9 @@
                             <div class="block">
                                 <p><strong>Resistance</strong></p>
                                 <p>
-                                    <% if (card.resistance_energy_type_url) { %>
-                                        <img src="<%= card.resistance_energy_type_url %>" class="energy-type-image">
-                                        <%= card.resistance_number %>
+                                    <% if (cardData[0].resistance_energy_type_url) { %>
+                                        <img src="<%= cardData[0].resistance_energy_type_url %>" class="energy-type-image">
+                                        <%= cardData[0].resistance_number %>
                                             <% } else { %>
                                                 None
                                                 <% } %>
@@ -111,9 +111,9 @@
                             <div class="block">
                                 <p><strong>Retreat Cost</strong></p>
                                 <p>
-                                    <% if (card.retreat_cost> 0) { %>
-                                        <% for (let count=0; count < card.retreat_cost; count++) { %>
-                                            <img src="<%= card.retreat_energy_type_url %>" class="energy-type-image">
+                                    <% if (cardData[0].retreat_cost> 0) { %>
+                                        <% for (let count=0; count < cardData[0].retreat_cost; count++) { %>
+                                            <img src="<%= cardData[0].retreat_energy_type_url %>" class="energy-type-image">
                                             <% } %>
                                                 <% } else { %>
                                                     None
@@ -127,21 +127,21 @@
                             <div class="block">
                                 <p><strong>Expansion</strong></p>
                                 <p>
-                                    <%= card.expansion_name %>
+                                    <%= cardData[0].expansion_name %>
                                 </p>
                             </div>
 
                             <div class="block">
                                 <p><strong>Card Number</strong></p>
                                 <p>
-                                    <%= card.card_number %>/<%= card.total_cards %>
+                                    <%= cardData[0].card_number %>/<%= cardData[0].total_cards %>
                                 </p>
                             </div>
 
                             <div class="block">
                                 <p><strong>Rarity</strong></p>
                                 <p>
-                                    <%= card.rarity_name %>
+                                    <%= cardData[0].rarity_name %>
                                 </p>
                             </div>
                         </div>
