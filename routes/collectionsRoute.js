@@ -25,25 +25,24 @@ connection.getConnection((err) => {
     };
 });
 
-//set up a route handler for HTTP GET requests to the "/collections" endpoint
-router.get("/collections", (req, res) => {
+//SQL queries
+const allCollectionsQuery = `SELECT * FROM member_collection 
+INNER JOIN collection ON member_collection.collection_id = collection.collection_id
+INNER JOIN member ON member_collection.member_id = member.member_id`;
 
-    const memberid = req.session.memberid;
+const myCollectionsQuery = `SELECT * FROM member_collection 
+INNER JOIN collection ON member_collection.collection_id = collection.collection_id
+INNER JOIN member ON member_collection.member_id = member.member_id
+WHERE member_collection.member_id = ?`;
 
-    const allCollectionsQuery = `SELECT * FROM member_collection 
-    INNER JOIN collection ON member_collection.collection_id = collection.collection_id
-    INNER JOIN member ON member_collection.member_id = member.member_id`;
+const otherCollectionsQuery = `SELECT * FROM member_collection 
+INNER JOIN collection ON member_collection.collection_id = collection.collection_id
+INNER JOIN member ON member_collection.member_id = member.member_id
+WHERE member_collection.member_id != ?`;
 
-    const myCollectionsQuery = `SELECT * FROM member_collection 
-    INNER JOIN collection ON member_collection.collection_id = collection.collection_id
-    INNER JOIN member ON member_collection.member_id = member.member_id
-    WHERE member_collection.member_id = ?`;
-
-    const otherCollectionsQuery = `SELECT * FROM member_collection 
-    INNER JOIN collection ON member_collection.collection_id = collection.collection_id
-    INNER JOIN member ON member_collection.member_id = member.member_id
-    WHERE member_collection.member_id != ?`;
-
+//function to fetch collections
+function fetchCollections(memberid, renderCallback) {
+    
     connection.query(allCollectionsQuery, (err, allCollections) => {
         if (err) throw err;
 
@@ -53,8 +52,23 @@ router.get("/collections", (req, res) => {
             connection.query(otherCollectionsQuery, [memberid], (err, otherCollections) => {
                 if (err) throw err;
 
-                res.render('collections', { allCollections: allCollections, myCollections: myCollections, otherCollections: otherCollections, collectionExistsNotification: false, emptyNameNotification: false, collectionAddedNotification: false, isAuthenticated: req.session.authen, displayName: req.session.displayName });
+                renderCallback(allCollections, myCollections, otherCollections);
             });
+        });
+    });
+}
+
+//set up a route handler for HTTP GET requests to the "/collections" endpoint
+router.get("/collections", (req, res) => {
+
+    const memberid = req.session.memberid;
+
+    fetchCollections(memberid, (allCollections, myCollections, otherCollections) => {
+        res.render('collections', {
+            allCollections: allCollections, myCollections: myCollections,
+            otherCollections: otherCollections, collectionExistsNotification: false, emptyNameNotification: false,
+            collectionAddedNotification: false, isAuthenticated: req.session.authen,
+            displayName: req.session.displayName
         });
     });
 });
@@ -62,50 +76,75 @@ router.get("/collections", (req, res) => {
 //set up a route handler for HTTP POST requests to the "/collections" endpoint
 router.post('/collections', (req, res) => {
 
+    //get user's member_id
+    const memberid = req.session.memberid;
+
     //check what user entered for new collection name
     const collectionname = req.body.newCollectionField;
 
     //if user entered nothing then show empty name notification
     if (!collectionname) {
-        return res.render('collections', { collectionExistsNotification: false, emptyNameNotification: true, collectionAddedNotification: false, isAuthenticated: req.session.authen, displayName: req.session.displayName });
-    }
 
-    //get user's member_id
-    const memberid = req.session.memberid;
-
-    //select user's collections
-    const checkname = `SELECT * FROM member_collection 
-    INNER JOIN collection ON collection.collection_id = member_collection.collection_id
-    WHERE member_id = ${memberid} AND collection_name = "${collectionname}"`;
-
-    connection.query(checkname, (err, rows) => {
-        if (err) throw err;
-        const numRows = rows.length;
-
-        //if user already has collection with same name then show collection exists notification
-        if (numRows > 0) {
-
-            res.render('collections', { collectionExistsNotification: true, emptyNameNotification: false, collectionAddedNotification: false, isAuthenticated: req.session.authen, displayName: req.session.displayName });
-
-        } else {
-
-            //else if collection name is unique then insert new collection
-            const createCollectionSql = `INSERT INTO collection (collection_name) VALUES( ? );`;
-
-            connection.query(createCollectionSql, [collectionname], (err, rows) => {
-                if (err) throw err;
-                const newCollectionId = rows.insertId;
-
-                //then insert new collection with member_id into the member_collection table
-                const createMemCollectionSql = `INSERT INTO member_collection (member_id, collection_id) VALUES( ? , ? );`;
-
-                connection.query(createMemCollectionSql, [memberid, newCollectionId], (err, rows) => {
-                    if (err) throw err;
-                    res.render('collections', { collectionExistsNotification: false, emptyNameNotification: false, collectionAddedNotification: true, isAuthenticated: req.session.authen, displayName: req.session.displayName });
-                });
+        fetchCollections(memberid, (allCollections, myCollections, otherCollections) => {
+            res.render('collections', {
+                allCollections: allCollections, myCollections: myCollections,
+                otherCollections: otherCollections, collectionExistsNotification: false, emptyNameNotification: true,
+                collectionAddedNotification: false, isAuthenticated: req.session.authen,
+                displayName: req.session.displayName
             });
-        }
-    });
+        });
+
+    } else {
+
+        //select user's collections
+        const checkname = `SELECT * FROM member_collection 
+        INNER JOIN collection ON collection.collection_id = member_collection.collection_id
+        WHERE member_id = ${memberid} AND collection_name = "${collectionname}"`;
+
+        connection.query(checkname, (err, rows) => {
+            if (err) throw err;
+            const numRows = rows.length;
+
+            //if user already has collection with same name then show collection exists notification
+            if (numRows > 0) {
+
+                fetchCollections(memberid, (allCollections, myCollections, otherCollections) => {
+                    res.render('collections', {
+                        allCollections: allCollections, myCollections: myCollections,
+                        otherCollections: otherCollections, collectionExistsNotification: true,
+                        emptyNameNotification: false, collectionAddedNotification: false,
+                        isAuthenticated: req.session.authen, displayName: req.session.displayName
+                    });
+                });
+
+            } else {
+
+                //else if collection name is unique then insert new collection
+                const createCollectionSql = `INSERT INTO collection (collection_name) VALUES( ? );`;
+
+                connection.query(createCollectionSql, [collectionname], (err, rows) => {
+                    if (err) throw err;
+                    const newCollectionId = rows.insertId;
+
+                    //then insert new collection with member_id into the member_collection table
+                    const createMemCollectionSql = `INSERT INTO member_collection (member_id, collection_id) VALUES( ? , ? );`;
+
+                    connection.query(createMemCollectionSql, [memberid, newCollectionId], (err, rows) => {
+                        if (err) throw err;
+
+                        fetchCollections(memberid, (allCollections, myCollections, otherCollections) => {
+                            res.render('collections', {
+                                allCollections: allCollections, myCollections: myCollections,
+                                otherCollections: otherCollections, collectionExistsNotification: false,
+                                emptyNameNotification: false, collectionAddedNotification: true,
+                                isAuthenticated: req.session.authen, displayName: req.session.displayName
+                            });
+                        });
+                    });
+                });
+            }
+        });
+    }
 });
 
 //export the instance
