@@ -25,8 +25,17 @@ connection.getConnection((err) => {
     };
 });
 
+//SQL queries
+const myCollectionsQuery = `SELECT * FROM member_collection 
+INNER JOIN collection ON member_collection.collection_id = collection.collection_id
+INNER JOIN member ON member_collection.member_id = member.member_id
+WHERE member_collection.member_id = ?`;
+
 //set up a route handler for HTTP GET requests to the "/browse" endpoint
 router.get("/browse", (req, res) => {
+
+    const memberid = req.session.memberid;
+
     const readsql = `SELECT card_id, card_name, hp, a.energy_type_name, a.energy_type_url, stage, evolves_from, 
     b.energy_type_name AS 'weakness_energy_type_name', b.energy_type_url AS 'weakness_energy_type_url', 
     c.energy_type_name AS 'resistance_energy_type_name', c.energy_type_url AS 'resistance_energy_type_url', 
@@ -43,12 +52,22 @@ router.get("/browse", (req, res) => {
 
     connection.query(readsql, (err, rows) => {
         if (err) throw err;
-        res.render('browse', { rowdata: rows, isAuthenticated: req.session.authen, displayName: req.session.displayName });
+
+        connection.query(myCollectionsQuery, [memberid], (err, myCollections) => {
+            if (err) throw err;
+
+            res.render('browse', {
+                rowdata: rows, myCollections: myCollections, isAuthenticated: req.session.authen,
+                displayName: req.session.displayName
+            });
+        });
     });
 });
 
 //set up a route handler for HTTP GET requests to the "/browse/sort" endpoint
 router.get("/browse/sort", (req, res) => {
+
+    const memberid = req.session.memberid;
     const sort = req.query.sort;
     let orderByClause = '';
 
@@ -74,7 +93,14 @@ router.get("/browse/sort", (req, res) => {
 
     connection.query(readsql, (err, rows) => {
         if (err) throw err;
-        res.render('browse', { rowdata: rows, isAuthenticated: req.session.authen, displayName: req.session.displayName });
+
+        connection.query(myCollectionsQuery, [memberid], (err, myCollections) => {
+            if (err) throw err;
+            res.render('browse', {
+                rowdata: rows, myCollections: myCollections, isAuthenticated: req.session.authen,
+                displayName: req.session.displayName
+            });
+        });
     });
 });
 

@@ -41,7 +41,7 @@
                 <% rowdata.forEach((card, index)=> { %>
                     <div class="column is-6-tablet is-3-desktop">
                         <div class="card mb-3">
-                            <div class="card-image has-text-centered px-5 py-2">
+                            <div class="card-image has-text-centered px-5 pt-2 pb-0">
                                 <a href="/card?card_id=<%=card.card_id%>">
                                     <img src="<%= card.image_url %>">
                                 </a>
@@ -70,32 +70,35 @@
                             </div>
                         </div>
                         <div class="dropdown-wrapper">
-                            <div class="dropdown" id="collection-dropdown">
-                                <div class="dropdown-trigger">
-                                    <button class="button has-text-grey" aria-haspopup="true"
-                                        aria-controls="dropdown-menu">
-                                        <span class="icon">
-                                            <i class="fas fa-plus-circle"></i>
-                                        </span>
-                                        <span>Add to collection</span>
-                                        <span class="icon">
-                                            <i class="fas fa-angle-down"></i>
-                                        </span>
-                                    </button>
-                                </div>
-                                <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                                    <div class="dropdown-content">
-                                        <a href="/browse/sort?sort=release_date ASC,card_number ASC"
-                                            class="dropdown-item">Card
-                                            Number</a>
-                                        <a href="/browse/sort?sort=card_name" class="dropdown-item">Card Name
-                                            (A-Z)</a>
-                                        <a href="/browse/sort?sort=card_name DESC" class="dropdown-item">Card
-                                            Name
-                                            (Z-A)</a>
+                            <form action="/collection" method="POST">
+                                <input type="hidden" name="card_id" value="<%= card.card_id %>">
+                                <div class="dropdown" id="collection-dropdown">
+                                    <div class="dropdown-trigger">
+                                        <button class="button has-text-grey" aria-haspopup="true"
+                                            aria-controls="dropdown-menu">
+                                            <span class="icon">
+                                                <i class="fas fa-plus-circle"></i>
+                                            </span>
+                                            <span>Add to collection</span>
+                                            <span class="icon">
+                                                <i class="fas fa-angle-down"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                        <div class="dropdown-content">
+                                            <% myCollections.forEach((collection, index)=> { %>
+                                                <!--<input type="hidden" name="member_collection_id" value="<%= collection.member_collection_id %>">
+                                                    <input type="submit" class="dropdown-item" value="<%= collection.collection_name %>">-->
+                                                <button type="submit" class="dropdown-item" name="member_collection_id"
+                                                    value="<%= collection.member_collection_id %>">
+                                                    <%= collection.collection_name %>
+                                                </button>
+                                                <% }) %>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                     <% }) %>

@@ -61,11 +61,17 @@ router.get("/collection", (req, res) => {
 
             connection.query(readsql, [showid], (err, rows) => {
                 if (err) throw err;
-                res.render('collection', { rowdata: rows, isEmptyCollection: isEmptyCollection, isAuthenticated: req.session.authen, displayName: req.session.displayName });
+                res.render('collection', {
+                    rowdata: rows, isEmptyCollection: isEmptyCollection,
+                    isAuthenticated: req.session.authen, displayName: req.session.displayName
+                });
             });
 
         } else {
-            res.render('collection', { rowdata: rows, isEmptyCollection: isEmptyCollection, isAuthenticated: req.session.authen, displayName: req.session.displayName });
+            res.render('collection', {
+                rowdata: rows, isEmptyCollection: isEmptyCollection,
+                isAuthenticated: req.session.authen, displayName: req.session.displayName
+            });
         }
     });
 });
@@ -104,7 +110,32 @@ router.get("/collection/sort", (req, res) => {
 
     connection.query(readsql, [showid], (err, rows) => {
         if (err) throw err;
-        res.render('collection', { rowdata: rows, isEmptyCollection: false, isAuthenticated: req.session.authen, displayName: req.session.displayName });
+        res.render('collection', {
+            rowdata: rows, isEmptyCollection: false, isAuthenticated: req.session.authen,
+            displayName: req.session.displayName
+        });
+    });
+});
+
+//set up a route handler for HTTP POST requests to the "/collection" endpoint
+router.post('/collection', (req, res) => {
+
+    const memberCollectionId = req.body.member_collection_id;
+    const cardId = req.body.card_id;
+
+    const checkCollectionId = `SELECT collection_id FROM member_collection 
+    WHERE member_collection_id = ${memberCollectionId}`;
+
+    connection.query(checkCollectionId, (err, rows) => {
+        if (err) throw err;
+        const collectionId = rows[0]['collection_id'];
+
+        const addCardToCollectionSql = `INSERT INTO collection_card (collection_id, card_id) VALUES( ? , ? );`;
+
+        connection.query(addCardToCollectionSql, [collectionId, cardId], (err, rows) => {
+            if (err) throw err;
+            res.redirect('/browse');
+        });
     });
 });
 
