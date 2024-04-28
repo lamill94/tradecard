@@ -19,11 +19,6 @@ body {
     height: auto;
 }
 
-.energy-type-big-image {
-    width: 25px;
-    height: auto;
-}
-
 .empty-collection-message {
     color: red;
 }
@@ -44,3 +39,9 @@ body {
 .button.has-text-grey.create-collection {
     border: none;
 }
+
+.heart-icon {
+    align-items: center;
+}
+
+

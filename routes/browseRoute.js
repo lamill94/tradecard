@@ -96,6 +96,7 @@ router.get("/browse/sort", (req, res) => {
 
         connection.query(myCollectionsQuery, [memberid], (err, myCollections) => {
             if (err) throw err;
+            
             res.render('browse', {
                 rowdata: rows, myCollections: myCollections, isAuthenticated: req.session.authen,
                 displayName: req.session.displayName

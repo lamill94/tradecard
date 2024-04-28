@@ -16,42 +16,108 @@
     </header>
 
     <section class="section pt-1 pb-0">
-        <container class="container">
-            <div class="columns mt-1 is-multiline is-variable is-centered">
+        <container class="container x">
+            <div class="columns mt-5 is-multiline is-variable is-centered">
 
                 <div class="column is-3-tablet is-3-desktop">
                     <div class="card">
                         <div class="card-image has-text-centered">
                             <img src="<%= cardData[0].image_url %>">
                         </div>
-                        <footer class="card-footer">
-                            <a class="card-footer-item py-1 has-text-grey" href="">
-                                <span class="icon-text">
-                                    <span class="icon">
-                                        <i class="far fa-heart"></i>
-                                    </span>
-                                    <span>Add to Wishlist</span>
-                                </span>
-                            </a>
-                        </footer>
-                        <footer class="card-footer">
-                            <a class="card-footer-item py-1 has-text-grey" href="">
-                                <span class="icon-text">
-                                    <span class="icon">
-                                        <i class="fas fa-plus-circle"></i>
-                                    </span>
-                                    <span>Add to Collection</span>
-                                </span>
-                            </a>
-                        </footer>
+                        <div class="card-content pt-0 pb-2">
+                            <p class="has-text-centered has-text-grey">
+                                $<%= cardData[0].market_price %>
+                            </p>
+                        </div>
                     </div>
                 </div>
 
                 <div class="column is-9-tablet is-9-desktop">
 
-                    <h1 class="title mt-6">
-                        <%= cardData[0].card_name %> <img src="<%= cardData.energy_type_url %>" class="energy-type-big-image">
+                    <h1 class="title mt-5 mb-4">
+                        <%= cardData[0].card_name %>
+                            <a class="has-text-grey is-size-4" href="">
+                                    <span class="heart-icon">
+                                        <i class="far fa-heart"></i>
+                                    </span>
+                            </a>
                     </h1>
+
+                    <div class="block">
+
+                        <% if (isAuthenticated) { %>
+
+                            <% if (myCollections.length===0) { %>
+
+                                <div class="dropdown" id="collection-dropdown">
+                                    <div class="dropdown-trigger">
+                                        <button class="button is-primary" aria-haspopup="true"
+                                            aria-controls="dropdown-menu">
+                                            <span class="icon">
+                                                <i class="fas fa-plus-circle"></i>
+                                            </span>
+                                            <span>Add to collection</span>
+                                            <span class="icon">
+                                                <i class="fas fa-angle-down"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                        <div class="dropdown-content py-0">
+                                            <a class="button has-text-grey create-collection" href="/collections">
+                                                Create collection
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <% } else { %>
+
+                                    <form action="/collection?redirect=card" method="POST">
+                                        <input type="hidden" name="card_id" value="<%= cardData[0].card_id %>">
+                                        <div class="dropdown" id="collection-dropdown">
+                                            <div class="dropdown-trigger">
+                                                <button class="button is-primary" aria-haspopup="true"
+                                                    aria-controls="dropdown-menu">
+                                                    <span class="icon">
+                                                        <i class="fas fa-plus-circle"></i>
+                                                    </span>
+                                                    <span>Add to collection</span>
+                                                    <span class="icon">
+                                                        <i class="fas fa-angle-down"></i>
+                                                    </span>
+                                                </button>
+                                            </div>
+                                            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                                <div class="dropdown-content">
+                                                    <% myCollections.forEach((collection, index)=> { %>
+                                                        <button type="submit" class="dropdown-item"
+                                                            name="member_collection_id"
+                                                            value="<%= collection.member_collection_id %>">
+                                                            <%= collection.collection_name %>
+                                                        </button>
+                                                        <% }) %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <% } %> <!--end of my collections are empty-->
+
+                                        <% } else { %>
+
+                                            <a class="button is-primary" href="/login">
+                                                <span class="icon-text">
+                                                    <span class="icon">
+                                                        <i class="fas fa-plus-circle"></i>
+                                                    </span>
+                                                    <span>Add to collection</span>
+                                                </span>
+                                            </a>
+
+                                            <% } %> <!--end of if authenticated-->
+
+                    </div>
 
                     <div class="columns is-multiline is-variable is-centered">
 
@@ -65,6 +131,13 @@
                             </div>
 
                             <div class="block">
+                                <p><strong>Energy Type</strong></p>
+                                <p>
+                                    <img src="<%= cardData[0].energy_type_url %>" class="energy-type-image">
+                                </p>
+                            </div>
+
+                            <div class="block">
                                 <p><strong>Stage</strong></p>
                                 <p>
                                     <% if (cardData[0].evolves_from) { %>
@@ -72,13 +145,6 @@
                                                 <% } else { %>
                                                     <%= cardData[0].stage %>
                                                         <% } %>
-                                </p>
-                            </div>
-
-                            <div class="block">
-                                <p><strong>USD Market Price</strong></p>
-                                <p>
-                                    $<%= cardData[0].market_price %>
                                 </p>
                             </div>
                         </div>
@@ -89,7 +155,8 @@
                                 <p><strong>Weakness</strong></p>
                                 <p>
                                     <% if (cardData[0].weakness_energy_type_url) { %>
-                                        <img src="<%= cardData[0].weakness_energy_type_url %>" class="energy-type-image">
+                                        <img src="<%= cardData[0].weakness_energy_type_url %>"
+                                            class="energy-type-image">
                                         <% } else { %>
                                             None
                                             <% } %>
@@ -100,7 +167,8 @@
                                 <p><strong>Resistance</strong></p>
                                 <p>
                                     <% if (cardData[0].resistance_energy_type_url) { %>
-                                        <img src="<%= cardData[0].resistance_energy_type_url %>" class="energy-type-image">
+                                        <img src="<%= cardData[0].resistance_energy_type_url %>"
+                                            class="energy-type-image">
                                         <%= cardData[0].resistance_number %>
                                             <% } else { %>
                                                 None
@@ -113,7 +181,8 @@
                                 <p>
                                     <% if (cardData[0].retreat_cost> 0) { %>
                                         <% for (let count=0; count < cardData[0].retreat_cost; count++) { %>
-                                            <img src="<%= cardData[0].retreat_energy_type_url %>" class="energy-type-image">
+                                            <img src="<%= cardData[0].retreat_energy_type_url %>"
+                                                class="energy-type-image">
                                             <% } %>
                                                 <% } else { %>
                                                     None
@@ -152,6 +221,40 @@
         </container>
     </section>
 
+    <script>
+
+        //ensures that the JS executes only after the DOM content has been fully loaded and parsed
+        document.addEventListener('DOMContentLoaded', function () {
+
+            //selects all elements with the class dropdown and store them in a NodeList called dropdowns
+            const dropdowns = document.querySelectorAll('.dropdown');
+
+            //iterate over each dropdown element in the dropdowns NodeList
+            dropdowns.forEach(function (dropdown) {
+
+                //selects the dropdown trigger button within the current dropdown element
+                const trigger = dropdown.querySelector('.dropdown-trigger');
+
+                //selects the dropdown menu within the current dropdown element
+                const menu = dropdown.querySelector('.dropdown-menu');
+
+                //listen for clicks on the dropdown trigger button
+                trigger.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    dropdown.classList.toggle('is-active');
+                });
+
+                //listen for clicks anywhere in the document
+                document.addEventListener('click', function (event) {
+                    const isClickInside = dropdown.contains(event.target);
+                    if (!isClickInside) {
+                        dropdown.classList.remove('is-active');
+                    }
+                });
+            });
+        });
+    </script>
 
 </body>
 

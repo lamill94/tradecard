@@ -25,13 +25,23 @@ connection.getConnection((err) => {
     };
 });
 
+//SQL queries
+const myCollectionsQuery = `SELECT * FROM member_collection 
+INNER JOIN collection ON member_collection.collection_id = collection.collection_id
+INNER JOIN member ON member_collection.member_id = member.member_id
+WHERE member_collection.member_id = ?`;
+
 //set up a route handler for HTTP GET requests to the "/card" endpoint
 router.get("/card", (req, res) => {
-    const showid = req.query.card_id;
-    const readsql = `SELECT card_id, card_name, hp, a.energy_type_name, a.energy_type_url, stage, evolves_from, 
-    b.energy_type_name AS 'weakness_energy_type_name', b.energy_type_url AS 'weakness_energy_type_url', 
-    c.energy_type_name AS 'resistance_energy_type_name', c.energy_type_url AS 'resistance_energy_type_url', 
-    resistance_number, d.energy_type_url AS 'retreat_energy_type_url', retreat_cost, expansion_name, total_cards, expansion_url, 
+
+    const cardId = req.query.card_id;
+    const memberid = req.session.memberid;
+
+    const cardDetailsSqlQuery = `SELECT card_id, card_name, hp, a.energy_type_name AS 'energy_type_name', 
+    a.energy_type_url AS 'energy_type_url', stage, evolves_from, b.energy_type_name AS 'weakness_energy_type_name', 
+    b.energy_type_url AS 'weakness_energy_type_url', c.energy_type_name AS 'resistance_energy_type_name', 
+    c.energy_type_url AS 'resistance_energy_type_url', resistance_number, 
+    d.energy_type_url AS 'retreat_energy_type_url', retreat_cost, expansion_name, total_cards, expansion_url, 
     card_number, rarity_name, market_price, image_url FROM card 
     INNER JOIN energy_type a ON card.energy_type_id = a.energy_type_id
     INNER JOIN stage ON card.stage_id = stage.stage_id
@@ -42,9 +52,17 @@ router.get("/card", (req, res) => {
     INNER JOIN rarity ON card.rarity_id = rarity.rarity_id
     WHERE card_id = ?`;
 
-    connection.query(readsql, [showid], (err, rows) => {
+    connection.query(cardDetailsSqlQuery, [cardId], (err, rows) => {
         if (err) throw err;
-        res.render('card', { cardData: rows, isAuthenticated: req.session.authen, displayName: req.session.displayName });
+
+        connection.query(myCollectionsQuery, [memberid], (err, myCollections) => {
+            if (err) throw err;
+
+            res.render('card', {
+                cardData: rows, myCollections: myCollections, isAuthenticated: req.session.authen,
+                displayName: req.session.displayName
+            });
+        });
     });
 });
 
