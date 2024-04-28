@@ -25,10 +25,19 @@ connection.getConnection((err) => {
     };
 });
 
+//SQL queries
+const myCollectionsQuery = `SELECT * FROM member_collection 
+INNER JOIN collection ON member_collection.collection_id = collection.collection_id
+INNER JOIN member ON member_collection.member_id = member.member_id
+WHERE member_collection.member_id = ?`;
+
 //set up a route handler for HTTP GET requests to the "/collection" endpoint
 router.get("/collection", (req, res) => {
-    const showid = req.query.member_collection_id;
-    const readsql = `SELECT member_collection_id, display_name, collection_name, card.card_id AS 'card_id', 
+
+    const memberCollectionId = req.query.member_collection_id;
+    const memberid = req.session.memberid;
+
+    const cardsInCollectionSql = `SELECT member_collection_id, display_name, collection_name, card.card_id AS 'card_id', 
    card_name, hp, a.energy_type_name, a.energy_type_url, stage, evolves_from, b.energy_type_name AS 
    'weakness_energy_type_name', b.energy_type_url AS 'weakness_energy_type_url', c.energy_type_name AS 
    'resistance_energy_type_name', c.energy_type_url AS 'resistance_energy_type_url', resistance_number, 
@@ -48,37 +57,46 @@ router.get("/collection", (req, res) => {
    WHERE member_collection_id = ?
    ORDER BY release_date, card_number ASC`;
 
-    connection.query(readsql, [showid], (err, rows) => {
+    connection.query(cardsInCollectionSql, [memberCollectionId], (err, rows) => {
         if (err) throw err;
+
         const isEmptyCollection = rows.length === 0;
 
-        if (isEmptyCollection) {
+        connection.query(myCollectionsQuery, [memberid], (err, myCollections) => {
+            if (err) throw err;
 
-            const readsql = `SELECT * FROM member_collection
-            INNER JOIN member ON member_collection.member_id = member.member_id
-            INNER JOIN collection ON member_collection.collection_id = collection.collection_id
-            WHERE member_collection_id = ?`;
+            if (isEmptyCollection) {
 
-            connection.query(readsql, [showid], (err, rows) => {
-                if (err) throw err;
+                const readsql = `SELECT * FROM member_collection
+                INNER JOIN member ON member_collection.member_id = member.member_id
+                INNER JOIN collection ON member_collection.collection_id = collection.collection_id
+                WHERE member_collection_id = ?`;
+
+                connection.query(readsql, [memberCollectionId], (err, rows) => {
+                    if (err) throw err;
+
+                    res.render('collection', {
+                        rowdata: rows, myCollections: myCollections, isEmptyCollection: isEmptyCollection,
+                        isAuthenticated: req.session.authen, displayName: req.session.displayName
+                    });
+                });
+
+            } else {
+
                 res.render('collection', {
-                    rowdata: rows, isEmptyCollection: isEmptyCollection,
+                    rowdata: rows, myCollections: myCollections, isEmptyCollection: isEmptyCollection,
                     isAuthenticated: req.session.authen, displayName: req.session.displayName
                 });
-            });
-
-        } else {
-            res.render('collection', {
-                rowdata: rows, isEmptyCollection: isEmptyCollection,
-                isAuthenticated: req.session.authen, displayName: req.session.displayName
-            });
-        }
+            }
+        });
     });
 });
 
 //set up a route handler for HTTP GET requests to the "/collection/sort" endpoint
 router.get("/collection/sort", (req, res) => {
-    const showid = req.query.member_collection_id;
+
+    const memberCollectionId = req.query.member_collection_id;
+    const memberid = req.session.memberid;
     const sort = req.query.sort;
     let orderByClause = '';
 
@@ -88,7 +106,7 @@ router.get("/collection/sort", (req, res) => {
         orderByClause = `ORDER BY ${sort}`;
     }
 
-    const readsql = `SELECT member_collection_id, display_name, collection_name, card.card_id AS 'card_id', 
+    const cardsInCollectionSql = `SELECT member_collection_id, display_name, collection_name, card.card_id AS 'card_id', 
    card_name, hp, a.energy_type_name, a.energy_type_url, stage, evolves_from, b.energy_type_name AS 
    'weakness_energy_type_name', b.energy_type_url AS 'weakness_energy_type_url', c.energy_type_name AS 
    'resistance_energy_type_name', c.energy_type_url AS 'resistance_energy_type_url', resistance_number, 
@@ -108,11 +126,16 @@ router.get("/collection/sort", (req, res) => {
    WHERE member_collection_id = ? 
    ${orderByClause}`;
 
-    connection.query(readsql, [showid], (err, rows) => {
+    connection.query(cardsInCollectionSql, [memberCollectionId], (err, rows) => {
         if (err) throw err;
-        res.render('collection', {
-            rowdata: rows, isEmptyCollection: false, isAuthenticated: req.session.authen,
-            displayName: req.session.displayName
+
+        connection.query(myCollectionsQuery, [memberid], (err, myCollections) => {
+            if (err) throw err;
+
+            res.render('collection', {
+                rowdata: rows, myCollections: myCollections, isEmptyCollection: false,
+                isAuthenticated: req.session.authen, displayName: req.session.displayName
+            });
         });
     });
 });
@@ -122,6 +145,7 @@ router.post('/collection', (req, res) => {
 
     const memberCollectionId = req.body.member_collection_id;
     const cardId = req.body.card_id;
+    const redirectPage = req.query.redirect;
 
     const checkCollectionId = `SELECT collection_id FROM member_collection 
     WHERE member_collection_id = ${memberCollectionId}`;
@@ -134,7 +158,13 @@ router.post('/collection', (req, res) => {
 
         connection.query(addCardToCollectionSql, [collectionId, cardId], (err, rows) => {
             if (err) throw err;
-            res.redirect('/browse');
+
+            //this needs fixed to take into account sort
+            if (redirectPage === 'browse') {
+                res.redirect('/browse');
+            } else if (redirectPage === 'collection') {
+                res.redirect(`/collection?member_collection_id=${memberCollectionId}`);
+            }
         });
     });
 });

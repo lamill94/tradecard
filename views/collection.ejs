@@ -47,8 +47,10 @@
                                 <a href="/collection/sort?member_collection_id=<%=rowdata[0].member_collection_id%>&&sort=release_date ASC,card_number ASC"
                                     class="dropdown-item">Card
                                     Number</a>
-                                <a href="/collection/sort?member_collection_id=<%=rowdata[0].member_collection_id%>&&sort=card_name" class="dropdown-item">Card Name (A-Z)</a>
-                                <a href="/collection/sort?member_collection_id=<%=rowdata[0].member_collection_id%>&&sort=card_name DESC" class="dropdown-item">Card Name (Z-A)</a>
+                                <a href="/collection/sort?member_collection_id=<%=rowdata[0].member_collection_id%>&&sort=card_name"
+                                    class="dropdown-item">Card Name (A-Z)</a>
+                                <a href="/collection/sort?member_collection_id=<%=rowdata[0].member_collection_id%>&&sort=card_name DESC"
+                                    class="dropdown-item">Card Name (Z-A)</a>
                             </div>
                         </div>
                     </div>
@@ -56,63 +58,154 @@
                     <div class="columns mt-5 is-multiline is-variable is-centered">
                         <% rowdata.forEach((card, index)=> { %>
                             <div class="column is-6-tablet is-3-desktop">
-                                <div class="card browser">
-                                    <div class="card-image has-text-centered px-5 py-2">
+                                <div class="card mb-3">
+                                    <div class="card-image has-text-centered px-5 pt-2 py-0">
                                         <a href="/card?card_id=<%=card.card_id%>">
                                             <img src="<%= card.image_url %>">
                                         </a>
                                     </div>
                                     <div class="card-content pt-0 pb-2">
-                                        <p class="has-text-centered has-text-grey">
-                                            <span class="title is-size-6 has-text-grey">
-                                                <%= card.expansion_name %>
-                                            </span>
-                                            <%= card.card_number %>/<%= card.total_cards %>
-                                        </p>
+                                        <div class="columns is-vcentered">
+                                            <div class="column is-three-quarters">
+                                                <p class="has-text-grey is-size-7">
+                                                    <span class="title is-size-7 has-text-grey">
+                                                        <%= card.expansion_name %>
+                                                    </span>
+                                                    <%= card.card_number %>/<%= card.total_cards %>
+                                                </p>
+                                            </div>
+                                            <div class="column">
+                                                <p class="has-text-right">
+                                                    <a class="has-text-grey" href="">
+                                                        <span class="icon-text">
+                                                            <span class="icon">
+                                                                <i class="far fa-heart"></i>
+                                                            </span>
+                                                    </a>
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <footer class="card-footer">
-                                        <a class="card-footer-item py-1 has-text-grey" href="">
-                                            <span class="icon-text">
-                                                <span class="icon">
-                                                    <i class="far fa-heart"></i>
-                                                </span>
-                                                <span>Add to Wishlist</span>
-                                            </span>
-                                        </a>
-                                    </footer>
-                                    <footer class="card-footer">
-                                        <a class="card-footer-item py-1 has-text-grey" href="">
-                                            <span class="icon-text">
-                                                <span class="icon">
-                                                    <i class="fas fa-plus-circle"></i>
-                                                </span>
-                                                <span>Add to Collection</span>
-                                            </span>
-                                        </a>
-                                    </footer>
                                 </div>
-                            </div>
-                            <% }) %>
-                    </div>
 
-                    <% } %>
+                                <% if (isAuthenticated) { %>
 
-        </div>
+                                    <div class="dropdown-wrapper">
 
-    </section>
+                                        <% if (myCollections.length===0) { %>
+
+                                            <div class="dropdown" id="collection-dropdown">
+                                                <div class="dropdown-trigger">
+                                                    <button class="button has-text-grey" aria-haspopup="true"
+                                                        aria-controls="dropdown-menu">
+                                                        <span class="icon">
+                                                            <i class="fas fa-plus-circle"></i>
+                                                        </span>
+                                                        <span>Add to collection</span>
+                                                        <span class="icon">
+                                                            <i class="fas fa-angle-down"></i>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                                <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                                    <div class="dropdown-content py-0">
+                                                        <a class="button has-text-grey create-collection"
+                                                            href="/collections">
+                                                            Create collection
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <% } else { %>
+
+                                                <form action="/collection?redirect=collection" method="POST">
+                                                    <input type="hidden" name="card_id" value="<%= card.card_id %>">
+                                                    <div class="dropdown" id="collection-dropdown">
+                                                        <div class="dropdown-trigger">
+                                                            <button class="button has-text-grey" aria-haspopup="true"
+                                                                aria-controls="dropdown-menu">
+                                                                <span class="icon">
+                                                                    <i class="fas fa-plus-circle"></i>
+                                                                </span>
+                                                                <span>Add to collection</span>
+                                                                <span class="icon">
+                                                                    <i class="fas fa-angle-down"></i>
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                                            <div class="dropdown-content">
+                                                                <% myCollections.forEach((collection, index)=> { %>
+                                                                    <button type="submit" class="dropdown-item"
+                                                                        name="member_collection_id"
+                                                                        value="<%= collection.member_collection_id %>">
+                                                                        <%= collection.collection_name %>
+                                                                    </button>
+                                                                    <% }) %>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+
+                                                <% } %> <!--end of my collections are empty-->
+
+                                    </div>
+
+                                    <% } else { %>
+
+                                        <div class="has-text-centered">
+                                            <a class="button has-text-grey x" href="/login">
+                                                <span class="icon-text">
+                                                    <span class="icon">
+                                                        <i class="fas fa-plus-circle"></i>
+                                                    </span>
+                                                    <span>Add to collection</span>
+                                                </span>
+                                            </a>
+                                        </div>
+
+                                        <% } %> <!--end of if authenticated-->
+
+                            </div> <!--end of column-->
+                            <% }) %> <!--end of card for loop-->
+                    </div> <!--end of columns-->
+                    <% } %> <!--end of collection is empty-->
+        </div> <!--end of container-->
+    </section> <!--end of section-->
 
     <script>
-        const collectionDropdown = document.getElementById('collection-dropdown');
 
-        collectionDropdown.addEventListener('click', (event) => {
-            collectionDropdown.classList.toggle('is-active');
-            event.stopPropagation();
-        });
+        //ensures that the JS executes only after the DOM content has been fully loaded and parsed
+        document.addEventListener('DOMContentLoaded', function () {
 
-        document.body.addEventListener('click', (event) => {
-            if (!collectionDropdown.contains(event.target)) {
-                collectionDropdown.classList.remove('is-active');
-            }
+            //selects all elements with the class dropdown and store them in a NodeList called dropdowns
+            const dropdowns = document.querySelectorAll('.dropdown');
+
+            //iterate over each dropdown element in the dropdowns NodeList
+            dropdowns.forEach(function (dropdown) {
+
+                //selects the dropdown trigger button within the current dropdown element
+                const trigger = dropdown.querySelector('.dropdown-trigger');
+
+                //selects the dropdown menu within the current dropdown element
+                const menu = dropdown.querySelector('.dropdown-menu');
+
+                //listen for clicks on the dropdown trigger button
+                trigger.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    dropdown.classList.toggle('is-active');
+                });
+
+                //listen for clicks anywhere in the document
+                document.addEventListener('click', function (event) {
+                    const isClickInside = dropdown.contains(event.target);
+                    if (!isClickInside) {
+                        dropdown.classList.remove('is-active');
+                    }
+                });
+            });
         });
     </script>
 

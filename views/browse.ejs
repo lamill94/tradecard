@@ -100,7 +100,7 @@
 
                                     <% } else { %>
 
-                                        <form action="/collection" method="POST">
+                                        <form action="/collection?redirect=browse" method="POST">
                                             <input type="hidden" name="card_id" value="<%= card.card_id %>">
                                             <div class="dropdown" id="collection-dropdown">
                                                 <div class="dropdown-trigger">
@@ -129,7 +129,7 @@
                                             </div>
                                         </form>
 
-                                        <% } %>
+                                        <% } %> <!--end of my collections are empty-->
 
                             </div>
 
@@ -146,13 +146,13 @@
                                     </a>
                                 </div>
 
-                                <% } %>
+                                <% } %> <!--end of if authenticated-->
 
-                    </div>
-                    <% }) %>
-            </div>
-        </div>
-    </section>
+                    </div> <!--end of column-->
+                    <% }) %> <!--end of card for loop-->
+            </div> <!--end of columns-->
+        </div> <!--end of container-->
+    </section> <!--end of section-->
 
     <script>
 
@@ -188,6 +188,7 @@
             });
         });
     </script>
+
 </body>
 
 </html>
