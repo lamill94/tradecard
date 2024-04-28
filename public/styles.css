@@ -41,11 +41,6 @@ body {
     overflow-y: auto;
 }
 
-/*.dropdown-item {
-    background-color: white;
+.button.has-text-grey.create-collection {
     border: none;
-}
-
-.dropdown-item:hover {
-    background-color: lightgray;
 }

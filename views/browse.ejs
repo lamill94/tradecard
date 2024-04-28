@@ -69,37 +69,85 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="dropdown-wrapper">
-                            <form action="/collection" method="POST">
-                                <input type="hidden" name="card_id" value="<%= card.card_id %>">
-                                <div class="dropdown" id="collection-dropdown">
-                                    <div class="dropdown-trigger">
-                                        <button class="button has-text-grey" aria-haspopup="true"
-                                            aria-controls="dropdown-menu">
+
+                        <% if (isAuthenticated) { %>
+
+                            <div class="dropdown-wrapper">
+
+                                <% if (myCollections.length===0) { %>
+
+                                    <div class="dropdown" id="collection-dropdown">
+                                        <div class="dropdown-trigger">
+                                            <button class="button has-text-grey" aria-haspopup="true"
+                                                aria-controls="dropdown-menu">
+                                                <span class="icon">
+                                                    <i class="fas fa-plus-circle"></i>
+                                                </span>
+                                                <span>Add to collection</span>
+                                                <span class="icon">
+                                                    <i class="fas fa-angle-down"></i>
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                            <div class="dropdown-content py-0">
+                                                <a class="button has-text-grey create-collection" href="/collections">
+                                                    Create collection
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <% } else { %>
+
+                                        <form action="/collection" method="POST">
+                                            <input type="hidden" name="card_id" value="<%= card.card_id %>">
+                                            <div class="dropdown" id="collection-dropdown">
+                                                <div class="dropdown-trigger">
+                                                    <button class="button has-text-grey" aria-haspopup="true"
+                                                        aria-controls="dropdown-menu">
+                                                        <span class="icon">
+                                                            <i class="fas fa-plus-circle"></i>
+                                                        </span>
+                                                        <span>Add to collection</span>
+                                                        <span class="icon">
+                                                            <i class="fas fa-angle-down"></i>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                                <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                                    <div class="dropdown-content">
+                                                        <% myCollections.forEach((collection, index)=> { %>
+                                                            <button type="submit" class="dropdown-item"
+                                                                name="member_collection_id"
+                                                                value="<%= collection.member_collection_id %>">
+                                                                <%= collection.collection_name %>
+                                                            </button>
+                                                            <% }) %>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                        <% } %>
+
+                            </div>
+
+                            <% } else { %>
+
+                                <div class="has-text-centered">
+                                    <a class="button has-text-grey x" href="/login">
+                                        <span class="icon-text">
                                             <span class="icon">
                                                 <i class="fas fa-plus-circle"></i>
                                             </span>
                                             <span>Add to collection</span>
-                                            <span class="icon">
-                                                <i class="fas fa-angle-down"></i>
-                                            </span>
-                                        </button>
-                                    </div>
-                                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                                        <div class="dropdown-content">
-                                            <% myCollections.forEach((collection, index)=> { %>
-                                                <!--<input type="hidden" name="member_collection_id" value="<%= collection.member_collection_id %>">
-                                                    <input type="submit" class="dropdown-item" value="<%= collection.collection_name %>">-->
-                                                <button type="submit" class="dropdown-item" name="member_collection_id"
-                                                    value="<%= collection.member_collection_id %>">
-                                                    <%= collection.collection_name %>
-                                                </button>
-                                                <% }) %>
-                                        </div>
-                                    </div>
+                                        </span>
+                                    </a>
                                 </div>
-                            </form>
-                        </div>
+
+                                <% } %>
+
                     </div>
                     <% }) %>
             </div>

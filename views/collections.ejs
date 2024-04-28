@@ -56,7 +56,7 @@
                                                                 <span class="icon">
                                                                     <i class="fas fa-plus-circle"></i>
                                                                 </span>
-                                                                <span>New collection</span>
+                                                                <span>Create collection</span>
                                                             </span>
                                                         </button>
                                                     </div>
@@ -72,20 +72,24 @@
                                             </h1>
 
                                             <div class="block">
-                                                <table class="table is-bordered is-striped">
-                                                    <tbody>
-                                                        <% myCollections.forEach((collection, index)=> { %>
-                                                            <tr>
-                                                                <td>
-                                                                    <a
-                                                                        href="/collection?member_collection_id=<%=collection.member_collection_id%>">
-                                                                        <%= collection.collection_name %>
-                                                                    </a>
-                                                                </td>
-                                                            </tr>
-                                                            <% }) %>
-                                                    </tbody>
-                                                </table>
+                                                <% if (myCollections.length===0) { %>
+                                                    <p>You currently have no Collections.</p>
+                                                    <% } else { %>
+                                                        <table class="table is-bordered is-striped">
+                                                            <tbody>
+                                                                <% myCollections.forEach((collection, index)=> { %>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <a
+                                                                                href="/collection?member_collection_id=<%=collection.member_collection_id%>">
+                                                                                <%= collection.collection_name %>
+                                                                            </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <% }) %>
+                                                            </tbody>
+                                                        </table>
+                                                        <% } %>
                                             </div>
 
                                         </div>
