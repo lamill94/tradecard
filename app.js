@@ -15,7 +15,6 @@ const accountRoute = require('./routes/accountRoute');
 const collectionsRoute = require('./routes/collectionsRoute');
 const collectionRoute = require('./routes/collectionRoute');
 
-
 //create instance of the express application
 const app = express();
 
