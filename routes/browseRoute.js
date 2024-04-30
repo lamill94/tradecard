@@ -62,8 +62,9 @@ router.get("/browse", (req, res) => {
     const minMarketPriceFilter = req.query.min_market_price;
     const maxMarketPriceFilter = req.query.max_market_price;
     const sort = req.query.sort;
+    const search = req.query.search;
 
-    //push filter clauses to the filterClauses array
+    //push filter clauses & search to the filterClauses array
     let filterClauses = [];
 
     if (minHpFilter && maxHpFilter) {
@@ -115,6 +116,10 @@ router.get("/browse", (req, res) => {
         filterClauses.push(`market_price >= ${minMarketPriceFilter}`);
     } else if (maxMarketPriceFilter) {
         filterClauses.push(`market_price <= ${maxMarketPriceFilter}`);
+    }
+
+    if (search) {
+        filterClauses.push(`card_name LIKE '%${search}%'`);
     }
 
     //combine all filter clauses into a single WHERE clause

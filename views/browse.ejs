@@ -43,6 +43,8 @@
                     <input type="hidden" name="<%= req.query.max_market_price ? 'max_market_price' : '' %>"
                         value="<%=req.query.max_market_price%>">
 
+                    <input type="hidden" name="<%= req.query.search ? 'search' : '' %>" value="<%=req.query.search%>">
+
                     <div class="dropdown" id="browse-dropdown">
                         <div class="dropdown-trigger">
                             <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
@@ -55,11 +57,15 @@
                         <div class="dropdown-menu" id="dropdown-menu" role="menu">
                             <div class="dropdown-content">
                                 <button type="submit" name="sort" value="release_date,card_number"
-                                    class="dropdown-item">Card Number</button>
-                                <button type="submit" name="sort" value="card_name" class="dropdown-item">Card Name
+                                    class="dropdown-item">Card number</button>
+                                <button type="submit" name="sort" value="card_name" class="dropdown-item">Card name
                                     (A-Z)</button>
-                                <button type="submit" name="sort" value="card_name DESC" class="dropdown-item">Card Name
+                                <button type="submit" name="sort" value="card_name DESC" class="dropdown-item">Card name
                                     (Z-A)</button>
+                                <button type="submit" name="sort" value="market_price" class="dropdown-item">Market price
+                                    (asc)</button>
+                                <button type="submit" name="sort" value="market_price DESC" class="dropdown-item">Market price
+                                    (desc)</button>
                             </div>
                         </div>
                     </div>
@@ -74,16 +80,42 @@
                     </span>
                 </a>
 
-                <div class="field has-addons ml-3">
-                    <div class="control">
-                        <input class="input" type="text" placeholder="Find a repository">
+                <form action="/browse" method="GET">
+
+                    <input type="hidden" name="<%= req.query.sort ? 'sort' : '' %>" value="<%=req.query.sort%>">
+
+                    <input type="hidden" name="<%= req.query.min_hp ? 'min_hp' : '' %>" value="<%=req.query.min_hp%>">
+                    <input type="hidden" name="<%= req.query.max_hp ? 'max_hp' : '' %>" value="<%=req.query.max_hp%>">
+                    <input type="hidden" name="<%= req.query.energy_type ? 'energy_type[]' : '' %>"
+                        value="<%=req.query.energy_type%>">
+                    <input type="hidden" name="<%= req.query.stage ? 'stage[]' : '' %>" value="<%=req.query.stage%>">
+                    <input type="hidden" name="<%= req.query.weakness_energy_type ? 'weakness_energy_type[]' : '' %>"
+                        value="<%=req.query.weakness_energy_type%>">
+                    <input type="hidden"
+                        name="<%= req.query.resistance_energy_type ? 'resistance_energy_type[]' : '' %>"
+                        value="<%=req.query.resistance_energy_type%>">
+                    <input type="hidden" name="<%= req.query.retreat_cost ? 'retreat_cost[]' : '' %>"
+                        value="<%=req.query.retreat_cost%>">
+                    <input type="hidden" name="<%= req.query.expansion_name ? 'expansion_name[]' : '' %>"
+                        value="<%=req.query.expansion_name%>">
+                    <input type="hidden" name="<%= req.query.rarity_name ? 'rarity_name[]' : '' %>"
+                        value="<%=req.query.rarity_name%>">
+                    <input type="hidden" name="<%= req.query.min_market_price ? 'min_market_price' : '' %>"
+                        value="<%=req.query.min_market_price%>">
+                    <input type="hidden" name="<%= req.query.max_market_price ? 'max_market_price' : '' %>"
+                        value="<%=req.query.max_market_price%>">
+
+                    <div class="field has-addons ml-3">
+                        <div class="control">
+                            <input class="input" type="text" name="search" placeholder="Search cards...">
+                        </div>
+                        <div class="control">
+                            <button type="submit" class="button is-info">
+                                Search
+                            </button>
+                        </div>
                     </div>
-                    <div class="control">
-                        <button class="button is-info">
-                            Search
-                        </button>
-                    </div>
-                </div>
+                </form>
 
             </div>
 
@@ -92,6 +124,9 @@
                     <form action="/browse" method="GET">
 
                         <input type="hidden" name="<%= req.query.sort ? 'sort' : '' %>" value="<%=req.query.sort%>">
+
+                        <input type="hidden" name="<%= req.query.search ? 'search' : '' %>"
+                            value="<%=req.query.search%>">
 
                         <div class="block">
                             <h1 class="pb-1"><strong>Hit Point</strong></h1>
@@ -255,7 +290,7 @@
                                 </a>
                             </div>
                             <div class="card-content pt-0 pb-2">
-                                <div class="columns is-vcentered">
+                                <div class="columns is-vcentered is-mobile">
                                     <div class="column is-three-quarters">
                                         <p class="has-text-grey is-size-7">
                                             <span class="title is-size-7 has-text-grey">
@@ -264,7 +299,7 @@
                                             <%= card.card_number %>/<%= card.total_cards %>
                                         </p>
                                     </div>
-                                    <div class="column">
+                                    <div class="column is-one-quarter">
                                         <p class="has-text-right">
                                             <a class="has-text-grey" href="">
                                                 <span class="icon-text">

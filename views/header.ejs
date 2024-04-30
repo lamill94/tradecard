@@ -32,7 +32,7 @@
                     Browse Cards
                 </a>
 
-                <a class="navbar-item">
+                <a class="navbar-item" href="/expansions">
                     Expansions
                 </a>
 
@@ -40,51 +40,61 @@
                     Collections
                 </a>
 
-                <!-- On mobile devices, display a link instead of button -->
-                <div class="is-hidden-desktop">
+                <% if (isAuthenticated) { %>
 
-                    <% if (isAuthenticated) { %>
+                    <a class="navbar-item" href="/wishlist">
+                        Wishlist
+                    </a>
 
-                        <a class="navbar-item" href="/account">
-                            <span class="icon-text">
-                                <span class="icon">
-                                    <i class="fas fa-user"></i>
-                                </span>
-                                <span><%= displayName %></span>
-                            </span>
-                        </a>
+                    <% } %>
 
-                        <a class="navbar-item" href="/logout">
-                            <span class="icon-text">
-                                <span class="icon">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                </span>
-                                <span>Log out</span>
-                            </span>
-                        </a>
+                        <!-- On mobile devices, display a link instead of button -->
+                        <div class="is-hidden-desktop">
 
-                        <% } else { %>
+                            <% if (isAuthenticated) { %>
 
-                            <a class="navbar-item" href="/signup">
-                                <span class="icon-text">
-                                    <span class="icon">
-                                        <i class="fas fa-user-plus"></i>
+                                <a class="navbar-item" href="/account">
+                                    <span class="icon-text">
+                                        <span class="icon">
+                                            <i class="fas fa-user"></i>
+                                        </span>
+                                        <span>
+                                            <%= displayName %>
+                                        </span>
                                     </span>
-                                    <span>Sign up</span>
-                                </span>
-                            </a>
+                                </a>
 
-                            <a class="navbar-item" href="/login">
-                                <span class="icon-text">
-                                    <span class="icon">
-                                        <i class="fas fa-sign-in-alt"></i>
+                                <a class="navbar-item" href="/logout">
+                                    <span class="icon-text">
+                                        <span class="icon">
+                                            <i class="fas fa-sign-out-alt"></i>
+                                        </span>
+                                        <span>Log out</span>
                                     </span>
-                                    <span>Log in</span>
-                                </span>
-                            </a>
+                                </a>
 
-                            <% } %>
-                </div>
+                                <% } else { %>
+
+                                    <a class="navbar-item" href="/signup">
+                                        <span class="icon-text">
+                                            <span class="icon">
+                                                <i class="fas fa-user-plus"></i>
+                                            </span>
+                                            <span>Sign up</span>
+                                        </span>
+                                    </a>
+
+                                    <a class="navbar-item" href="/login">
+                                        <span class="icon-text">
+                                            <span class="icon">
+                                                <i class="fas fa-sign-in-alt"></i>
+                                            </span>
+                                            <span>Log in</span>
+                                        </span>
+                                    </a>
+
+                                    <% } %>
+                        </div>
 
             </div>
 
@@ -96,12 +106,14 @@
 
                         <% if (isAuthenticated) { %>
 
-                            <a class="button is-primary" href="/account">
+                            <a class="button is-info" href="/account">
                                 <span class="icon-text">
                                     <span class="icon">
                                         <i class="fas fa-user"></i>
                                     </span>
-                                    <span><strong><%= displayName %></strong></span>
+                                    <span><strong>
+                                            <%= displayName %>
+                                        </strong></span>
                                 </span>
                             </a>
 
@@ -116,7 +128,7 @@
 
                             <% } else { %>
 
-                                <a class="button is-primary" href="/signup">
+                                <a class="button is-info" href="/signup">
                                     <span class="icon-text">
                                         <span class="icon">
                                             <i class="fas fa-user-plus"></i>
