@@ -29,12 +29,101 @@
                 </div>
                 <div class="dropdown-menu" id="dropdown-menu" role="menu">
                     <div class="dropdown-content">
-                        <a href="/browse/sort?sort=release_date ASC,card_number ASC" class="dropdown-item">Card
+                        <a href="/browse?sort=release_date,card_number" class="dropdown-item">Card
                             Number</a>
-                        <a href="/browse/sort?sort=card_name" class="dropdown-item">Card Name (A-Z)</a>
-                        <a href="/browse/sort?sort=card_name DESC" class="dropdown-item">Card Name (Z-A)</a>
+                        <a href="/browse?sort=card_name" class="dropdown-item">Card Name (A-Z)</a>
+                        <a href="/browse?sort=card_name DESC" class="dropdown-item">Card Name (Z-A)</a>
                     </div>
                 </div>
+            </div>
+
+            <a class="button filter-button">
+                <span class="icon-text">
+                    <span class="icon">
+                        <i class="fas fa-filter"></i>
+                    </span>
+                    <span>Filter</span>
+                </span>
+            </a>
+
+            <div class="filter-menu-container">
+                <section class="section px-5 py-4">
+                    <form action="/browse" method="GET">
+
+                        <div class="block">
+                            <h1 class="pb-1"><strong>Hit Point</strong></h1>
+
+                            <div class="field is-horizontal">
+                                <div class="field-body">
+                                    <div class="field is-narrow">
+                                        <div class="control">
+                                            <input class="input" type="text" name="min_hp" placeholder="Min: <%=hp[0].min_hp%>">
+                                        </div>
+                                    </div>
+                                    <div class="field is-narrow hyphen-container">
+                                            <span class="hyphen">-</span>
+                                    </div>
+                                    <div class="field is-narrow">
+                                        <div class="control">
+                                            <input class="input" type="text" name="max_hp" placeholder="Max: <%=hp[0].max_hp%>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="block">
+                            <h1 class="pb-1"><strong>Energy Type</strong></h1>
+                            <% energyTypes.forEach((energy_type, index)=> { %>
+                                <label class="mr-2">
+                                    <input type="checkbox" name="energy_type[]"
+                                        value="<%=energy_type.energy_type_name%>">
+                                    <img src="<%=energy_type.energy_type_url%>" class="energy-type-image">
+                                    <%=energy_type.energy_type_name%>
+                                </label>
+                                <% }) %>
+                        </div>
+
+                        <div class="block">
+                            <h1 class="pb-1"><strong>Stage</strong></h1>
+                            <% stages.forEach((stage, index)=> { %>
+                                <label class="mr-2">
+                                    <input type="checkbox" name="stage[]" value="<%=stage.stage%>">
+                                    <%=stage.stage%>
+                                </label>
+                                <% }) %>
+                        </div>
+
+                        <div class="block">
+                            <h1 class="pb-1"><strong>Weakness</strong></h1>
+                            <% energyTypes.forEach((energy_type, index)=> { %>
+                                <label class="mr-2">
+                                    <input type="checkbox" name="weakness_energy_type[]"
+                                        value="<%=energy_type.energy_type_name%>">
+                                    <img src="<%=energy_type.energy_type_url%>" class="energy-type-image">
+                                    <%=energy_type.energy_type_name%>
+                                </label>
+                                <% }) %>
+                        </div>
+
+                        <div class="block">
+                            <h1 class="pb-1"><strong>Resistance</strong></h1>
+                            <% energyTypes.forEach((energy_type, index)=> { %>
+                                <label class="mr-2">
+                                    <input type="checkbox" name="resistance_energy_type[]"
+                                        value="<%=energy_type.energy_type_name%>">
+                                    <img src="<%=energy_type.energy_type_url%>" class="energy-type-image">
+                                    <%=energy_type.energy_type_name%>
+                                </label>
+                                <% }) %>
+                        </div>
+
+                        <div>
+                            <button type="submit" class="button is-primary">Apply Filters</button>
+                        </div>
+                    </form>
+                </section>
             </div>
 
             <div class="columns mt-5 is-multiline is-variable is-centered">
@@ -187,6 +276,17 @@
                 });
             });
         });
+
+        //JS for the filter menu
+        document.addEventListener('DOMContentLoaded', function () {
+            const filterButton = document.querySelector('.filter-button');
+            const filterMenuContainer = document.querySelector('.filter-menu-container');
+
+            filterButton.addEventListener('click', function () {
+                filterMenuContainer.classList.toggle('show');
+            });
+        });
+
     </script>
 
 </body>

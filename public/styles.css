@@ -44,4 +44,34 @@ body {
     align-items: center;
 }
 
+.filter-menu-container {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid lightgray;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
 
+.filter-menu-container:not(.show) {
+    display: none;
+}
+
+.field.is-horizontal .field-body {
+    display: flex;
+}
+
+.hyphen-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .hyphen-container {
+        margin: 0 5px;
+    }
+}

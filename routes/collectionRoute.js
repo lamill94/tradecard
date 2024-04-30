@@ -36,6 +36,17 @@ router.get("/collection", (req, res) => {
 
     const memberCollectionId = req.query.member_collection_id;
     const memberid = req.session.memberid;
+    const sort = req.query.sort;
+
+    if (sort) {
+        if (Array.isArray(sort)) {
+            orderByClause = `ORDER BY ${sort[0]}, ${sort[1]}`;
+        } else {
+            orderByClause = `ORDER BY ${sort}`;
+        }
+    } else {
+        orderByClause = `ORDER BY release_date, card_number`;
+    }
 
     const cardsInCollectionSql = `SELECT member_collection_id, display_name, collection_name, card.card_id AS 'card_id', 
    card_name, hp, a.energy_type_name, a.energy_type_url, stage, evolves_from, b.energy_type_name AS 
@@ -55,7 +66,7 @@ router.get("/collection", (req, res) => {
    INNER JOIN expansion ON card.expansion_id = expansion.expansion_id
    INNER JOIN rarity ON card.rarity_id = rarity.rarity_id
    WHERE member_collection_id = ?
-   ORDER BY release_date, card_number ASC`;
+   ${orderByClause}`;
 
     connection.query(cardsInCollectionSql, [memberCollectionId], (err, rows) => {
         if (err) throw err;
