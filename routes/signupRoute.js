@@ -28,27 +28,43 @@ connection.getConnection((err) => {
 
 //set up a route handler for HTTP GET requests to the "/signup" endpoint
 router.get("/signup", (req, res) => {
-    res.render('signup', { userExistsNotification: false, emptyFieldNotification: false, isAuthenticated: req.session.authen });
+    res.render('signup', {
+        userExistsNotification: false, emptyFieldNotification: false,
+        isAuthenticated: req.session.authen
+    });
 });
 
 //set up a route handler for HTTP POST requests to the "/signup" endpoint
 router.post('/signup', (req, res) => {
+
+    //get entered fields
     const displayname = req.body.displayNameField;
     const useremail = req.body.emailField;
     const password = req.body.passwordField;
 
+    //if at least one field isn't populated then show empty field notification
     if (!displayname || !useremail || !password) {
-        return res.render('signup', { emptyFieldNotification: true, userExistsNotification: false, isAuthenticated: req.session.authen });
+        return res.render('signup', {
+            emptyFieldNotification: true, userExistsNotification: false,
+            isAuthenticated: req.session.authen
+        });
     }
 
+    //sql query to get all member info where email address is equal to sign up email address
     const checkuser = `SELECT * FROM member WHERE email_address = "${useremail}"`;
 
     connection.query(checkuser, (err, rows) => {
         if (err) throw err;
         const numRows = rows.length;
 
+        //if email address exists then show user exists notification
         if (numRows > 0) {
-            res.render('signup', { userExistsNotification: true, emptyFieldNotification: false, isAuthenticated: req.session.authen });
+            res.render('signup', {
+                userExistsNotification: true, emptyFieldNotification: false,
+                isAuthenticated: req.session.authen
+            });
+
+            //else if user doesn't exist then hash the signup password using bcrypt
         } else {
             bcrypt.hash(password, 10, (err, hash) => {
                 if (err) {
@@ -56,11 +72,14 @@ router.post('/signup', (req, res) => {
                     return;
                 }
 
+                //insert signup details into SQL database
                 const createsql = `INSERT INTO member (display_name, email_address, password) VALUES( ? , ? , ?);`;
 
                 connection.query(createsql, [displayname, useremail, hash], (err, rows) => {
                     if (err) throw err;
 
+                    //select all member details from new member to set session to true and to set their display 
+                    //name and memberid for use
                     const checkuser = `SELECT * FROM member WHERE email_address = "${useremail}"`;
 
                     connection.query(checkuser, (err, rows) => {

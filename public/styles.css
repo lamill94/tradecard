@@ -23,6 +23,10 @@ body {
     color: red;
 }
 
+.empty-wishlist-message {
+    color: red;
+}
+
 .dropdown-wrapper {
     display: flex;
     justify-content: center;
