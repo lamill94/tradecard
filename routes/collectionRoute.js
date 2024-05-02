@@ -46,6 +46,10 @@ const rarityQuery = `SELECT * FROM rarity`;
 const marketPriceQuery = `SELECT MIN(market_price) AS 'min_market_price', MAX(market_price) AS 'max_market_price' 
 FROM card`;
 
+const wishlistQuery = `SELECT * FROM wishlist 
+INNER JOIN wishlist_card ON wishlist.wishlist_id = wishlist_card.wishlist_id
+WHERE member_id = ?`;
+
 //set up a route handler for HTTP GET requests to the "/collection" endpoint
 router.get("/collection", (req, res) => {
 
@@ -138,25 +142,26 @@ router.get("/collection", (req, res) => {
     }
 
     //query to render the cards including whereClause & orderByClause
-    const cardsInCollectionSql = `SELECT member_collection_id, display_name, collection_name, card.card_id AS 'card_id', 
-   card_name, hp, a.energy_type_name, a.energy_type_url, stage, evolves_from, b.energy_type_name AS 
-   'weakness_energy_type_name', b.energy_type_url AS 'weakness_energy_type_url', c.energy_type_name AS 
-   'resistance_energy_type_name', c.energy_type_url AS 'resistance_energy_type_url', resistance_number, 
-   d.energy_type_url AS 'retreat_energy_type_url', retreat_cost, expansion_name, total_cards, expansion_url, 
-   release_date, card_number, rarity_name, market_price, image_url FROM member_collection
-   INNER JOIN member ON member_collection.member_id = member.member_id
-   INNER JOIN collection ON member_collection.collection_id = collection.collection_id
-   INNER JOIN collection_card ON collection.collection_id = collection_card.collection_id
-   INNER JOIN card ON collection_card.card_id = card.card_id
-   INNER JOIN energy_type a ON card.energy_type_id = a.energy_type_id
-   INNER JOIN stage ON card.stage_id = stage.stage_id
-   INNER JOIN energy_type b ON card.weakness_energy_type_id = b.energy_type_id
-   INNER JOIN energy_type c ON card.resistance_energy_type_id = c.energy_type_id
-   INNER JOIN energy_type d ON card.retreat_energy_type_id = d.energy_type_id
-   INNER JOIN expansion ON card.expansion_id = expansion.expansion_id
-   INNER JOIN rarity ON card.rarity_id = rarity.rarity_id
-   ${whereClause}
-   ${orderByClause}`;
+    const cardsInCollectionSql = `SELECT member_collection_id, member_collection.member_id AS 'member_id', 
+    display_name, collection_name, card.card_id AS 'card_id', card_name, hp, a.energy_type_name, a.energy_type_url, 
+    stage, evolves_from, b.energy_type_name AS 'weakness_energy_type_name', 
+    b.energy_type_url AS 'weakness_energy_type_url', c.energy_type_name AS 'resistance_energy_type_name', 
+    c.energy_type_url AS 'resistance_energy_type_url', resistance_number, 
+    d.energy_type_url AS 'retreat_energy_type_url', retreat_cost, expansion_name, total_cards, expansion_url, 
+    release_date, card_number, rarity_name, market_price, image_url FROM member_collection
+    INNER JOIN member ON member_collection.member_id = member.member_id
+    INNER JOIN collection ON member_collection.collection_id = collection.collection_id
+    INNER JOIN collection_card ON collection.collection_id = collection_card.collection_id
+    INNER JOIN card ON collection_card.card_id = card.card_id
+    INNER JOIN energy_type a ON card.energy_type_id = a.energy_type_id
+    INNER JOIN stage ON card.stage_id = stage.stage_id
+    INNER JOIN energy_type b ON card.weakness_energy_type_id = b.energy_type_id
+    INNER JOIN energy_type c ON card.resistance_energy_type_id = c.energy_type_id
+    INNER JOIN energy_type d ON card.retreat_energy_type_id = d.energy_type_id
+    INNER JOIN expansion ON card.expansion_id = expansion.expansion_id
+    INNER JOIN rarity ON card.rarity_id = rarity.rarity_id
+    ${whereClause}
+    ${orderByClause}`;
 
     //execute queries for cards, collections & filters
     connection.query(cardsInCollectionSql, (err, rows) => {
@@ -165,59 +170,63 @@ router.get("/collection", (req, res) => {
         //check if collection is empty
         const isEmptyCollection = rows.length === 0;
 
-        //query for user's collections in dropdown
-        connection.query(myCollectionsQuery, [memberid], (err, myCollections) => {
-            if (err) throw err;
+        //if collection is empty then nothing is returned so run another query to get 
+        //collection details such as collection_name
+        if (isEmptyCollection) {
 
-            //if collection is empty then nothing is returned so run another query to get 
-            //collection details such as collection_name
-            if (isEmptyCollection) {
-
-                const readsql = `SELECT * FROM member_collection
+            const readsql = `SELECT * FROM member_collection
                 INNER JOIN member ON member_collection.member_id = member.member_id
                 INNER JOIN collection ON member_collection.collection_id = collection.collection_id
                 WHERE member_collection_id = ?`;
 
-                connection.query(readsql, [memberCollectionId], (err, rows) => {
-                    if (err) throw err;
+            connection.query(readsql, [memberCollectionId], (err, rows) => {
+                if (err) throw err;
 
-                    res.render('collection', {
-                        rowdata: rows, myCollections: myCollections, isEmptyCollection: isEmptyCollection,
-                        isAuthenticated: req.session.authen, displayName: req.session.displayName
-                    });
+                res.render('collection', {
+                    rowdata: rows, isEmptyCollection: isEmptyCollection,
+                    isAuthenticated: req.session.authen, displayName: req.session.displayName
                 });
+            });
 
-                //else if collection isn't empty then render as normal
-            } else {
+            //else if collection isn't empty then render as normal
+        } else {
 
-                connection.query(hpQuery, (err, hp) => {
+            connection.query(myCollectionsQuery, [memberid], (err, myCollections) => {
+                if (err) throw err;
+
+                connection.query(wishlistQuery, [memberid], (err, myWishlist) => {
                     if (err) throw err;
 
-                    connection.query(energyTypeQuery, (err, energyTypes) => {
+                    connection.query(hpQuery, (err, hp) => {
                         if (err) throw err;
 
-                        connection.query(stageQuery, (err, stages) => {
+                        connection.query(energyTypeQuery, (err, energyTypes) => {
                             if (err) throw err;
 
-                            connection.query(retreatCostQuery, (err, retreatCosts) => {
+                            connection.query(stageQuery, (err, stages) => {
                                 if (err) throw err;
 
-                                connection.query(expansionQuery, (err, expansions) => {
+                                connection.query(retreatCostQuery, (err, retreatCosts) => {
                                     if (err) throw err;
 
-                                    connection.query(rarityQuery, (err, rarities) => {
+                                    connection.query(expansionQuery, (err, expansions) => {
                                         if (err) throw err;
 
-                                        connection.query(marketPriceQuery, (err, marketPrices) => {
+                                        connection.query(rarityQuery, (err, rarities) => {
                                             if (err) throw err;
 
-                                            res.render('collection', {
-                                                req: req, rowdata: rows, hp: hp, energyTypes: energyTypes,
-                                                stages: stages, retreatCosts: retreatCosts, expansions: expansions,
-                                                rarities: rarities, marketPrices: marketPrices,
-                                                myCollections: myCollections, isEmptyCollection: isEmptyCollection,
-                                                isAuthenticated: req.session.authen,
-                                                displayName: req.session.displayName
+                                            connection.query(marketPriceQuery, (err, marketPrices) => {
+                                                if (err) throw err;
+
+                                                res.render('collection', {
+                                                    req: req, rowdata: rows, hp: hp, myCollections: myCollections,
+                                                    myWishlist: myWishlist, energyTypes: energyTypes, stages: stages,
+                                                    retreatCosts: retreatCosts, expansions: expansions,
+                                                    rarities: rarities, marketPrices: marketPrices,
+                                                    isEmptyCollection: isEmptyCollection,
+                                                    isAuthenticated: req.session.authen,
+                                                    displayName: req.session.displayName
+                                                });
                                             });
                                         });
                                     });
@@ -226,8 +235,8 @@ router.get("/collection", (req, res) => {
                         });
                     });
                 });
-            }
-        });
+            });
+        }
     });
 });
 

@@ -310,17 +310,18 @@
 
                                         <% if (isAuthenticated) { %>
 
-                                            <form action="/wishlist?redirect=browse" method="POST">
-                                                <input type="hidden" name="card_id" value="<%= card.card_id %>">
-                                                <% if (myWishlist.some(item=> item.card_id === card.card_id)) { %>
-                                                    <button type="submit" class="has-text-grey">
-                                                        <span class="icon-text ml-1">
-                                                            <span class="icon">
-                                                                <i class="fas fa-heart"></i>
-                                                            </span>
+                                            <% if (myWishlist.some(item=> item.card_id === card.card_id)) { %>
+                                                <!--could do delete request here to remove from wishlist-->
+                                                <a class="has-text-grey">
+                                                    <span class="icon-text ml-1">
+                                                        <span class="icon">
+                                                            <i class="fas fa-heart"></i>
                                                         </span>
-                                                    </button>
-                                                    <% } else { %>
+                                                    </span>
+                                                </a>
+                                                <% } else { %>
+                                                    <form action="/wishlist?redirect=browse" method="POST">
+                                                        <input type="hidden" name="card_id" value="<%= card.card_id %>">
                                                         <button type="submit" class="has-text-grey">
                                                             <span class="icon-text ml-1">
                                                                 <span class="icon">
@@ -328,20 +329,20 @@
                                                                 </span>
                                                             </span>
                                                         </button>
-                                                        <% } %>
-                                            </form>
+                                                    </form>
+                                                    <% } %>
 
-                                            <% } else { %>
+                                                        <% } else { %>
 
-                                                <a class="has-text-grey" href="/login">
-                                                    <span class="icon-text ml-1">
-                                                        <span class="icon">
-                                                            <i class="far fa-heart"></i>
-                                                        </span>
-                                                    </span>
-                                                </a>
+                                                            <a class="has-text-grey" href="/login">
+                                                                <span class="icon-text ml-1">
+                                                                    <span class="icon">
+                                                                        <i class="far fa-heart"></i>
+                                                                    </span>
+                                                                </span>
+                                                            </a>
 
-                                                <% } %>
+                                                            <% } %>
                                     </div>
                                 </div>
                             </div>
