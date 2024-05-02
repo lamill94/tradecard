@@ -46,7 +46,7 @@ const rarityQuery = `SELECT * FROM rarity`;
 const marketPriceQuery = `SELECT MIN(market_price) AS 'min_market_price', MAX(market_price) AS 'max_market_price' 
 FROM card`;
 
-//set up a route handler for HTTP GET requests to the "/browse" endpoint
+//set up a route handler for HTTP GET requests to the "/wishlist" endpoint
 router.get("/wishlist", (req, res) => {
 
     const memberid = req.session.memberid;
@@ -197,6 +197,42 @@ router.get("/wishlist", (req, res) => {
                     });
                 });
             });
+        });
+    });
+});
+
+//set up a route handler for HTTP POST requests to the "/wishlist" endpoint
+router.post('/wishlist', (req, res) => {
+
+    const memberid = req.session.memberid;
+    const memberCollectionId = req.body.member_collection_id;
+    const cardId = req.body.card_id;
+    const redirectPage = req.query.redirect;
+
+    //get the wishlist_id associated with the member_id
+    const checkWishlistId = `SELECT wishlist_id FROM wishlist 
+    WHERE member_id = ${memberid}`;
+
+    connection.query(checkWishlistId, (err, rows) => {
+        if (err) throw err;
+        const wishlistId = rows[0]['wishlist_id'];
+
+        //insert wishlist_id and card_id into the wishlist_card table
+        const addCardToWishlistSql = `INSERT INTO wishlist_card (wishlist_id, card_id) VALUES( ? , ? );`;
+
+        connection.query(addCardToWishlistSql, [wishlistId, cardId], (err, rows) => {
+            if (err) throw err;
+
+            //this needs fixed to take into account sort/filter/search for browse, collection & wishlist
+            if (redirectPage === 'browse') {
+                res.redirect('/browse');
+            } else if (redirectPage === 'collection') {
+                res.redirect(`/collection?member_collection_id=${memberCollectionId}`);
+            } else if (redirectPage === 'card') {
+                res.redirect(`/card?card_id=${cardId}`);
+            } else if (redirectPage === 'wishlist') {
+                res.redirect('/wishlist');
+            }
         });
     });
 });

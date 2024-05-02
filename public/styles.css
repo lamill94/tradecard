@@ -79,3 +79,16 @@ body {
         margin: 0 5px;
     }
 }
+
+.block.collection-wishlist {
+    display: flex;
+    align-items: center;
+}
+
+.section.home{
+    background-image: url('/wallpaper-1.png');
+    background-size: 1265px 475px;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 475px;
+}

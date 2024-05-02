@@ -310,7 +310,8 @@
 
                                         <% if (isAuthenticated) { %>
 
-                                            <form id="wishlistForm" action="/wishlist" method="POST">
+                                            <form action="/wishlist?redirect=browse" method="POST">
+                                                <input type="hidden" name="card_id" value="<%= card.card_id %>">
                                                 <button type="submit" class="has-text-grey">
                                                     <span class="icon-text ml-1">
                                                         <span class="icon">
