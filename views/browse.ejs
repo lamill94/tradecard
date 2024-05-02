@@ -13,6 +13,10 @@
 
     <header>
         <%- include('header')%>
+
+            <% function generateHiddenInputs(name, values) { if (values) { values.forEach(type=> { %>
+                <input type="hidden" name="<%= name %>[]" value="<%= type %>">
+                <% }); } } %>
     </header>
 
     <section class="section">
@@ -24,48 +28,48 @@
                 <!--form for sort-->
                 <form action="/browse" method="GET" class="mr-3">
 
-                    <% const sortQueryParameters=['min_hp', 'max_hp' , 'min_market_price' , 'max_market_price'
-                        , 'search' ]; sortQueryParameters.forEach(param=> { %>
+                    <% const sortQueryParams=['min_hp', 'max_hp' , 'min_market_price' , 'max_market_price' , 'search' ];
+                        sortQueryParams.forEach(param=> { %>
                         <input type="hidden" name="<%= req.query[param] ? param : '' %>"
                             value="<%= req.query[param] %>">
                         <% }); %>
 
-                            <% const sortArrayParameters=['energy_type', 'stage' , 'weakness_energy_type'
+                            <% const sortArrayParams=['energy_type', 'stage' , 'weakness_energy_type'
                                 , 'resistance_energy_type' , 'retreat_cost' , 'expansion_name' , 'rarity_name' ];
-                                sortArrayParameters.forEach(param=> { %>
-                                <input type="hidden" name="<%= req.query[param] ? param + '[]' : '' %>"
-                                    value="<%= req.query[param] %>">
-                                <% }); %>
+                                sortArrayParams.forEach(param=> generateHiddenInputs(param,
+                                req.query[param]));
+                                %>
 
-                                    <div class="dropdown" id="browse-dropdown">
-                                        <div class="dropdown-trigger">
-                                            <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                                                <span>Sort by</span>
-                                                <span class="icon is-small">
-                                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
-                                                </span>
-                                            </button>
-                                        </div>
-                                        <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                                            <div class="dropdown-content">
-                                                <button type="submit" name="sort" value="release_date,card_number"
-                                                    class="dropdown-item">Card number</button>
-                                                <button type="submit" name="sort" value="card_name"
-                                                    class="dropdown-item">Card
-                                                    name
-                                                    (A-Z)</button>
-                                                <button type="submit" name="sort" value="card_name DESC"
-                                                    class="dropdown-item">Card name
-                                                    (Z-A)</button>
-                                                <button type="submit" name="sort" value="market_price"
-                                                    class="dropdown-item">Market price
-                                                    (asc)</button>
-                                                <button type="submit" name="sort" value="market_price DESC"
-                                                    class="dropdown-item">Market price
-                                                    (desc)</button>
-                                            </div>
+                                <div class="dropdown" id="browse-dropdown">
+                                    <div class="dropdown-trigger">
+                                        <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                                            <span>Sort by</span>
+                                            <span class="icon is-small">
+                                                <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                        <div class="dropdown-content">
+                                            <button type="submit" name="sort" value="release_date,card_number"
+                                                class="dropdown-item">Card
+                                                number</button>
+                                            <button type="submit" name="sort" value="card_name"
+                                                class="dropdown-item">Card
+                                                name
+                                                (A-Z)</button>
+                                            <button type="submit" name="sort" value="card_name DESC"
+                                                class="dropdown-item">Card name
+                                                (Z-A)</button>
+                                            <button type="submit" name="sort" value="market_price"
+                                                class="dropdown-item">Market price
+                                                (asc)</button>
+                                            <button type="submit" name="sort" value="market_price DESC"
+                                                class="dropdown-item">Market price
+                                                (desc)</button>
                                         </div>
                                     </div>
+                                </div>
                 </form>
 
                 <!--filter button-->
@@ -81,30 +85,29 @@
                 <!--form for search-->
                 <form action="/browse" method="GET">
 
-                    <% const searchQueryParameters=['min_hp', 'max_hp' , 'min_market_price' , 'max_market_price'
-                        , 'sort' ]; searchQueryParameters.forEach(param=> { %>
+                    <% const searchQueryParams=['min_hp', 'max_hp' , 'min_market_price' , 'max_market_price' , 'sort' ];
+                        searchQueryParams.forEach(param=> { %>
                         <input type="hidden" name="<%= req.query[param] ? param : '' %>"
                             value="<%= req.query[param] %>">
                         <% }); %>
 
-                            <% const searchArrayParameters=['energy_type', 'stage' , 'weakness_energy_type'
+                            <% const searchArrayParams=['energy_type', 'stage' , 'weakness_energy_type'
                                 , 'resistance_energy_type' , 'retreat_cost' , 'expansion_name' , 'rarity_name' ];
-                                searchArrayParameters.forEach(param=> { %>
-                                <input type="hidden" name="<%= req.query[param] ? param + '[]' : '' %>"
-                                    value="<%= req.query[param] %>">
-                                <% }); %>
+                                searchArrayParams.forEach(param=> generateHiddenInputs(param,
+                                req.query[param]));
+                                %>
 
-                                    <div class="field has-addons ml-3">
-                                        <div class="control">
-                                            <input class="input" type="text" name="search" value="<%=req.query.search%>"
-                                                placeholder="Search cards...">
-                                        </div>
-                                        <div class="control">
-                                            <button type="submit" class="button is-info">
-                                                Search
-                                            </button>
-                                        </div>
+                                <div class="field has-addons ml-3">
+                                    <div class="control">
+                                        <input class="input" type="text" name="search" value="<%=req.query.search%>"
+                                            placeholder="Search cards...">
                                     </div>
+                                    <div class="control">
+                                        <button type="submit" class="button is-info">
+                                            Search
+                                        </button>
+                                    </div>
+                                </div>
                 </form>
 
             </div>
@@ -116,7 +119,7 @@
                     <!--form for filters - each filter is in a block-->
                     <form action="/browse" method="GET">
 
-                        <% const filterQueryParameters=['sort', 'search' ]; filterQueryParameters.forEach(param=> { %>
+                        <% const filterQueryParams=['sort', 'search' ]; filterQueryParams.forEach(param=> { %>
                             <input type="hidden" name="<%= req.query[param] ? param : '' %>"
                                 value="<%= req.query[param] %>">
                             <% }); %>
@@ -277,17 +280,24 @@
 
             <!--render cards-->
             <div class="columns mt-5 is-multiline is-variable is-centered">
+
                 <% rowdata.forEach((card, index)=> { %>
+
                     <div class="column is-6-tablet is-3-desktop">
+
                         <div class="card mb-3">
+
                             <div class="card-image has-text-centered px-5 pt-2 pb-0">
                                 <a href="/card?card_id=<%=card.card_id%>">
                                     <img src="<%= card.image_url %>">
                                 </a>
                             </div>
+
                             <div class="card-content pt-0 pb-2">
+
                                 <div class="columns is-vcentered is-mobile">
-                                    <div class="column is-three-quarters">
+
+                                    <div class="column is-four-fifths">
                                         <p class="has-text-grey is-size-7">
                                             <span class="title is-size-7 has-text-grey">
                                                 <%= card.expansion_name %>
@@ -295,15 +305,32 @@
                                             <%= card.card_number %>/<%= card.total_cards %>
                                         </p>
                                     </div>
-                                    <div class="column is-one-quarter">
-                                        <p class="has-text-right">
-                                            <a class="has-text-grey" href="">
-                                                <span class="icon-text">
-                                                    <span class="icon">
-                                                        <i class="far fa-heart"></i>
+
+                                    <div class="column is-one-fifth">
+
+                                        <% if (isAuthenticated) { %>
+
+                                            <form id="wishlistForm" action="/wishlist" method="POST">
+                                                <button type="submit" class="has-text-grey">
+                                                    <span class="icon-text ml-1">
+                                                        <span class="icon">
+                                                            <i class="far fa-heart"></i>
+                                                        </span>
                                                     </span>
-                                            </a>
-                                        </p>
+                                                </button>
+                                            </form>
+
+                                            <% } else { %>
+
+                                                <a class="has-text-grey" href="/login">
+                                                    <span class="icon-text ml-1">
+                                                        <span class="icon">
+                                                            <i class="far fa-heart"></i>
+                                                        </span>
+                                                    </span>
+                                                </a>
+
+                                                <% } %>
                                     </div>
                                 </div>
                             </div>
@@ -340,7 +367,9 @@
                                     <% } else { %>
 
                                         <form action="/collection?redirect=browse" method="POST">
+
                                             <input type="hidden" name="card_id" value="<%= card.card_id %>">
+
                                             <div class="dropdown" id="collection-dropdown">
                                                 <div class="dropdown-trigger">
                                                     <button class="button has-text-grey" aria-haspopup="true"
@@ -375,7 +404,7 @@
                             <% } else { %>
 
                                 <div class="has-text-centered">
-                                    <a class="button has-text-grey x" href="/login">
+                                    <a class="button has-text-grey" href="/login">
                                         <span class="icon-text">
                                             <span class="icon">
                                                 <i class="fas fa-plus-circle"></i>

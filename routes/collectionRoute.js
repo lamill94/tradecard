@@ -122,13 +122,15 @@ router.post('/collection', (req, res) => {
         connection.query(addCardToCollectionSql, [collectionId, cardId], (err, rows) => {
             if (err) throw err;
 
-            //this needs fixed to take into account sort for browse & collection
+            //this needs fixed to take into account sort for browse, collection & wishlist
             if (redirectPage === 'browse') {
                 res.redirect('/browse');
             } else if (redirectPage === 'collection') {
                 res.redirect(`/collection?member_collection_id=${memberCollectionId}`);
             } else if (redirectPage === 'card') {
                 res.redirect(`/card?card_id=${cardId}`);
+            } else if (redirectPage === 'wishlist') {
+                res.redirect('/wishlist');
             }
         });
     });
