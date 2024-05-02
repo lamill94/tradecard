@@ -46,6 +46,10 @@ const rarityQuery = `SELECT * FROM rarity`;
 const marketPriceQuery = `SELECT MIN(market_price) AS 'min_market_price', MAX(market_price) AS 'max_market_price' 
 FROM card`;
 
+const wishlistQuery = `SELECT * FROM wishlist 
+INNER JOIN wishlist_card ON wishlist.wishlist_id = wishlist_card.wishlist_id
+WHERE member_id = ?`;
+
 //set up a route handler for HTTP GET requests to the "/browse" endpoint
 router.get("/browse", (req, res) => {
 
@@ -160,32 +164,38 @@ router.get("/browse", (req, res) => {
         connection.query(myCollectionsQuery, [memberid], (err, myCollections) => {
             if (err) throw err;
 
-            connection.query(hpQuery, (err, hp) => {
+            connection.query(wishlistQuery, [memberid], (err, myWishlist) => {
                 if (err) throw err;
 
-                connection.query(energyTypeQuery, (err, energyTypes) => {
+                connection.query(hpQuery, (err, hp) => {
                     if (err) throw err;
 
-                    connection.query(stageQuery, (err, stages) => {
+                    connection.query(energyTypeQuery, (err, energyTypes) => {
                         if (err) throw err;
 
-                        connection.query(retreatCostQuery, (err, retreatCosts) => {
+                        connection.query(stageQuery, (err, stages) => {
                             if (err) throw err;
 
-                            connection.query(expansionQuery, (err, expansions) => {
+                            connection.query(retreatCostQuery, (err, retreatCosts) => {
                                 if (err) throw err;
 
-                                connection.query(rarityQuery, (err, rarities) => {
+                                connection.query(expansionQuery, (err, expansions) => {
                                     if (err) throw err;
 
-                                    connection.query(marketPriceQuery, (err, marketPrices) => {
+                                    connection.query(rarityQuery, (err, rarities) => {
                                         if (err) throw err;
 
-                                        res.render('browse', {
-                                            req: req, rowdata: rows, hp: hp, energyTypes: energyTypes, stages: stages,
-                                            retreatCosts: retreatCosts, expansions: expansions, rarities: rarities,
-                                            marketPrices: marketPrices, myCollections: myCollections,
-                                            isAuthenticated: req.session.authen, displayName: req.session.displayName
+                                        connection.query(marketPriceQuery, (err, marketPrices) => {
+                                            if (err) throw err;
+
+                                            res.render('browse', {
+                                                req: req, rowdata: rows, myCollections: myCollections,
+                                                myWishlist: myWishlist, hp: hp, energyTypes: energyTypes,
+                                                stages: stages, retreatCosts: retreatCosts, expansions: expansions,
+                                                rarities: rarities, marketPrices: marketPrices,
+                                                isAuthenticated: req.session.authen,
+                                                displayName: req.session.displayName
+                                            });
                                         });
                                     });
                                 });

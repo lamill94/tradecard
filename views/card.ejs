@@ -34,7 +34,7 @@
 
                 <div class="column is-9-tablet is-9-desktop">
 
-                    <h1 class="title mt-5 mb-4">
+                    <h1 class="title is-size-4 mt-5 mb-4">
                         <%= cardData[0].card_name %>
                     </h1>
 
@@ -101,11 +101,19 @@
 
                                         <form action="/wishlist?redirect=card" method="POST">
                                             <input type="hidden" name="card_id" value="<%= cardData[0].card_id %>">
-                                            <button type="submit" class="has-text-grey is-size-4 ml-2">
-                                                <span class="heart-icon">
-                                                    <i class="far fa-heart"></i>
-                                                </span>
-                                            </button>
+                                            <% if (myWishlist.some(item=> item.card_id === cardData[0].card_id)) { %>
+                                                <button type="submit" class="has-text-grey is-size-4 ml-2">
+                                                    <span class="heart-icon">
+                                                        <i class="fas fa-heart"></i>
+                                                    </span>
+                                                </button>
+                                                <% } else { %>
+                                                    <button type="submit" class="has-text-grey is-size-4 ml-2">
+                                                        <span class="heart-icon">
+                                                            <i class="far fa-heart"></i>
+                                                        </span>
+                                                    </button>
+                                                    <% } %>
                                         </form>
 
                                         <% } else { %>

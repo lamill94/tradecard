@@ -48,7 +48,7 @@ body {
     align-items: center;
 }
 
-.filter-menu-container {
+.browse-filter-menu-container {
     position: absolute;
     top: 50px;
     left: 0;
@@ -59,7 +59,37 @@ body {
     z-index: 1000;
 }
 
-.filter-menu-container:not(.show) {
+.browse-filter-menu-container:not(.show) {
+    display: none;
+}
+
+.collection-filter-menu-container {
+    position: absolute;
+    top: 120px;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid lightgray;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.collection-filter-menu-container:not(.show) {
+    display: none;
+}
+
+.wishlist-filter-menu-container {
+    position: absolute;
+    top: 100px;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid lightgray;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.wishlist-filter-menu-container:not(.show) {
     display: none;
 }
 
@@ -86,7 +116,7 @@ body {
 }
 
 .section.home{
-    background-image: url('/wallpaper-1.png');
+    background-image: url('/wallpaper-7.png');
     background-size: 1265px 475px;
     background-position: center;
     background-repeat: no-repeat;

@@ -113,7 +113,7 @@
             </div>
 
             <!--menu container appears after clicking on filter button-->
-            <div class="filter-menu-container">
+            <div class="browse-filter-menu-container">
                 <section class="section px-5 py-4">
 
                     <!--form for filters - each filter is in a block-->
@@ -312,13 +312,23 @@
 
                                             <form action="/wishlist?redirect=browse" method="POST">
                                                 <input type="hidden" name="card_id" value="<%= card.card_id %>">
-                                                <button type="submit" class="has-text-grey">
-                                                    <span class="icon-text ml-1">
-                                                        <span class="icon">
-                                                            <i class="far fa-heart"></i>
+                                                <% if (myWishlist.some(item=> item.card_id === card.card_id)) { %>
+                                                    <button type="submit" class="has-text-grey">
+                                                        <span class="icon-text ml-1">
+                                                            <span class="icon">
+                                                                <i class="fas fa-heart"></i>
+                                                            </span>
                                                         </span>
-                                                    </span>
-                                                </button>
+                                                    </button>
+                                                    <% } else { %>
+                                                        <button type="submit" class="has-text-grey">
+                                                            <span class="icon-text ml-1">
+                                                                <span class="icon">
+                                                                    <i class="far fa-heart"></i>
+                                                                </span>
+                                                            </span>
+                                                        </button>
+                                                        <% } %>
                                             </form>
 
                                             <% } else { %>
@@ -462,7 +472,7 @@
         //JS for the filter menu
         document.addEventListener('DOMContentLoaded', function () {
             const filterButton = document.querySelector('.button.filter-button.is-info');
-            const filterMenuContainer = document.querySelector('.filter-menu-container');
+            const filterMenuContainer = document.querySelector('.browse-filter-menu-container');
 
             filterButton.addEventListener('click', function () {
                 filterMenuContainer.classList.toggle('show');

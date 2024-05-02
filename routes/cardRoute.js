@@ -31,6 +31,10 @@ INNER JOIN collection ON member_collection.collection_id = collection.collection
 INNER JOIN member ON member_collection.member_id = member.member_id
 WHERE member_collection.member_id = ?`;
 
+const wishlistQuery = `SELECT * FROM wishlist 
+INNER JOIN wishlist_card ON wishlist.wishlist_id = wishlist_card.wishlist_id
+WHERE member_id = ?`;
+
 //set up a route handler for HTTP GET requests to the "/card" endpoint
 router.get("/card", (req, res) => {
 
@@ -58,9 +62,13 @@ router.get("/card", (req, res) => {
         connection.query(myCollectionsQuery, [memberid], (err, myCollections) => {
             if (err) throw err;
 
-            res.render('card', {
-                cardData: rows, myCollections: myCollections, isAuthenticated: req.session.authen,
-                displayName: req.session.displayName
+            connection.query(wishlistQuery, [memberid], (err, myWishlist) => {
+                if (err) throw err;
+
+                res.render('card', {
+                    cardData: rows, myCollections: myCollections, myWishlist: myWishlist, 
+                    isAuthenticated: req.session.authen, displayName: req.session.displayName
+                });
             });
         });
     });

@@ -129,7 +129,7 @@
                     </div>
 
                     <!--menu container appears after clicking on filter button-->
-                    <div class="filter-menu-container">
+                    <div class="collection-filter-menu-container">
                         <section class="section px-5 py-4">
 
                             <!--form for filters - each filter is in a block-->
@@ -488,7 +488,7 @@
         //JS for the filter menu
         document.addEventListener('DOMContentLoaded', function () {
             const filterButton = document.querySelector('.button.filter-button.is-info');
-            const filterMenuContainer = document.querySelector('.filter-menu-container');
+            const filterMenuContainer = document.querySelector('.collection-filter-menu-container');
 
             filterButton.addEventListener('click', function () {
                 filterMenuContainer.classList.toggle('show');

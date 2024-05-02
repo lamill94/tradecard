@@ -73,23 +73,28 @@ router.post('/signup', (req, res) => {
                 }
 
                 //insert signup details into SQL database
-                const createsql = `INSERT INTO member (display_name, email_address, password) VALUES( ? , ? , ?);`;
+                const createUserSql = `INSERT INTO member (display_name, email_address, password) VALUES( ? , ? , ?);`;
 
-                connection.query(createsql, [displayname, useremail, hash], (err, rows) => {
+                connection.query(createUserSql, [displayname, useremail, hash], (err, rows) => {
                     if (err) throw err;
 
                     //select all member details from new member to set session to true and to set their display 
                     //name and memberid for use
-                    const checkuser = `SELECT * FROM member WHERE email_address = "${useremail}"`;
+                    const newuser = `SELECT * FROM member WHERE email_address = "${useremail}"`;
 
-                    connection.query(checkuser, (err, rows) => {
+                    connection.query(newuser, (err, rows) => {
                         if (err) throw err;
-                        const user = rows[0];
-                        const sessionobj = req.session;
-                        sessionobj.authen = true;
-                        sessionobj.displayName = user.display_name;
-                        sessionobj.memberid = user.member_id;
-                        res.redirect('/');
+                        req.session.authen = true;
+                        req.session.displayName = rows[0].display_name;
+                        req.session.memberid = rows[0].member_id;
+
+                        //insert wishlist for new user into SQL database
+                        const createWishlistSql = `INSERT INTO wishlist (member_id) VALUES( ? );`;
+
+                        connection.query(createWishlistSql, [req.session.memberid], (err, rows) => {
+                            if (err) throw err;
+                            res.redirect('/');
+                        });
                     });
                 });
             });
