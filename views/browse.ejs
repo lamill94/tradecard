@@ -311,15 +311,22 @@
                                         <% if (isAuthenticated) { %>
 
                                             <% if (myWishlist.some(item=> item.card_id === card.card_id)) { %>
-                                                <!--could do delete request here to remove from wishlist-->
-                                                <a class="has-text-grey">
-                                                    <span class="icon-text ml-1">
-                                                        <span class="icon">
-                                                            <i class="fas fa-heart"></i>
+
+                                                <form id="removeCardForm"
+                                                    action="/wishlist/<%= card.card_id %>?redirect=browse"
+                                                    method="DELETE">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <button type="submit" class="has-text-grey">
+                                                        <span class="icon-text ml-1">
+                                                            <span class="icon">
+                                                                <i class="fas fa-heart"></i>
+                                                            </span>
                                                         </span>
-                                                    </span>
-                                                </a>
+                                                    </button>
+                                                </form>
+
                                                 <% } else { %>
+
                                                     <form action="/wishlist?redirect=browse" method="POST">
                                                         <input type="hidden" name="card_id" value="<%= card.card_id %>">
                                                         <button type="submit" class="has-text-grey">
@@ -330,6 +337,7 @@
                                                             </span>
                                                         </button>
                                                     </form>
+                                                    
                                                     <% } %>
 
                                                         <% } else { %>
@@ -478,6 +486,16 @@
             filterButton.addEventListener('click', function () {
                 filterMenuContainer.classList.toggle('show');
             });
+        });
+
+        // JS code to override the form submission method to send a DELETE request
+        document.getElementById('removeCardForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const url = this.getAttribute('action');
+            fetch(url, { method: 'DELETE' })
+                .then(response => {
+                    window.location.href = '/browse';
+                });
         });
 
     </script>

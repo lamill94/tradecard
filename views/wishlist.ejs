@@ -333,113 +333,85 @@
 
                                             <div class="column is-one-fifth">
 
-                                                <% if (isAuthenticated) { %>
-
-                                                    <form action="/wishlist?redirect=wishlist" method="POST">
-                                                        <input type="hidden" name="card_id" value="<%= card.card_id %>">
-                                                        <button type="submit" class="has-text-grey">
-                                                            <span class="icon-text ml-1">
-                                                                <span class="icon">
-                                                                    <i class="far fa-heart"></i>
-                                                                </span>
+                                                <form id="removeCardForm"
+                                                    action="/wishlist/<%= card.card_id %>?redirect=wishlist"
+                                                    method="DELETE">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <button type="submit" class="has-text-grey">
+                                                        <span class="icon-text ml-1">
+                                                            <span class="icon">
+                                                                <i class="fas fa-heart"></i>
                                                             </span>
-                                                        </button>
-                                                    </form>
+                                                        </span>
+                                                    </button>
+                                                </form>
 
-                                                    <% } else { %>
-
-                                                        <a class="has-text-grey" href="/login">
-                                                            <span class="icon-text ml-1">
-                                                                <span class="icon">
-                                                                    <i class="far fa-heart"></i>
-                                                                </span>
-                                                            </span>
-                                                        </a>
-
-                                                        <% } %>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <% if (isAuthenticated) { %>
+                                <div class="dropdown-wrapper">
 
-                                    <div class="dropdown-wrapper">
+                                    <% if (myCollections.length===0) { %>
 
-                                        <% if (myCollections.length===0) { %>
-
-                                            <div class="dropdown" id="collection-dropdown">
-                                                <div class="dropdown-trigger">
-                                                    <button class="button has-text-grey" aria-haspopup="true"
-                                                        aria-controls="dropdown-menu">
-                                                        <span class="icon">
-                                                            <i class="fas fa-plus-circle"></i>
-                                                        </span>
-                                                        <span>Add to collection</span>
-                                                        <span class="icon">
-                                                            <i class="fas fa-angle-down"></i>
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                                <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                                                    <div class="dropdown-content py-0">
-                                                        <a class="button has-text-grey create-collection"
-                                                            href="/collections">
-                                                            Create collection
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <% } else { %>
-
-                                                <form action="/collection?redirect=wishlist" method="POST">
-                                                    <input type="hidden" name="card_id" value="<%= card.card_id %>">
-                                                    <div class="dropdown" id="collection-dropdown">
-                                                        <div class="dropdown-trigger">
-                                                            <button class="button has-text-grey" aria-haspopup="true"
-                                                                aria-controls="dropdown-menu">
-                                                                <span class="icon">
-                                                                    <i class="fas fa-plus-circle"></i>
-                                                                </span>
-                                                                <span>Add to collection</span>
-                                                                <span class="icon">
-                                                                    <i class="fas fa-angle-down"></i>
-                                                                </span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                                                            <div class="dropdown-content">
-                                                                <% myCollections.forEach((collection, index)=> { %>
-                                                                    <button type="submit" class="dropdown-item"
-                                                                        name="member_collection_id"
-                                                                        value="<%= collection.member_collection_id %>">
-                                                                        <%= collection.collection_name %>
-                                                                    </button>
-                                                                    <% }) %>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </form>
-
-                                                <% } %> <!--end of my collections are empty-->
-
-                                    </div>
-
-                                    <% } else { %>
-
-                                        <div class="has-text-centered">
-                                            <a class="button has-text-grey" href="/login">
-                                                <span class="icon-text">
+                                        <div class="dropdown" id="collection-dropdown">
+                                            <div class="dropdown-trigger">
+                                                <button class="button has-text-grey" aria-haspopup="true"
+                                                    aria-controls="dropdown-menu">
                                                     <span class="icon">
                                                         <i class="fas fa-plus-circle"></i>
                                                     </span>
                                                     <span>Add to collection</span>
-                                                </span>
-                                            </a>
+                                                    <span class="icon">
+                                                        <i class="fas fa-angle-down"></i>
+                                                    </span>
+                                                </button>
+                                            </div>
+                                            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                                <div class="dropdown-content py-0">
+                                                    <a class="button has-text-grey create-collection"
+                                                        href="/collections">
+                                                        Create collection
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </div>
 
-                                        <% } %> <!--end of if authenticated-->
+                                        <% } else { %>
+
+                                            <form action="/collection?redirect=wishlist" method="POST">
+                                                <input type="hidden" name="card_id" value="<%= card.card_id %>">
+                                                <div class="dropdown" id="collection-dropdown">
+                                                    <div class="dropdown-trigger">
+                                                        <button class="button has-text-grey" aria-haspopup="true"
+                                                            aria-controls="dropdown-menu">
+                                                            <span class="icon">
+                                                                <i class="fas fa-plus-circle"></i>
+                                                            </span>
+                                                            <span>Add to collection</span>
+                                                            <span class="icon">
+                                                                <i class="fas fa-angle-down"></i>
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                                        <div class="dropdown-content">
+                                                            <% myCollections.forEach((collection, index)=> { %>
+                                                                <button type="submit" class="dropdown-item"
+                                                                    name="member_collection_id"
+                                                                    value="<%= collection.member_collection_id %>">
+                                                                    <%= collection.collection_name %>
+                                                                </button>
+                                                                <% }) %>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+
+                                            <% } %> <!--end of my collections are empty-->
+
+                                </div>
 
                             </div> <!--end of column-->
                             <% }) %> <!--end of card for loop-->
@@ -492,6 +464,16 @@
             filterButton.addEventListener('click', function () {
                 filterMenuContainer.classList.toggle('show');
             });
+        });
+
+        // JS code to override the form submission method to send a DELETE request
+        document.getElementById('removeCardForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const url = this.getAttribute('action');
+            fetch(url, { method: 'DELETE' })
+                .then(response => {
+                    window.location.href = '/wishlist';
+                });
         });
 
     </script>

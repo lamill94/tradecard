@@ -243,6 +243,7 @@ router.get("/collection", (req, res) => {
 //set up a route handler for HTTP POST requests to the "/collection" endpoint
 router.post('/collection', (req, res) => {
 
+    const currentMemberCollectionId = req.body.current_member_collection_id;
     const memberCollectionId = req.body.member_collection_id;
     const cardId = req.body.card_id;
     const redirectPage = req.query.redirect;
@@ -265,7 +266,7 @@ router.post('/collection', (req, res) => {
             if (redirectPage === 'browse') {
                 res.redirect('/browse');
             } else if (redirectPage === 'collection') {
-                res.redirect(`/collection?member_collection_id=${memberCollectionId}`);
+                res.redirect(`/collection?member_collection_id=${currentMemberCollectionId}`);
             } else if (redirectPage === 'card') {
                 res.redirect(`/card?card_id=${cardId}`);
             } else if (redirectPage === 'wishlist') {

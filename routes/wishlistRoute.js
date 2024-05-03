@@ -237,5 +237,35 @@ router.post('/wishlist', (req, res) => {
     });
 });
 
+//set up a route handler for HTTP DELETE requests to the "/wishlist" endpoint
+router.delete('/wishlist/:cardId', (req, res) => {
+
+    const memberid = req.session.memberid;
+    const memberCollectionId = req.body.member_collection_id;
+    const cardId = req.params.cardId;
+    const redirectPage = req.query.redirect;
+
+    // sql query to remove the card from the wishlist table
+    const removeFromWishlistSql = `DELETE FROM wishlist_card WHERE wishlist_id IN (SELECT wishlist_id FROM wishlist WHERE member_id = ?) AND card_id = ?`;
+
+    connection.query(removeFromWishlistSql, [memberid, cardId], (err, result) => {
+        if (err) throw err;
+
+        let redirectString; 
+
+        if (redirectPage === 'browse') {
+            redirectString = `/browse`;
+        } else if (redirectPage === 'collection') {
+            redirectString = `/collection?member_collection_id=${memberCollectionId}`;
+        } else if (redirectPage === 'card') {
+            redirectString = `/card?card_id=${cardId}`;
+        } else if (redirectPage === 'wishlist') {
+            redirectString = `/wishlist`;
+        }
+
+        res.redirect(redirectString);
+    });
+});
+
 //export the instance
 module.exports = router;

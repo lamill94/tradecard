@@ -99,41 +99,50 @@
 
                                     <% } %> <!--end of my collections are empty-->
 
-                                        <form action="/wishlist?redirect=card" method="POST">
-                                            <input type="hidden" name="card_id" value="<%= cardData[0].card_id %>">
-                                            <% if (myWishlist.some(item=> item.card_id === cardData[0].card_id)) { %>
+                                        <% if (myWishlist.some(item=> item.card_id === cardData[0].card_id)) { %>
+
+                                            <form id="removeCardForm"
+                                                action="/wishlist/<%= cardData[0].card_id %>?redirect=card" method="DELETE">
+                                                <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="has-text-grey is-size-4 ml-2">
-                                                    <span class="heart-icon">
-                                                        <i class="fas fa-heart"></i>
-                                                    </span>
+                                                        <span class="heart-icon">
+                                                            <i class="fas fa-heart"></i>
+                                                        </span>
                                                 </button>
-                                                <% } else { %>
+                                            </form>
+
+                                            <% } else { %>
+
+                                                <form action="/wishlist?redirect=card" method="POST">
+                                                    <input type="hidden" name="card_id"
+                                                        value="<%= cardData[0].card_id %>">
                                                     <button type="submit" class="has-text-grey is-size-4 ml-2">
                                                         <span class="heart-icon">
                                                             <i class="far fa-heart"></i>
                                                         </span>
                                                     </button>
-                                                    <% } %>
-                                        </form>
+                                                </form>
 
-                                        <% } else { %>
+                                                <% } %>
 
-                                            <a class="button is-info" href="/login">
-                                                <span class="icon-text">
-                                                    <span class="icon">
-                                                        <i class="fas fa-plus-circle"></i>
-                                                    </span>
-                                                    <span>Add to collection</span>
-                                                </span>
-                                            </a>
+                                                    <% } else { %>
 
-                                            <a class="has-text-grey is-size-4 ml-2" href="/login">
-                                                <span class="heart-icon">
-                                                    <i class="far fa-heart"></i>
-                                                </span>
-                                            </a>
+                                                        <a class="button is-info" href="/login">
+                                                            <span class="icon-text">
+                                                                <span class="icon">
+                                                                    <i class="fas fa-plus-circle"></i>
+                                                                </span>
+                                                                <span>Add to collection</span>
+                                                            </span>
+                                                        </a>
 
-                                            <% } %> <!--end of if authenticated-->
+                                                        <a class="has-text-grey is-size-4 ml-2" href="/login">
+                                                            <span class="heart-icon">
+                                                                <i class="far fa-heart"></i>
+                                                            </span>
+                                                        </a>
+
+                                                        <% } %> <!--end of if authenticated-->
 
                     </div>
 
@@ -272,6 +281,17 @@
                 });
             });
         });
+
+        // JS code to override the form submission method to send a DELETE request
+        document.getElementById('removeCardForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const url = this.getAttribute('action');
+            fetch(url, { method: 'DELETE' })
+                .then(response => {
+                    window.location.href = `/card?card_id=<%= cardData[0].card_id %>`;
+                });
+        });
+
     </script>
 
 </body>
