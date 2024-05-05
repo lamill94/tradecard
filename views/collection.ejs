@@ -421,12 +421,11 @@
 
                                                 <% if (rowdata[0].member_id===req.session.memberid ) { %>
 
-                                                    <!--make this delete-->
-                                                    <form action="/collection?redirect=collection" method="POST">
-
-                                                        <input type="hidden" name="card_id" value="<%= card.card_id %>">
-
-                                                        <button class="button has-text-grey">
+                                                    <form id="removeCardFromCollectionForm"
+                                                        action="/collection/<%= card.card_id %>?member_collection_id=<%= rowdata[0].member_collection_id %>"
+                                                        method="DELETE">
+                                                        <input type="hidden" name="_method" value="DELETE">
+                                                        <button type="submit" class="button has-text-grey">
                                                             <span class="icon">
                                                                 <i class="fas fa-minus-circle"></i>
                                                             </span>
@@ -546,14 +545,24 @@
         });
 
         // JS code to override the form submission method to send a DELETE request
-        document.getElementById('removeCardForm').addEventListener('submit', function (event) {
+        function handleFormSubmission(event) {
             event.preventDefault();
             const url = this.getAttribute('action');
             fetch(url, { method: 'DELETE' })
                 .then(response => {
                     window.location.href = `/collection?member_collection_id=<%= rowdata[0].member_collection_id %>`;
                 });
-        });
+        }
+
+        const removeCardForm = document.getElementById('removeCardForm');
+        if (removeCardForm) {
+            removeCardForm.addEventListener('submit', handleFormSubmission);
+        }
+
+        const removeCardFromCollectionForm = document.getElementById('removeCardFromCollectionForm');
+        if (removeCardFromCollectionForm) {
+            removeCardFromCollectionForm.addEventListener('submit', handleFormSubmission);
+        }
 
     </script>
 

@@ -276,5 +276,21 @@ router.post('/collection', (req, res) => {
     });
 });
 
+//set up a route handler for HTTP DELETE requests to the "/collection" endpoint
+router.delete('/collection/:cardId', (req, res) => {
+
+    const memberCollectionId = req.query.member_collection_id;
+    const cardId = req.params.cardId;
+
+    // sql query to remove the card from the collection table
+    const removeFromCollectionSql = `DELETE FROM collection_card WHERE collection_id IN (SELECT collection_id FROM member_collection WHERE member_collection_id = ?) AND card_id = ?`;
+
+    connection.query(removeFromCollectionSql, [memberCollectionId, cardId], (err, result) => {
+        if (err) throw err;
+
+        res.redirect(`/collection?member_collection_id=${memberCollectionId}`);
+    });
+});
+
 //export the instance
 module.exports = router;
