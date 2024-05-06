@@ -85,6 +85,24 @@
                                                                                 <%= collection.collection_name %>
                                                                             </a>
                                                                         </td>
+                                                                        <td>
+                                                                            Rename
+                                                                        </td>
+                                                                        <td>
+                                                                            <form id="deleteCollectionForm"
+                                                                                action="/collections/<%=collection.member_collection_id%>/delete?collectionId=<%=collection.collection_id%>"
+                                                                                method="POST">
+                                                                                <input type="hidden" name="_method"
+                                                                                    value="DELETE">
+                                                                                <button type="submit"
+                                                                                    class="button has-text-grey py-0">
+                                                                                    <span class="icon">
+                                                                                        <i class="fas fa-trash"></i>
+                                                                                    </span>
+                                                                                    <span>Delete</span>
+                                                                                </button>
+                                                                            </form>
+                                                                        </td>
                                                                     </tr>
                                                                     <% }) %>
                                                             </tbody>
@@ -171,10 +189,21 @@
 
     <script>
 
+        // JS to close notification
         const deleteButton = document.querySelector('.delete');
 
         deleteButton.addEventListener('click', () => {
             deleteButton.parentNode.style.display = 'none';
+        });
+
+        // JS code to override the form submission method to send a DELETE request
+        document.getElementById('deleteCollectionForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const url = this.getAttribute('action');
+            fetch(url, { method: 'DELETE' })
+                .then(response => {
+                    window.location.href = `/collections`;
+                });
         });
 
     </script>

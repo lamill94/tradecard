@@ -42,7 +42,7 @@ WHERE member_collection.member_id != ?`;
 
 //function to fetch collections
 function fetchCollections(memberid, renderCallback) {
-    
+
     connection.query(allCollectionsQuery, (err, allCollections) => {
         if (err) throw err;
 
@@ -145,6 +145,34 @@ router.post('/collections', (req, res) => {
             }
         });
     }
+});
+
+//set up a route handler for HTTP DELETE requests to the "/collections" endpoint
+router.post('/collections/:memberCollectionId/delete', (req, res) => {
+
+    const memberCollectionId = req.params.memberCollectionId;
+    const collectionId = req.query.collectionId;
+
+    // sql query to remove the collection from the member_collection table
+    const deleteMemberCollectionSql = `DELETE FROM member_collection WHERE member_collection_id = ?`;
+
+    connection.query(deleteMemberCollectionSql, [memberCollectionId], (err, result) => {
+        if (err) throw err;
+
+        const deleteCollectionCardsSql = `DELETE FROM collection_card WHERE collection_id = ?`;
+
+        connection.query(deleteCollectionCardsSql, [collectionId], (err, result) => {
+            if (err) throw err;
+
+            const deleteCollectionSql = `DELETE FROM collection WHERE collection_id = ?`;
+
+            connection.query(deleteCollectionSql, [collectionId], (err, result) => {
+                if (err) throw err;
+
+                res.redirect(`/collections`);
+            });
+        });
+    });
 });
 
 //export the instance
