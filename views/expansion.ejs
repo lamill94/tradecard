@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+
+    <header>
+        <%- include('header')%>
+
+            <% function generateHiddenInputs(name, values) { if (values) { values.forEach(type=> { %>
+                <input type="hidden" name="<%= name %>[]" value="<%= type %>">
+                <% }); } } %>
+    </header>
+
+    <section class="section">
+        <div class="container">
+
+            <div class="block">
+                <h1 class="title is-size-5 mb-1">
+                    <%=rowdata[0].expansion_name%>
+                </h1>
+            </div>
+
+            <!--sort, filter button & search are in this class to keep them side-by-side -->
+            <div class="is-flex">
+
+                <!--form for sort-->
+                <form action="/expansion" method="GET" class="mr-3">
+
+                    <% const sortQueryParams=['min_hp', 'max_hp' , 'min_market_price' , 'max_market_price' , 'search'
+                        , 'expansion_id' ]; sortQueryParams.forEach(param=> { %>
+                        <input type="hidden" name="<%= req.query[param] ? param : '' %>"
+                            value="<%= req.query[param] %>">
+                        <% }); %>
+
+                            <% const sortArrayParams=['energy_type', 'stage' , 'weakness_energy_type'
+                                , 'resistance_energy_type' , 'retreat_cost' , 'expansion_name' , 'rarity_name' ];
+                                sortArrayParams.forEach(param=> generateHiddenInputs(param,
+                                req.query[param]));
+                                %>
+
+                                <div class="dropdown" id="expansion-dropdown">
+                                    <div class="dropdown-trigger">
+                                        <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                                            <span>Sort by</span>
+                                            <span class="icon is-small">
+                                                <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                        <div class="dropdown-content">
+                                            <button type="submit" name="sort" value="release_date,card_number"
+                                                class="dropdown-item">Card
+                                                number</button>
+                                            <button type="submit" name="sort" value="card_name"
+                                                class="dropdown-item">Card
+                                                name
+                                                (A-Z)</button>
+                                            <button type="submit" name="sort" value="card_name DESC"
+                                                class="dropdown-item">Card name
+                                                (Z-A)</button>
+                                            <button type="submit" name="sort" value="market_price"
+                                                class="dropdown-item">Market price
+                                                (asc)</button>
+                                            <button type="submit" name="sort" value="market_price DESC"
+                                                class="dropdown-item">Market price
+                                                (desc)</button>
+                                        </div>
+                                    </div>
+                                </div>
+                </form>
+
+                <!--filter button-->
+                <a class="button filter-button is-info">
+                    <span class="icon-text">
+                        <span class="icon">
+                            <i class="fas fa-filter"></i>
+                        </span>
+                        <span>Filter</span>
+                    </span>
+                </a>
+
+                <!--form for search-->
+                <form action="/expansion" method="GET">
+
+                    <% const searchQueryParams=['min_hp', 'max_hp' , 'min_market_price' , 'max_market_price' , 'sort'
+                        , 'expansion_id' ]; searchQueryParams.forEach(param=> { %>
+                        <input type="hidden" name="<%= req.query[param] ? param : '' %>"
+                            value="<%= req.query[param] %>">
+                        <% }); %>
+
+                            <% const searchArrayParams=['energy_type', 'stage' , 'weakness_energy_type'
+                                , 'resistance_energy_type' , 'retreat_cost' , 'expansion_name' , 'rarity_name' ];
+                                searchArrayParams.forEach(param=> generateHiddenInputs(param,
+                                req.query[param]));
+                                %>
+
+                                <div class="field has-addons ml-3">
+                                    <div class="control">
+                                        <input class="input" type="text" name="search" value="<%=req.query.search%>"
+                                            placeholder="Search cards...">
+                                    </div>
+                                    <div class="control">
+                                        <button type="submit" class="button is-info">
+                                            Search
+                                        </button>
+                                    </div>
+                                </div>
+                </form>
+
+            </div>
+
+            <!--menu container appears after clicking on filter button-->
+            <div class="expansion-filter-menu-container">
+                <section class="section px-5 py-4">
+
+                    <!--form for filters - each filter is in a block-->
+                    <form action="/expansion" method="GET">
+
+                        <% const filterQueryParams=['sort', 'search' , 'expansion_id' ]; filterQueryParams.forEach(param=> { %>
+                            <input type="hidden" name="<%= req.query[param] ? param : '' %>"
+                                value="<%= req.query[param] %>">
+                            <% }); %>
+
+                                <div class="block">
+                                    <h1 class="pb-1"><strong>Hit Point</strong></h1>
+                                    <div class="field is-horizontal">
+                                        <div class="field-body">
+                                            <div class="field is-narrow">
+                                                <div class="control">
+                                                    <input class="input" type="text" name="min_hp"
+                                                        value="<%=req.query.min_hp%>"
+                                                        placeholder="Min: <%=hp[0].min_hp%>">
+                                                </div>
+                                            </div>
+                                            <div class="field is-narrow hyphen-container">
+                                                <span class="hyphen">-</span>
+                                            </div>
+                                            <div class="field is-narrow">
+                                                <div class="control">
+                                                    <input class="input" type="text" name="max_hp"
+                                                        value="<%=req.query.max_hp%>"
+                                                        placeholder="Max: <%=hp[0].max_hp%>">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="block">
+                                    <h1 class="pb-1"><strong>Energy Type</strong></h1>
+                                    <% energyTypes.forEach((energy_type, index)=> { %>
+                                        <label class="mr-2">
+                                            <input type="checkbox" name="energy_type[]"
+                                                value="<%=energy_type.energy_type_name%>" <% if (req.query.energy_type
+                                                && req.query.energy_type.includes(energy_type.energy_type_name)) {
+                                                %>checked<% } %>
+                                                >
+                                                <img src="<%=energy_type.energy_type_url%>" class="energy-type-image">
+                                                <%=energy_type.energy_type_name%>
+                                        </label>
+                                        <% }) %>
+                                </div>
+
+                                <div class="block">
+                                    <h1 class="pb-1"><strong>Stage</strong></h1>
+                                    <% stages.forEach((stage, index)=> { %>
+                                        <label class="mr-2">
+                                            <input type="checkbox" name="stage[]" value="<%=stage.stage%>" <% if
+                                                (req.query.stage && req.query.stage.includes(stage.stage)) { %>checked<%
+                                                } %>>
+                                                <%=stage.stage%>
+                                        </label>
+                                        <% }) %>
+                                </div>
+
+                                <div class="block">
+                                    <h1 class="pb-1"><strong>Weakness</strong></h1>
+                                    <% energyTypes.forEach((energy_type, index)=> { %>
+                                        <label class="mr-2">
+                                            <input type="checkbox" name="weakness_energy_type[]"
+                                                value="<%=energy_type.energy_type_name%>" <% if
+                                                (req.query.weakness_energy_type &&
+                                                req.query.weakness_energy_type.includes(energy_type.energy_type_name)) {
+                                                %>checked<% } %>
+                                                >
+                                                <img src="<%=energy_type.energy_type_url%>" class="energy-type-image">
+                                                <%=energy_type.energy_type_name%>
+                                        </label>
+                                        <% }) %>
+                                </div>
+
+                                <div class="block">
+                                    <h1 class="pb-1"><strong>Resistance</strong></h1>
+                                    <% energyTypes.forEach((energy_type, index)=> { %>
+                                        <label class="mr-2">
+                                            <input type="checkbox" name="resistance_energy_type[]"
+                                                value="<%=energy_type.energy_type_name%>" <% if
+                                                (req.query.resistance_energy_type &&
+                                                req.query.resistance_energy_type.includes(energy_type.energy_type_name))
+                                                { %>checked<% } %>>
+                                                <img src="<%=energy_type.energy_type_url%>" class="energy-type-image">
+                                                <%=energy_type.energy_type_name%>
+                                        </label>
+                                        <% }) %>
+                                </div>
+
+                                <div class="block">
+                                    <h1 class="pb-1"><strong>Retreat Cost</strong></h1>
+                                    <% retreatCosts.forEach((retreat_cost, index)=> { %>
+                                        <label class="mr-2">
+                                            <input type="checkbox" name="retreat_cost[]"
+                                                value="<%= retreat_cost.retreat_cost %>" <% if (req.query.retreat_cost
+                                                && req.query.retreat_cost.map(cost=>
+                                            parseInt(cost)).includes(retreat_cost.retreat_cost)) { %>checked<% } %>>
+                                                <%= retreat_cost.retreat_cost %>
+                                        </label>
+                                        <% }) %>
+                                </div>
+
+                                <div class="block">
+                                    <h1 class="pb-1"><strong>Expansion</strong></h1>
+                                    <% expansions.forEach((expansion, index)=> { %>
+                                        <label class="mr-2">
+                                            <input type="checkbox" name="expansion_name[]"
+                                                value="<%=expansion.expansion_name%>" <% if (req.query.expansion_name &&
+                                                req.query.expansion_name.includes(expansion.expansion_name)) { %>checked
+                                            <% } %>
+                                                >
+                                                <%=expansion.expansion_name%>
+                                        </label>
+                                        <% }) %>
+                                </div>
+
+                                <div class="block">
+                                    <h1 class="pb-1"><strong>Rarity</strong></h1>
+                                    <% rarities.forEach((rarity, index)=> { %>
+                                        <label class="mr-2">
+                                            <input type="checkbox" name="rarity_name[]" value="<%=rarity.rarity_name%>"
+                                                <% if (req.query.rarity_name &&
+                                                req.query.rarity_name.includes(rarity.rarity_name)) { %>checked<% } %>>
+                                                <%=rarity.rarity_name%>
+                                        </label>
+                                        <% }) %>
+                                </div>
+
+                                <div class="block">
+                                    <h1 class="pb-1"><strong>Market Price</strong></h1>
+                                    <div class="field is-horizontal">
+                                        <div class="field-body">
+                                            <div class="field is-narrow">
+                                                <div class="control">
+                                                    <input class="input" type="text" name="min_market_price"
+                                                        value="<%=req.query.min_market_price%>"
+                                                        placeholder="Min: $<%=marketPrices[0].min_market_price%>">
+                                                </div>
+                                            </div>
+                                            <div class="field is-narrow hyphen-container">
+                                                <span class="hyphen">-</span>
+                                            </div>
+                                            <div class="field is-narrow">
+                                                <div class="control">
+                                                    <input class="input" type="text" name="max_market_price"
+                                                        value="<%=req.query.max_market_price%>"
+                                                        placeholder="Max: $<%=marketPrices[0].max_market_price%>">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <button type="submit" class="button is-primary">Apply Filters</button>
+                                </div>
+                    </form>
+                </section>
+            </div>
+
+            <!--render cards-->
+            <div class="columns mt-5 is-multiline is-variable is-centered">
+
+                <% rowdata.forEach((card, index)=> { %>
+
+                    <div class="column is-6-tablet is-3-desktop">
+
+                        <div class="card mb-3">
+
+                            <div class="card-image has-text-centered px-5 pt-2 pb-0">
+                                <a href="/card?card_id=<%=card.card_id%>">
+                                    <img src="<%= card.image_url %>">
+                                </a>
+                            </div>
+
+                            <div class="card-content pt-0 pb-2">
+
+                                <div class="columns is-vcentered is-mobile">
+
+                                    <div class="column is-four-fifths">
+                                        <p class="has-text-grey is-size-7">
+                                            <span class="title is-size-7 has-text-grey">
+                                                <%= card.expansion_name %>
+                                            </span>
+                                            <%= card.card_number %>/<%= card.total_cards %>
+                                        </p>
+                                    </div>
+
+                                    <div class="column is-one-fifth">
+
+                                        <% if (isAuthenticated) { %>
+
+                                            <% if (myWishlist.some(item=> item.card_id === card.card_id)) { %>
+
+                                                <form id="removeCardForm"
+                                                    action="/wishlist/<%= card.card_id %>?redirect=expansion"
+                                                    method="DELETE">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <button type="submit" class="has-text-grey">
+                                                        <span class="icon-text ml-1">
+                                                            <span class="icon">
+                                                                <i class="fas fa-heart"></i>
+                                                            </span>
+                                                        </span>
+                                                    </button>
+                                                </form>
+
+                                                <% } else { %>
+
+                                                    <form action="/wishlist?redirect=expansion" method="POST">
+                                                        <input type="hidden" name="card_id" value="<%= card.card_id %>">
+                                                        <input type="hidden" name="expansion_id"
+                                                            value="<%= req.query.expansion_id %>">
+                                                        <button type="submit" class="has-text-grey">
+                                                            <span class="icon-text ml-1">
+                                                                <span class="icon">
+                                                                    <i class="far fa-heart"></i>
+                                                                </span>
+                                                            </span>
+                                                        </button>
+                                                    </form>
+
+                                                    <% } %>
+
+                                                        <% } else { %>
+
+                                                            <a class="has-text-grey" href="/login">
+                                                                <span class="icon-text ml-1">
+                                                                    <span class="icon">
+                                                                        <i class="far fa-heart"></i>
+                                                                    </span>
+                                                                </span>
+                                                            </a>
+
+                                                            <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <% if (isAuthenticated) { %>
+
+                            <div class="dropdown-wrapper">
+
+                                <% if (myCollections.length===0) { %>
+
+                                    <div class="dropdown" id="collection-dropdown">
+                                        <div class="dropdown-trigger">
+                                            <button class="button has-text-grey" aria-haspopup="true"
+                                                aria-controls="dropdown-menu">
+                                                <span class="icon">
+                                                    <i class="fas fa-plus-circle"></i>
+                                                </span>
+                                                <span>Add to collection</span>
+                                                <span class="icon">
+                                                    <i class="fas fa-angle-down"></i>
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                            <div class="dropdown-content py-0">
+                                                <a class="button has-text-grey create-collection" href="/collections">
+                                                    Create collection
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <% } else { %>
+
+                                        <form action="/collection?redirect=expansion" method="POST">
+
+                                            <input type="hidden" name="card_id" value="<%= card.card_id %>">
+                                            <input type="hidden" name="expansion_id"
+                                                value="<%= req.query.expansion_id %>">
+
+                                            <div class="dropdown" id="collection-dropdown">
+                                                <div class="dropdown-trigger">
+                                                    <button class="button has-text-grey" aria-haspopup="true"
+                                                        aria-controls="dropdown-menu">
+                                                        <span class="icon">
+                                                            <i class="fas fa-plus-circle"></i>
+                                                        </span>
+                                                        <span>Add to collection</span>
+                                                        <span class="icon">
+                                                            <i class="fas fa-angle-down"></i>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                                <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                                    <div class="dropdown-content">
+                                                        <% myCollections.forEach((collection, index)=> { %>
+                                                            <button type="submit" class="dropdown-item"
+                                                                name="member_collection_id"
+                                                                value="<%= collection.member_collection_id %>">
+                                                                <%= collection.collection_name %>
+                                                            </button>
+                                                            <% }) %>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                        <% } %> <!--end of my collections are empty-->
+
+                            </div>
+
+                            <% } else { %>
+
+                                <div class="has-text-centered">
+                                    <a class="button has-text-grey" href="/login">
+                                        <span class="icon-text">
+                                            <span class="icon">
+                                                <i class="fas fa-plus-circle"></i>
+                                            </span>
+                                            <span>Add to collection</span>
+                                        </span>
+                                    </a>
+                                </div>
+
+                                <% } %> <!--end of if authenticated-->
+
+                    </div> <!--end of column-->
+                    <% }) %> <!--end of card for loop-->
+            </div> <!--end of columns-->
+        </div> <!--end of container-->
+    </section> <!--end of section-->
+
+    <script>
+
+        //JS FOR ALL THE DROPDOWN MENUS
+
+        //ensures that the JS executes only after the DOM content has been fully loaded and parsed
+        document.addEventListener('DOMContentLoaded', function () {
+
+            //selects all elements with the class dropdown and store them in a NodeList called dropdowns
+            const dropdowns = document.querySelectorAll('.dropdown');
+
+            //iterate over each dropdown element in the dropdowns NodeList
+            dropdowns.forEach(function (dropdown) {
+
+                //selects the dropdown trigger button within the current dropdown element
+                const trigger = dropdown.querySelector('.dropdown-trigger');
+
+                //selects the dropdown menu within the current dropdown element
+                const menu = dropdown.querySelector('.dropdown-menu');
+
+                //listen for clicks on the dropdown trigger button
+                trigger.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    dropdown.classList.toggle('is-active');
+                });
+
+                //listen for clicks anywhere in the document
+                document.addEventListener('click', function (event) {
+                    const isClickInside = dropdown.contains(event.target);
+                    if (!isClickInside) {
+                        dropdown.classList.remove('is-active');
+                    }
+                });
+            });
+        });
+
+        //JS for the filter menu
+        document.addEventListener('DOMContentLoaded', function () {
+            const filterButton = document.querySelector('.button.filter-button.is-info');
+            const filterMenuContainer = document.querySelector('.expansion-filter-menu-container');
+
+            filterButton.addEventListener('click', function () {
+                filterMenuContainer.classList.toggle('show');
+            });
+        });
+
+        // JS code to override the form submission method to send a DELETE request
+        document.getElementById('removeCardForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const url = this.getAttribute('action');
+            fetch(url, { method: 'DELETE' })
+                .then(response => {
+                    window.location.href = '/expansion?expansion_id=<%= rowdata[0].expansion_id %>';
+                });
+        });
+
+    </script>
+
+</body>
+
+</html>

@@ -207,6 +207,7 @@ router.post('/wishlist', (req, res) => {
     const memberid = req.session.memberid;
     const memberCollectionId = req.body.member_collection_id;
     const cardId = req.body.card_id;
+    const expansionId = req.body.expansion_id;
     const redirectPage = req.query.redirect;
 
     //get the wishlist_id associated with the member_id
@@ -232,7 +233,10 @@ router.post('/wishlist', (req, res) => {
                 res.redirect(`/card?card_id=${cardId}`);
             } else if (redirectPage === 'wishlist') {
                 res.redirect('/wishlist');
+            } else if (redirectPage === 'expansion') {
+                res.redirect(`/expansion?expansion_id=${expansionId}`);
             }
+
         });
     });
 });
@@ -243,6 +247,7 @@ router.delete('/wishlist/:cardId', (req, res) => {
     const memberid = req.session.memberid;
     const memberCollectionId = req.body.member_collection_id;
     const cardId = req.params.cardId;
+    const expansionId = req.body.expansion_id;
     const redirectPage = req.query.redirect;
 
     // sql query to remove the card from the wishlist table
@@ -251,7 +256,7 @@ router.delete('/wishlist/:cardId', (req, res) => {
     connection.query(removeFromWishlistSql, [memberid, cardId], (err, result) => {
         if (err) throw err;
 
-        let redirectString; 
+        let redirectString;
 
         if (redirectPage === 'browse') {
             redirectString = `/browse`;
@@ -261,6 +266,8 @@ router.delete('/wishlist/:cardId', (req, res) => {
             redirectString = `/card?card_id=${cardId}`;
         } else if (redirectPage === 'wishlist') {
             redirectString = `/wishlist`;
+        } else if (redirectPage === 'expansion') {
+            redirectString = `/expansion?expansion_id=${expansionId}`;
         }
 
         res.redirect(redirectString);
