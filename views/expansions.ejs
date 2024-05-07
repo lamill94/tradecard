@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expansions</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+
+    <header>
+        <%- include('header')%>
+    </header>
+
+    <section class="section">
+        <div class="container">
+
+            <% series.forEach((serie, index)=> { %>
+
+                <h1 class="title is-size-5">
+                    <%= serie.series_name %>
+                </h1>
+
+                <div class="columns is-multiline is-variable">
+                    <% const seriesExpansions=expansions.filter(expansion=> expansion.series_id ===
+                        serie.series_id); %>
+                        <% seriesExpansions.forEach((expansion, index)=> { %>
+                            <div class="column is-6-tablet is-3-desktop">
+                                <a href="/expansion?expansion_id=<%=expansion.expansion_id%>">
+                                    <div class="card expansion">
+
+                                        <header class="card-header">
+                                            <p class="card-header-title">
+                                                <%= expansion.expansion_name %>
+                                            </p>
+                                        </header>
+
+                                        <div class="card-image-expansion has-text-centered px-5 py-3">
+                                            <img src="<%= expansion.expansion_url %>">
+                                        </div>
+
+                                        <div class="card-content pt-0 pb-3">
+                                            <strong>Release date:</strong>
+                                            <% const releaseDate=new Date(expansion.release_date); %>
+                                                <%= releaseDate.toLocaleDateString('en-US', { month: 'short' ,
+                                                    day: '2-digit' , year: 'numeric' }) %>
+                                        </div>
+
+                                    </div>
+                                </a>
+                            </div>
+                            <% }) %>
+                </div>
+
+                <% }) %>
+
+
+        </div>
+    </section>
+
+</body>
+
+</html>

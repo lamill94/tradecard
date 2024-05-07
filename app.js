@@ -15,6 +15,7 @@ const accountRoute = require('./routes/accountRoute');
 const collectionsRoute = require('./routes/collectionsRoute');
 const collectionRoute = require('./routes/collectionRoute');
 const wishlistRoute = require('./routes/wishlistRoute');
+const expansionsRoute = require('./routes/expansionsRoute');
 
 //create instance of the express application
 const app = express();
@@ -53,6 +54,7 @@ app.use(accountRoute);
 app.use(collectionsRoute);
 app.use(collectionRoute);
 app.use(wishlistRoute);
+app.use(expansionsRoute);
 
 //start the server and make it listen for incoming HTTP requests on port 3000
 app.listen(3000, (err) => {
