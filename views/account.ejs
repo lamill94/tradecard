@@ -24,35 +24,46 @@
                         Account details
                     </h1>
 
-                    <form class="box" action="" method="POST">
+                    <form class="box" action="/account/newDisplayName" method="POST">
 
-                        <div class="field">
-                            <label class="label">Current display name</label>
-                            <div class="control">
-                                <input class="input" type="displayname" name="displayNameField"
-                                    placeholder="<%= displayName %>" />
-                            </div>
+                        <div class="block">
+                            <strong>Current display name</strong>
+                            <p class="has-text-grey">
+                                <%= displayName %>
+                            </p>
                         </div>
 
-                        <div class="field">
-                            <label class="label">New display name</label>
-                            <div class="control">
-                                <input class="input" type="displayname" name="displayNameField" />
-                            </div>
-                        </div>
+                        <% if (emptyDisplayNameNotification) { %>
+                            <p class="accountEmptyFieldNotification">
+                                Please ensure that field is populated before changing field:
+                            </p>
+                            <% } %>
 
-                        <button class="button is-light">Change display name</button>
+                                <div class="field">
+                                    <label class="label">New display name</label>
+                                    <div class="control">
+                                        <input class="input" type="displayname" name="displayNameField" />
+                                    </div>
+                                </div>
+
+                                <button class="button is-light">Change display name</button>
 
                     </form>
 
-                    <form class="box" action="" method="POST">
+                    <form class="box" action="/account/newEmailAddress" method="POST">
 
-                        <div class="field">
-                            <label class="label">Current email address</label>
-                            <div class="control">
-                                <input class="input" type="email" name="emailField" placeholder="<%= member.email %>" />
-                            </div>
+                        <div class="block">
+                            <strong>Current email address</strong>
+                            <p class="has-text-grey">
+                                <%= rowdata[0].email_address %>
+                            </p>
                         </div>
+
+                        <% if (emptyEmailAddressNotification) { %>
+                            <p class="accountEmptyFieldNotification">
+                                Please ensure that field is populated before changing field:
+                            </p>
+                            <% } %>
 
                         <div class="field">
                             <label class="label">New email address</label>
@@ -65,14 +76,20 @@
 
                     </form>
 
-                    <form class="box" action="" method="POST">
+                    <form class="box" action="/account/newPassword" method="POST">
 
-                        <div class="field">
-                            <label class="label">Current password</label>
-                            <div class="control">
-                                <input class="input" type="password" name="passwordField" placeholder="********" />
-                            </div>
+                        <div class="block">
+                            <strong>Current password</strong>
+                            <p class="has-text-grey">
+                                ********
+                            </p>
                         </div>
+
+                        <% if (emptyPasswordNotification) { %>
+                            <p class="accountEmptyFieldNotification">
+                                Please ensure that field is populated before changing field:
+                            </p>
+                            <% } %>
 
                         <div class="field">
                             <label class="label">New password</label>
@@ -85,12 +102,41 @@
 
                     </form>
 
-                    <button class="button is-danger"><strong>Delete account</strong></button>
+                    <form id="deleteAccountForm" action="/account" method="DELETE">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="button is-danger">
+                            <span class="icon">
+                                <i class="fas fa-trash"></i>
+                            </span>
+                            <span><strong>Delete account</strong></span>
+                        </button>
+                    </form>
 
                 </div>
             </div>
         </container>
     </section>
+
+    <script>
+
+        // JS to remove notification
+        const deleteButton = document.querySelector('.delete');
+
+        deleteButton.addEventListener('click', () => {
+            deleteButton.parentNode.style.display = 'none';
+        });
+
+        // JS code to override the form submission method to send a DELETE request
+        document.getElementById('deleteAccountForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const url = this.getAttribute('action');
+            fetch(url, { method: 'DELETE' })
+                .then(response => {
+                    window.location.href = `/logout`;
+                });
+        });
+
+    </script>
 
 </body>
 

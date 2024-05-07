@@ -115,10 +115,14 @@ body {
     align-items: center;
 }
 
-.section.home{
+.section.home {
     background-image: url('/wallpaper-10.png');
     background-size: 1265px 475px;
     background-position: center;
     background-repeat: no-repeat;
     height: 475px;
+}
+
+.accountEmptyFieldNotification {
+    color: red;
 }
