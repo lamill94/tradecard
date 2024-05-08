@@ -496,7 +496,43 @@
                             </div> <!--end of column-->
                             <% }) %> <!--end of card for loop-->
                     </div> <!--end of columns-->
-                    <% } %> <!--end of collection is empty-->
+
+                    <% if (comments.length>0) { %>
+                        <table class="table is-bordered is-striped mt-5">
+                            <thead>
+                                <tr>
+                                    <th>Comment</th>
+                                    <th>Rating</th>
+                                    <th>Member</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% comments.forEach((comment, index)=> { %>
+                                    <tr>
+                                        <td>
+                                            <%= comment.commentary %>
+                                        </td>
+                                        <td>
+                                            <%= comment.rating %>/5
+                                        </td>
+                                        <td>
+                                            <%= comment.display_name %>
+                                        </td>
+                                    </tr>
+                                    <% }) %> <!--end of comments loop-->
+                            </tbody>
+                        </table>
+                        <% } %> <!--end of if commentary is populated-->
+
+                        <% if (isAuthenticated && rowdata[0].member_id !== req.session.memberid) { %>
+
+                            <p>
+                                You can leave comment!
+                            </p>
+
+                            <% } %> <!--end of is authenticated & collection doesn't belong to user-->
+
+                            <% } %> <!--end of collection is empty-->
         </div> <!--end of container-->
     </section> <!--end of section-->
 

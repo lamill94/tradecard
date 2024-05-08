@@ -50,6 +50,13 @@ const wishlistQuery = `SELECT * FROM wishlist
 INNER JOIN wishlist_card ON wishlist.wishlist_id = wishlist_card.wishlist_id
 WHERE member_id = ?`;
 
+const commentsQuery = `SELECT * FROM member_collection 
+INNER JOIN collection ON member_collection.collection_id = collection.collection_id
+INNER JOIN collection_comment ON collection.collection_id = collection_comment.collection_id
+INNER JOIN comment ON collection_comment.comment_id = comment.comment_id
+INNER JOIN member ON comment.commenter_id = member.member_id
+WHERE member_collection.member_collection_id = ?`;
+
 //set up a route handler for HTTP GET requests to the "/collection" endpoint
 router.get("/collection", (req, res) => {
 
@@ -218,14 +225,18 @@ router.get("/collection", (req, res) => {
                                             connection.query(marketPriceQuery, (err, marketPrices) => {
                                                 if (err) throw err;
 
-                                                res.render('collection', {
-                                                    req: req, rowdata: rows, hp: hp, myCollections: myCollections,
-                                                    myWishlist: myWishlist, energyTypes: energyTypes, stages: stages,
-                                                    retreatCosts: retreatCosts, expansions: expansions,
-                                                    rarities: rarities, marketPrices: marketPrices,
-                                                    isEmptyCollection: isEmptyCollection,
-                                                    isAuthenticated: req.session.authen,
-                                                    displayName: req.session.displayName
+                                                connection.query(commentsQuery, [memberCollectionId], (err, comments) => {
+                                                    if (err) throw err;
+
+                                                    res.render('collection', {
+                                                        req: req, rowdata: rows, hp: hp, myCollections: myCollections,
+                                                        myWishlist: myWishlist, energyTypes: energyTypes, stages: stages,
+                                                        retreatCosts: retreatCosts, expansions: expansions,
+                                                        rarities: rarities, marketPrices: marketPrices,
+                                                        isEmptyCollection: isEmptyCollection,
+                                                        isAuthenticated: req.session.authen,
+                                                        displayName: req.session.displayName, comments: comments
+                                                    });
                                                 });
                                             });
                                         });
@@ -274,7 +285,7 @@ router.post('/collection', (req, res) => {
                 res.redirect('/wishlist');
             } else if (redirectPage === 'expansion') {
                 res.redirect(`/expansion?expansion_id=${expansionId}`);
-            } 
+            }
         });
     });
 });
