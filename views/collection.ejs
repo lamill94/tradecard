@@ -498,7 +498,11 @@
                     </div> <!--end of columns-->
 
                     <% if (comments.length>0) { %>
-                        <table class="table is-bordered is-striped mt-5">
+                        <h1 class="title is-size-5">
+                            Member comments
+                        </h1>
+
+                        <table class="table is-bordered is-striped">
                             <thead>
                                 <tr>
                                     <th>Comment</th>
@@ -524,15 +528,50 @@
                         </table>
                         <% } %> <!--end of if commentary is populated-->
 
-                        <% if (isAuthenticated && rowdata[0].member_id !== req.session.memberid) { %>
+                            <% if (isAuthenticated && rowdata[0].member_id !==req.session.memberid) { %>
 
-                            <p>
-                                You can leave comment!
-                            </p>
+                                <h1 class="title is-size-5">
+                                    Leave a comment
+                                </h1>
 
-                            <% } %> <!--end of is authenticated & collection doesn't belong to user-->
+                                <form action="/collection/comment" method="POST">
+                                    <input type="hidden" name="collection_id" value="<%= rowdata[0].collection_id %>">
+                                    <input type="hidden" name="member_collection_id"
+                                        value="<%= req.query.member_collection_id %>">
+                                    <div class="field">
+                                        <label class="label">Rating</label>
+                                        <div class="control">
+                                            <div class="select">
+                                                <select name="rating">
+                                                    <option disabled selected>Select rating</option>
+                                                    <option>1</option>
+                                                    <option>2</option>
+                                                    <option>3</option>
+                                                    <option>4</option>
+                                                    <option>5</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                            <% } %> <!--end of collection is empty-->
+                                    <div class="field">
+                                        <label class="label">Comment</label>
+                                        <div class="control">
+                                            <textarea name="comment" class="textarea"
+                                                placeholder="Leave comment..."></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="field is-grouped">
+                                        <div class="control">
+                                            <button class="button is-info">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <% } %> <!--end of is authenticated & collection doesn't belong to user-->
+
+                                    <% } %> <!--end of collection is empty-->
         </div> <!--end of container-->
     </section> <!--end of section-->
 

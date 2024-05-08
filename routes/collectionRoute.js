@@ -150,7 +150,7 @@ router.get("/collection", (req, res) => {
 
     //query to render the cards including whereClause & orderByClause
     const cardsInCollectionSql = `SELECT member_collection_id, member_collection.member_id AS 'member_id', 
-    display_name, collection_name, card.card_id AS 'card_id', card_name, hp, a.energy_type_name, a.energy_type_url, 
+    display_name, collection.collection_id AS 'collection_id', collection_name, card.card_id AS 'card_id', card_name, hp, a.energy_type_name, a.energy_type_url, 
     stage, evolves_from, b.energy_type_name AS 'weakness_energy_type_name', 
     b.energy_type_url AS 'weakness_energy_type_url', c.energy_type_name AS 'resistance_energy_type_name', 
     c.energy_type_url AS 'resistance_energy_type_url', resistance_number, 
@@ -286,6 +286,33 @@ router.post('/collection', (req, res) => {
             } else if (redirectPage === 'expansion') {
                 res.redirect(`/expansion?expansion_id=${expansionId}`);
             }
+        });
+    });
+});
+
+//set up a route handler for HTTP POST requests to the "/collection/comment" endpoint
+router.post('/collection/comment', (req, res) => {
+
+    const memberid = req.session.memberid;
+    const collectionId = req.body.collection_id;
+    const memberCollectionId = req.body.member_collection_id;
+    const rating = req.body.rating;
+    const comment = req.body.comment;
+
+    //insert comment & rating into the comment table
+    const addCommentSql = `INSERT INTO comment (commentary, rating, commenter_id) VALUES( ? , ? , ? );`;
+
+    connection.query(addCommentSql, [comment, rating, memberid], (err, rows) => {
+        if (err) throw err;
+        const newCommentId = rows.insertId;
+
+        //then insert new comment_id and collection_id into collection_comment table 
+        const addCommentCollectionSql = `INSERT INTO collection_comment (collection_id, comment_id) VALUES ( ? , ? );`;
+
+        connection.query(addCommentCollectionSql, [collectionId, newCommentId], (err, rows) => {
+            if (err) throw err;
+
+            res.redirect(`/collection?member_collection_id=${memberCollectionId}`);
         });
     });
 });
