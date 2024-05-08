@@ -47,7 +47,7 @@
 
                                                     <div class="control is-expanded">
                                                         <input class="input" type="text" name="newCollectionField"
-                                                            placeholder="New collection name...">
+                                                            placeholder="Enter name...">
                                                     </div>
 
                                                     <div class="control">
@@ -65,54 +65,119 @@
                                             </form>
                                         </div>
 
-                                        <div class="box">
+                                        <h1 class="title is-size-5">
+                                            My collections
+                                        </h1>
 
-                                            <h1 class="title is-size-5">
-                                                My collections
-                                            </h1>
+                                        <div class="block">
 
-                                            <div class="block">
-                                                <% if (myCollections.length===0) { %>
-                                                    <p>You currently have no Collections.</p>
-                                                    <% } else { %>
-                                                        <table class="table is-bordered is-striped">
-                                                            <tbody>
-                                                                <% myCollections.forEach((collection, index)=> { %>
-                                                                    <tr>
-                                                                        <td>
-                                                                            <a
-                                                                                href="/collection?member_collection_id=<%=collection.member_collection_id%>">
-                                                                                <%= collection.collection_name %>
-                                                                            </a>
-                                                                        </td>
-                                                                        <td>
-                                                                            Rename
-                                                                        </td>
-                                                                        <td>
-                                                                            <form id="deleteCollectionForm"
-                                                                                action="/collections/<%=collection.member_collection_id%>/delete?collectionId=<%=collection.collection_id%>"
-                                                                                method="POST">
-                                                                                <input type="hidden" name="_method"
-                                                                                    value="DELETE">
-                                                                                <button type="submit"
-                                                                                    class="button has-text-grey py-0">
-                                                                                    <span class="icon">
-                                                                                        <i class="fas fa-trash"></i>
-                                                                                    </span>
-                                                                                    <span>Delete</span>
-                                                                                </button>
-                                                                            </form>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <% }) %>
-                                                            </tbody>
-                                                        </table>
-                                                        <% } %>
-                                            </div>
+                                            <% if (myCollections.length===0) { %>
 
+                                                <p>You currently have no Collections.</p>
+
+                                                <% } else { %>
+
+                                                    <div class="columns is-multiline is-variable">
+                                                        <% myCollections.forEach((collection, index)=> { %>
+                                                            <div class="column is-6-tablet is-3-desktop">
+                                                                <div class="card">
+
+                                                                    <a
+                                                                        href="/collection?member_collection_id=<%=collection.member_collection_id%>">
+                                                                        <p class="pt-3 pl-3">
+                                                                            <%= collection.collection_name %>
+                                                                        </p>
+                                                                    </a>
+
+                                                                    <div class="card-content pt-3 pb-4 px-3">
+
+                                                                        <div class="block mb-3">
+
+                                                                            <% if (emptyNewNameNotification) { %>
+                                                                                <p class="emptyFieldNotification">
+                                                                                    New name can't be empty.
+                                                                                </p>
+                                                                                <% } %>
+
+                                                                                    <form
+                                                                                        action="/collections/newCollectionName"
+                                                                                        method="POST">
+                                                                                        <input type="hidden"
+                                                                                            name="collection_id"
+                                                                                            value="<%= collection.collection_id %>">
+                                                                                        <div class="field has-addons">
+                                                                                            <div class="control">
+                                                                                                <input class="input"
+                                                                                                    type="text"
+                                                                                                    name="renameCollectionField"
+                                                                                                    placeholder="New name...">
+                                                                                            </div>
+                                                                                            <div class="control">
+                                                                                                <button
+                                                                                                    class="button is-light">
+                                                                                                    Rename
+                                                                                                </button>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+
+                                                                        </div>
+
+                                                                        <form id="deleteCollectionForm"
+                                                                            action="/collections/<%=collection.member_collection_id%>/delete?collectionId=<%=collection.collection_id%>"
+                                                                            method="POST">
+                                                                            <input type="hidden" name="_method"
+                                                                                value="DELETE">
+                                                                            <button type="submit"
+                                                                                class="button is-info">
+                                                                                <span class="icon">
+                                                                                    <i class="fas fa-trash"></i>
+                                                                                </span>
+                                                                                <span>Delete</span>
+                                                                            </button>
+                                                                        </form>
+
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                            <% }) %>
+                                                    </div>
+
+                                                    <% } %>
                                         </div>
 
-                                        <div class="box">
+                                        <h1 class="title is-size-5">
+                                            Members' collections
+                                        </h1>
+
+                                        <div class="block">
+                                            <table class="table is-bordered is-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Collection</th>
+                                                        <th>Member</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% otherCollections.forEach((collection, index)=> { %>
+                                                        <tr>
+                                                            <td>
+                                                                <a
+                                                                    href="/collection?member_collection_id=<%=collection.member_collection_id%>">
+                                                                    <%= collection.collection_name %>
+                                                                </a>
+                                                            </td>
+                                                            <td>
+                                                                <%= collection.display_name %>
+                                                            </td>
+                                                        </tr>
+                                                        <% }) %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <% } else { %>
 
                                             <h1 class="title is-size-5">
                                                 Members' collections
@@ -127,7 +192,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <% otherCollections.forEach((collection, index)=> { %>
+                                                        <% allCollections.forEach((collection, index)=> { %>
                                                             <tr>
                                                                 <td>
                                                                     <a
@@ -142,44 +207,6 @@
                                                             <% }) %>
                                                     </tbody>
                                                 </table>
-                                            </div>
-
-                                        </div>
-
-                                        <% } else { %>
-
-                                            <div class="box">
-
-                                                <h1 class="title is-size-5">
-                                                    Members' collections
-                                                </h1>
-
-                                                <div class="block">
-                                                    <table class="table is-bordered is-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Collection</th>
-                                                                <th>Member</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <% allCollections.forEach((collection, index)=> { %>
-                                                                <tr>
-                                                                    <td>
-                                                                        <a
-                                                                            href="/collection?member_collection_id=<%=collection.member_collection_id%>">
-                                                                            <%= collection.collection_name %>
-                                                                        </a>
-                                                                    </td>
-                                                                    <td>
-                                                                        <%= collection.display_name %>
-                                                                    </td>
-                                                                </tr>
-                                                                <% }) %>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-
                                             </div>
 
                                             <% } %>

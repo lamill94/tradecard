@@ -68,7 +68,7 @@ router.get("/collections", (req, res) => {
             allCollections: allCollections, myCollections: myCollections,
             otherCollections: otherCollections, collectionExistsNotification: false, emptyNameNotification: false,
             collectionAddedNotification: false, isAuthenticated: req.session.authen,
-            displayName: req.session.displayName
+            displayName: req.session.displayName, emptyNewNameNotification: false
         });
     });
 });
@@ -90,7 +90,7 @@ router.post('/collections', (req, res) => {
                 allCollections: allCollections, myCollections: myCollections,
                 otherCollections: otherCollections, collectionExistsNotification: false, emptyNameNotification: true,
                 collectionAddedNotification: false, isAuthenticated: req.session.authen,
-                displayName: req.session.displayName
+                displayName: req.session.displayName, emptyNewNameNotification: false
             });
         });
 
@@ -113,7 +113,8 @@ router.post('/collections', (req, res) => {
                         allCollections: allCollections, myCollections: myCollections,
                         otherCollections: otherCollections, collectionExistsNotification: true,
                         emptyNameNotification: false, collectionAddedNotification: false,
-                        isAuthenticated: req.session.authen, displayName: req.session.displayName
+                        isAuthenticated: req.session.authen, displayName: req.session.displayName, 
+                        emptyNewNameNotification: false
                     });
                 });
 
@@ -137,12 +138,46 @@ router.post('/collections', (req, res) => {
                                 allCollections: allCollections, myCollections: myCollections,
                                 otherCollections: otherCollections, collectionExistsNotification: false,
                                 emptyNameNotification: false, collectionAddedNotification: true,
-                                isAuthenticated: req.session.authen, displayName: req.session.displayName
+                                isAuthenticated: req.session.authen, displayName: req.session.displayName, 
+                                emptyNewNameNotification: false
                             });
                         });
                     });
                 });
             }
+        });
+    }
+});
+
+// set up a route handler for HTTP POST requests to the "/collections/newCollectionName" endpoint
+router.post("/collections/newCollectionName", (req, res) => {
+
+    const memberid = req.session.memberid;
+    const newCollectionName = req.body.renameCollectionField;
+    const collectionId = req.body.collection_id;
+
+    // if newCollectionName isn't populated then show empty field notification
+    if (!newCollectionName) {
+
+        fetchCollections(memberid, (allCollections, myCollections, otherCollections) => {
+            res.render('collections', {
+                allCollections: allCollections, myCollections: myCollections,
+                otherCollections: otherCollections, collectionExistsNotification: false,
+                emptyNameNotification: false, collectionAddedNotification: false,
+                isAuthenticated: req.session.authen, displayName: req.session.displayName, 
+                emptyNewNameNotification: true
+            });
+        });
+
+        // else if newCollectionName is populated then update
+    } else {
+
+        const updateCollectionNameSql = `UPDATE collection SET collection_name = ? WHERE collection_id = ?`;
+
+        connection.query(updateCollectionNameSql, [newCollectionName, collectionId], (err, result) => {
+            if (err) throw err;
+
+            res.redirect("/collections");
         });
     }
 });
