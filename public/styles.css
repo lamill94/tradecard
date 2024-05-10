@@ -130,12 +130,13 @@ body {
     align-items: center;
 }
 
-.section.home {
-    background-image: url('/wallpaper-10.png');
+.section.home.pt-0 {
+    /*background-image: url('/wallpaper-10.png');
     background-size: 1265px 475px;
     background-position: center;
     background-repeat: no-repeat;
-    height: 475px;
+    height: 475px;*/
+    background-color: #ef9648;
 }
 
 .emptyFieldNotification {

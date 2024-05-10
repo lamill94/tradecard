@@ -151,7 +151,7 @@ router.post("/account/newPassword", (req, res) => {
 });
 
 //set up a route handler for HTTP DELETE requests to the "/account" endpoint
-router.delete('/account', (req, res) => {
+router.post('/account/delete', (req, res) => {
 
     const memberid = req.session.memberid;
 
@@ -173,7 +173,7 @@ router.delete('/account', (req, res) => {
             connection.query(deleteCollectionCardsSql, [memberid], (err, result) => {
                 if (err) throw err;
 
-                // sql query to delete all user's collections from the collection & member_collection table
+                // sql query to delete all user's collections from the collection, collection_comment & member_collection table
                 const getCollectionIds = `SELECT collection_id FROM member_collection WHERE member_id = ?`;
 
                 connection.query(getCollectionIds, [memberid], (err, result) => {
@@ -194,17 +194,23 @@ router.delete('/account', (req, res) => {
                     connection.query(deleteMemberCollectionSql, [memberid], (err, result) => {
                         if (err) throw err;
 
-                        const deleteCollectionSql = `DELETE FROM collection WHERE collection_id IN (${collectionIds})`;
+                        const deleteCollectionCommentsSql = `DELETE FROM collection_comment WHERE collection_id IN (${collectionIds})`;
 
-                        connection.query(deleteCollectionSql, (err, result) => {
+                        connection.query(deleteCollectionCommentsSql, (err, result) => {
+                            if (err) throw err;
 
-                            // sql query to delete member from member table
-                            const deleteMemberSql = `DELETE FROM member WHERE member_id = ?`;
+                            const deleteCollectionSql = `DELETE FROM collection WHERE collection_id IN (${collectionIds})`;
 
-                            connection.query(deleteMemberSql, [memberid], (err, result) => {
-                                if (err) throw err;
+                            connection.query(deleteCollectionSql, (err, result) => {
 
-                                res.redirect(`/logout`);
+                                // sql query to delete member from member table
+                                const deleteMemberSql = `DELETE FROM member WHERE member_id = ?`;
+
+                                connection.query(deleteMemberSql, [memberid], (err, result) => {
+                                    if (err) throw err;
+
+                                    res.redirect(`/logout`);
+                                });
                             });
                         });
                     });

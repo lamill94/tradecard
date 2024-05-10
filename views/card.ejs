@@ -20,21 +20,12 @@
             <div class="columns mt-5 is-multiline is-variable is-centered">
 
                 <div class="column is-3-tablet is-3-desktop">
-                    <div class="card">
-                        <div class="card-image has-text-centered">
-                            <img src="<%= cardData[0].image_url %>">
-                        </div>
-                        <div class="card-content pt-0 pb-2">
-                            <p class="has-text-centered has-text-grey">
-                                $<%= cardData[0].market_price %>
-                            </p>
-                        </div>
-                    </div>
+                    <img src="<%= cardData[0].image_url %>">
                 </div>
 
                 <div class="column is-9-tablet is-9-desktop">
 
-                    <h1 class="title is-size-4 mt-5 mb-4">
+                    <h1 class="title is-size-4 mt-1 mb-4">
                         <%= cardData[0].card_name %>
                     </h1>
 
@@ -102,12 +93,13 @@
                                         <% if (myWishlist.some(item=> item.card_id === cardData[0].card_id)) { %>
 
                                             <form id="removeCardForm"
-                                                action="/wishlist/<%= cardData[0].card_id %>?redirect=card" method="DELETE">
+                                                action="/wishlist/<%= cardData[0].card_id %>?redirect=card"
+                                                method="DELETE">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="has-text-grey is-size-4 ml-2">
-                                                        <span class="heart-icon">
-                                                            <i class="fas fa-heart"></i>
-                                                        </span>
+                                                    <span class="heart-icon">
+                                                        <i class="fas fa-heart"></i>
+                                                    </span>
                                                 </button>
                                             </form>
 
@@ -172,6 +164,13 @@
                                                 <% } else { %>
                                                     <%= cardData[0].stage %>
                                                         <% } %>
+                                </p>
+                            </div>
+
+                            <div class="block">
+                                <p><strong>Market Price</strong></p>
+                                <p>
+                                    $<%= cardData[0].market_price %>
                                 </p>
                             </div>
                         </div>

@@ -113,7 +113,7 @@ router.post('/collections', (req, res) => {
                         allCollections: allCollections, myCollections: myCollections,
                         otherCollections: otherCollections, collectionExistsNotification: true,
                         emptyNameNotification: false, collectionAddedNotification: false,
-                        isAuthenticated: req.session.authen, displayName: req.session.displayName, 
+                        isAuthenticated: req.session.authen, displayName: req.session.displayName,
                         emptyNewNameNotification: false
                     });
                 });
@@ -138,7 +138,7 @@ router.post('/collections', (req, res) => {
                                 allCollections: allCollections, myCollections: myCollections,
                                 otherCollections: otherCollections, collectionExistsNotification: false,
                                 emptyNameNotification: false, collectionAddedNotification: true,
-                                isAuthenticated: req.session.authen, displayName: req.session.displayName, 
+                                isAuthenticated: req.session.authen, displayName: req.session.displayName,
                                 emptyNewNameNotification: false
                             });
                         });
@@ -164,7 +164,7 @@ router.post("/collections/newCollectionName", (req, res) => {
                 allCollections: allCollections, myCollections: myCollections,
                 otherCollections: otherCollections, collectionExistsNotification: false,
                 emptyNameNotification: false, collectionAddedNotification: false,
-                isAuthenticated: req.session.authen, displayName: req.session.displayName, 
+                isAuthenticated: req.session.authen, displayName: req.session.displayName,
                 emptyNewNameNotification: true
             });
         });
@@ -194,17 +194,26 @@ router.post('/collections/:memberCollectionId/delete', (req, res) => {
     connection.query(deleteMemberCollectionSql, [memberCollectionId], (err, result) => {
         if (err) throw err;
 
+        // sql query to remove the collection's cards from the collection_card table
         const deleteCollectionCardsSql = `DELETE FROM collection_card WHERE collection_id = ?`;
 
         connection.query(deleteCollectionCardsSql, [collectionId], (err, result) => {
             if (err) throw err;
 
-            const deleteCollectionSql = `DELETE FROM collection WHERE collection_id = ?`;
+            // sql query to remove the collection from the collection_comment table
+            const deleteCollectionCommentsSql = `DELETE FROM collection_comment WHERE collection_id = ?`;
 
-            connection.query(deleteCollectionSql, [collectionId], (err, result) => {
+            connection.query(deleteCollectionCommentsSql, [collectionId], (err, result) => {
                 if (err) throw err;
 
-                res.redirect(`/collections`);
+                // sql query to remove the collection from the collection table
+                const deleteCollectionSql = `DELETE FROM collection WHERE collection_id = ?`;
+
+                connection.query(deleteCollectionSql, [collectionId], (err, result) => {
+                    if (err) throw err;
+
+                    res.redirect(`/collections`);
+                });
             });
         });
     });
