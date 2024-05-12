@@ -4,19 +4,21 @@ const express = require("express");
 const cookieParser = require('cookie-parser');
 const sessions = require('express-session');
 
-//set references to the routes instances
-const homeRoute = require('./routes/homeRoute');
-const browseRoute = require('./routes/browseRoute');
-const cardRoute = require('./routes/cardRoute');
-const loginRoute = require('./routes/loginRoute');
-const signupRoute = require('./routes/signupRoute');
-const logoutRoute = require('./routes/logoutRoute');
-const accountRoute = require('./routes/accountRoute');
-const collectionsRoute = require('./routes/collectionsRoute');
-const collectionRoute = require('./routes/collectionRoute');
-const wishlistRoute = require('./routes/wishlistRoute');
-const expansionsRoute = require('./routes/expansionsRoute');
-const expansionRoute = require('./routes/expansionRoute');
+//import routes
+const routes = [
+    require('./routes/homeRoute'),
+    require('./routes/browseRoute'),
+    require('./routes/cardRoute'),
+    require('./routes/loginRoute'),
+    require('./routes/signupRoute'),
+    require('./routes/logoutRoute'),
+    require('./routes/accountRoute'),
+    require('./routes/collectionsRoute'),
+    require('./routes/collectionRoute'),
+    require('./routes/wishlistRoute'),
+    require('./routes/expansionsRoute'),
+    require('./routes/expansionRoute')
+];
 
 //create instance of the express application
 const app = express();
@@ -45,21 +47,17 @@ app.use(sessions({
 }));
 
 //mount routers onto Express application
-app.use(homeRoute);
-app.use(browseRoute);
-app.use(cardRoute);
-app.use(loginRoute);
-app.use(signupRoute);
-app.use(logoutRoute);
-app.use(accountRoute);
-app.use(collectionsRoute);
-app.use(collectionRoute);
-app.use(wishlistRoute);
-app.use(expansionsRoute);
-app.use(expansionRoute);
+mountRoutes();
 
 //start the server and make it listen for incoming HTTP requests on port 3000
 app.listen(3000, (err) => {
     if (err) throw err;
     console.log(`Server is listening on localhost:3000`)
 });
+
+//function to mount routers onto Express application
+function mountRoutes() {
+    routes.forEach(route => {
+        app.use(route);
+    });
+}

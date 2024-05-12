@@ -196,5 +196,5 @@ router.post('/collections/:memberCollectionId/delete', (req, res) => {
     });
 });
 
-//export the instance
+//export the router
 module.exports = router;

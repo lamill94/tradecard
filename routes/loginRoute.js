@@ -35,22 +35,20 @@ router.post('/login', (req, res) => {
 
         //if email address exists
         if (numRows > 0) {
-            const user = rows[0];
 
             //if entered password matches stored password then set session to true and set their display 
             //name and memberid for use
             if (bcrypt.compareSync(password, user.password)) {
-                const sessionobj = req.session;
-                sessionobj.authen = true;
-                sessionobj.displayName = user.display_name;
-                sessionobj.memberid = user.member_id;
+                req.session.authen = true;
+                req.session.displayName = rows[0].display_name;
+                req.session.memberid = rows[0].member_id;
                 res.redirect('/');
 
                 //else if entered password doesn't match stored password then show invalid PW notification
             } else {
                 res.render('login', {
-                    passwordNotification: true, noEmailNotification: false,
-                    emptyFieldNotification: false, isAuthenticated: req.session.authen
+                    passwordNotification: true, noEmailNotification: false, emptyFieldNotification: false, 
+                    isAuthenticated: req.session.authen
                 });
             }
 
@@ -64,5 +62,5 @@ router.post('/login', (req, res) => {
     });
 });
 
-//export the instance
+//export the router
 module.exports = router;

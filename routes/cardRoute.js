@@ -51,5 +51,5 @@ router.get("/card", (req, res) => {
     });
 });
 
-//export the instance
+//export the router
 module.exports = router;

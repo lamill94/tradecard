@@ -6,5 +6,5 @@ router.get("/", (req, res) => {
     res.render('home', { isAuthenticated: req.session.authen, displayName: req.session.displayName });
 });
 
-//export the instance
+//export the router
 module.exports = router;

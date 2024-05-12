@@ -27,5 +27,5 @@ router.get("/expansions", (req, res) => {
     });
 });
 
-//export the instance
+//export the router
 module.exports = router;

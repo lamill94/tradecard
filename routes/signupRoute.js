@@ -6,8 +6,7 @@ const bcrypt = require('bcrypt');
 //set up a route handler for HTTP GET requests to the "/signup" endpoint
 router.get("/signup", (req, res) => {
     res.render('signup', {
-        userExistsNotification: false, emptyFieldNotification: false,
-        isAuthenticated: req.session.authen
+        userExistsNotification: false, emptyFieldNotification: false, isAuthenticated: req.session.authen
     });
 });
 
@@ -22,8 +21,7 @@ router.post('/signup', (req, res) => {
     //if at least one field isn't populated then show empty field notification
     if (!displayname || !useremail || !password) {
         return res.render('signup', {
-            emptyFieldNotification: true, userExistsNotification: false,
-            isAuthenticated: req.session.authen
+            emptyFieldNotification: true, userExistsNotification: false, isAuthenticated: req.session.authen
         });
     }
 
@@ -37,8 +35,7 @@ router.post('/signup', (req, res) => {
         //if email address exists then show user exists notification
         if (numRows > 0) {
             res.render('signup', {
-                userExistsNotification: true, emptyFieldNotification: false,
-                isAuthenticated: req.session.authen
+                userExistsNotification: true, emptyFieldNotification: false, isAuthenticated: req.session.authen
             });
 
             //else if user doesn't exist then hash the signup password using bcrypt
@@ -79,5 +76,5 @@ router.post('/signup', (req, res) => {
     });
 });
 
-//export the instance
+//export the router
 module.exports = router;

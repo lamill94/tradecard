@@ -1,41 +1,10 @@
 //import modules
 const router = require("express").Router();
 const connection = require("../connection");
-
-//SQL queries for user's collections and filters
-const myCollectionsQuery = `SELECT * FROM member_collection 
-INNER JOIN collection ON member_collection.collection_id = collection.collection_id
-INNER JOIN member ON member_collection.member_id = member.member_id
-WHERE member_collection.member_id = ?`;
-
-const hpQuery = `SELECT MIN(hp) AS 'min_hp', MAX(hp) AS 'max_hp' FROM card`;
-
-const energyTypeQuery = `SELECT * FROM energy_type WHERE energy_type_id != 1`;
-
-const stageQuery = `SELECT * FROM stage`;
-
-const retreatCostQuery = `SELECT * FROM retreat_cost`;
-
-const expansionQuery = `SELECT * FROM expansion`;
-
-const rarityQuery = `SELECT * FROM rarity`;
-
-const marketPriceQuery = `SELECT MIN(market_price) AS 'min_market_price', MAX(market_price) AS 'max_market_price' 
-FROM card`;
-
-const wishlistQuery = `SELECT * FROM wishlist 
-INNER JOIN wishlist_card ON wishlist.wishlist_id = wishlist_card.wishlist_id
-WHERE member_id = ?`;
-
-const commentsQuery = `SELECT * FROM member_collection 
-INNER JOIN collection ON member_collection.collection_id = collection.collection_id
-INNER JOIN collection_comment ON collection.collection_id = collection_comment.collection_id
-INNER JOIN comment ON collection_comment.comment_id = comment.comment_id
-INNER JOIN member ON comment.commenter_id = member.member_id
-WHERE member_collection.member_collection_id = ?`;
+const { sqlQueries, executeQuery } = require("../queries");
 
 //set up a route handler for HTTP GET requests to the "/collection" endpoint
-router.get("/collection", (req, res) => {
+router.get("/collection", async (req, res) => {
 
     const memberCollectionId = req.query.member_collection_id;
     const memberid = req.session.memberid;
@@ -115,15 +84,7 @@ router.get("/collection", (req, res) => {
     let whereClause = filterClauses.length > 0 ? `WHERE member_collection_id = ${memberCollectionId} AND ${filterClauses.join(' AND ')}` : `WHERE member_collection_id = ${memberCollectionId}`;
 
     //set orderByClause
-    if (sort) {
-        if (Array.isArray(sort)) {
-            orderByClause = `ORDER BY ${sort[0]}, ${sort[1]}`;
-        } else {
-            orderByClause = `ORDER BY ${sort}`;
-        }
-    } else {
-        orderByClause = `ORDER BY release_date, card_number`;
-    }
+    let orderByClause = sort ? (Array.isArray(sort) ? `ORDER BY ${sort[0]}, ${sort[1]}` : `ORDER BY ${sort}`) : `ORDER BY release_date, card_number`;
 
     //query to render the cards including whereClause & orderByClause
     const cardsInCollectionSql = `SELECT member_collection_id, member_collection.member_id AS 'member_id', 
@@ -148,7 +109,7 @@ router.get("/collection", (req, res) => {
     ${orderByClause}`;
 
     //execute queries for cards, collections & filters
-    connection.query(cardsInCollectionSql, (err, rows) => {
+    connection.query(cardsInCollectionSql, async (err, rows) => {
         if (err) throw err;
 
         //check if collection is empty
@@ -158,12 +119,12 @@ router.get("/collection", (req, res) => {
         //collection details such as collection_name
         if (isEmptyCollection) {
 
-            const readsql = `SELECT * FROM member_collection
+            const emptyCollectionsql = `SELECT * FROM member_collection
                 INNER JOIN member ON member_collection.member_id = member.member_id
                 INNER JOIN collection ON member_collection.collection_id = collection.collection_id
                 WHERE member_collection_id = ?`;
 
-            connection.query(readsql, [memberCollectionId], (err, rows) => {
+            connection.query(emptyCollectionsql, [memberCollectionId], (err, rows) => {
                 if (err) throw err;
 
                 res.render('collection', {
@@ -175,54 +136,22 @@ router.get("/collection", (req, res) => {
             //else if collection isn't empty then render as normal
         } else {
 
-            connection.query(myCollectionsQuery, [memberid], (err, myCollections) => {
-                if (err) throw err;
+            const myCollections = await executeQuery(sqlQueries.myCollectionsQuery, [memberid]);
+            const myWishlist = await executeQuery(sqlQueries.wishlistQuery, [memberid]);
+            const hp = await executeQuery(sqlQueries.hpQuery, []);
+            const energyTypes = await executeQuery(sqlQueries.energyTypeQuery, []);
+            const stages = await executeQuery(sqlQueries.stageQuery, []);
+            const retreatCosts = await executeQuery(sqlQueries.retreatCostQuery, []);
+            const expansions = await executeQuery(sqlQueries.expansionQuery, []);
+            const rarities = await executeQuery(sqlQueries.rarityQuery, []);
+            const marketPrices = await executeQuery(sqlQueries.marketPriceQuery, []);
+            const comments = await executeQuery(sqlQueries.commentsQuery, [memberCollectionId]);
 
-                connection.query(wishlistQuery, [memberid], (err, myWishlist) => {
-                    if (err) throw err;
-
-                    connection.query(hpQuery, (err, hp) => {
-                        if (err) throw err;
-
-                        connection.query(energyTypeQuery, (err, energyTypes) => {
-                            if (err) throw err;
-
-                            connection.query(stageQuery, (err, stages) => {
-                                if (err) throw err;
-
-                                connection.query(retreatCostQuery, (err, retreatCosts) => {
-                                    if (err) throw err;
-
-                                    connection.query(expansionQuery, (err, expansions) => {
-                                        if (err) throw err;
-
-                                        connection.query(rarityQuery, (err, rarities) => {
-                                            if (err) throw err;
-
-                                            connection.query(marketPriceQuery, (err, marketPrices) => {
-                                                if (err) throw err;
-
-                                                connection.query(commentsQuery, [memberCollectionId], (err, comments) => {
-                                                    if (err) throw err;
-
-                                                    res.render('collection', {
-                                                        req: req, rowdata: rows, hp: hp, myCollections: myCollections,
-                                                        myWishlist: myWishlist, energyTypes: energyTypes, stages: stages,
-                                                        retreatCosts: retreatCosts, expansions: expansions,
-                                                        rarities: rarities, marketPrices: marketPrices,
-                                                        isEmptyCollection: isEmptyCollection,
-                                                        isAuthenticated: req.session.authen,
-                                                        displayName: req.session.displayName, comments: comments
-                                                    });
-                                                });
-                                            });
-                                        });
-                                    });
-                                });
-                            });
-                        });
-                    });
-                });
+            res.render('collection', {
+                req: req, rowdata: rows, hp: hp, myCollections: myCollections, myWishlist: myWishlist,
+                energyTypes: energyTypes, stages: stages, retreatCosts: retreatCosts, expansions: expansions,
+                rarities: rarities, marketPrices: marketPrices, isEmptyCollection: isEmptyCollection,
+                isAuthenticated: req.session.authen, displayName: req.session.displayName, comments: comments
             });
         }
     });
@@ -309,5 +238,5 @@ router.delete('/collection/:cardId', (req, res) => {
     });
 });
 
-//export the instance
+//export the router
 module.exports = router;

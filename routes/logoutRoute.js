@@ -10,5 +10,5 @@ router.get("/logout", (req, res) => {
     });
 });
 
-//export the instance
+//export the router
 module.exports = router;

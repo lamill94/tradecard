@@ -198,5 +198,5 @@ router.post('/account/delete', (req, res) => {
     });
 });
 
-//export the instance
+//export the router
 module.exports = router;

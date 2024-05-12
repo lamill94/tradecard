@@ -1,30 +1,10 @@
 //import modules
 const router = require("express").Router();
 const connection = require("../connection");
-
-//SQL queries for user's collections and filters
-const myCollectionsQuery = `SELECT * FROM member_collection 
-INNER JOIN collection ON member_collection.collection_id = collection.collection_id
-INNER JOIN member ON member_collection.member_id = member.member_id
-WHERE member_collection.member_id = ?`;
-
-const hpQuery = `SELECT MIN(hp) AS 'min_hp', MAX(hp) AS 'max_hp' FROM card`;
-
-const energyTypeQuery = `SELECT * FROM energy_type WHERE energy_type_id != 1`;
-
-const stageQuery = `SELECT * FROM stage`;
-
-const retreatCostQuery = `SELECT * FROM retreat_cost`;
-
-const expansionQuery = `SELECT * FROM expansion`;
-
-const rarityQuery = `SELECT * FROM rarity`;
-
-const marketPriceQuery = `SELECT MIN(market_price) AS 'min_market_price', MAX(market_price) AS 'max_market_price' 
-FROM card`;
+const { sqlQueries, executeQuery } = require("../queries");
 
 //set up a route handler for HTTP GET requests to the "/wishlist" endpoint
-router.get("/wishlist", (req, res) => {
+router.get("/wishlist", async (req, res) => {
 
     const memberid = req.session.memberid;
     const minHpFilter = req.query.min_hp;
@@ -103,15 +83,7 @@ router.get("/wishlist", (req, res) => {
     let whereClause = filterClauses.length > 0 ? `WHERE member_id = ${memberid} AND ${filterClauses.join(' AND ')}` : `WHERE member_id = ${memberid}`;
 
     //set orderByClause
-    if (sort) {
-        if (Array.isArray(sort)) {
-            orderByClause = `ORDER BY ${sort[0]}, ${sort[1]}`;
-        } else {
-            orderByClause = `ORDER BY ${sort}`;
-        }
-    } else {
-        orderByClause = `ORDER BY release_date, card_number`;
-    }
+    let orderByClause = sort ? (Array.isArray(sort) ? `ORDER BY ${sort[0]}, ${sort[1]}` : `ORDER BY ${sort}`) : `ORDER BY release_date, card_number`;
 
     //query to render the cards including whereClause & orderByClause
     const wishlistCardsSqlQuery = `SELECT member_id, card.card_id AS 'card_id', card_name, hp, 
@@ -133,47 +105,22 @@ router.get("/wishlist", (req, res) => {
     ${orderByClause}`;
 
     //execute queries for cards, collections & filters
-    connection.query(wishlistCardsSqlQuery, (err, rows) => {
+    connection.query(wishlistCardsSqlQuery, async (err, rows) => {
         if (err) throw err;
 
-        connection.query(myCollectionsQuery, [memberid], (err, myCollections) => {
-            if (err) throw err;
+        const myCollections = await executeQuery(sqlQueries.myCollectionsQuery, [memberid]);
+        const hp = await executeQuery(sqlQueries.hpQuery, []);
+        const energyTypes = await executeQuery(sqlQueries.energyTypeQuery, []);
+        const stages = await executeQuery(sqlQueries.stageQuery, []);
+        const retreatCosts = await executeQuery(sqlQueries.retreatCostQuery, []);
+        const expansions = await executeQuery(sqlQueries.expansionQuery, []);
+        const rarities = await executeQuery(sqlQueries.rarityQuery, []);
+        const marketPrices = await executeQuery(sqlQueries.marketPriceQuery, []);
 
-            connection.query(hpQuery, (err, hp) => {
-                if (err) throw err;
-
-                connection.query(energyTypeQuery, (err, energyTypes) => {
-                    if (err) throw err;
-
-                    connection.query(stageQuery, (err, stages) => {
-                        if (err) throw err;
-
-                        connection.query(retreatCostQuery, (err, retreatCosts) => {
-                            if (err) throw err;
-
-                            connection.query(expansionQuery, (err, expansions) => {
-                                if (err) throw err;
-
-                                connection.query(rarityQuery, (err, rarities) => {
-                                    if (err) throw err;
-
-                                    connection.query(marketPriceQuery, (err, marketPrices) => {
-                                        if (err) throw err;
-
-                                        res.render('wishlist', {
-                                            req: req, rowdata: rows, hp: hp, energyTypes: energyTypes,
-                                            stages: stages, retreatCosts: retreatCosts, expansions: expansions,
-                                            rarities: rarities, marketPrices: marketPrices,
-                                            myCollections: myCollections, isAuthenticated: req.session.authen,
-                                            displayName: req.session.displayName
-                                        });
-                                    });
-                                });
-                            });
-                        });
-                    });
-                });
-            });
+        res.render('wishlist', {
+            req: req, rowdata: rows, hp: hp, energyTypes: energyTypes, stages: stages, retreatCosts: retreatCosts,
+            expansions: expansions, rarities: rarities, marketPrices: marketPrices, myCollections: myCollections,
+            isAuthenticated: req.session.authen, displayName: req.session.displayName
         });
     });
 });
@@ -250,5 +197,5 @@ router.delete('/wishlist/:cardId', (req, res) => {
     });
 });
 
-//export the instance
+//export the router
 module.exports = router;
