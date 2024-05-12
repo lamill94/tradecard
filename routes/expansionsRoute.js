@@ -1,29 +1,6 @@
-//add router instance
+//import modules
 const router = require("express").Router();
-
-//import the "mysql2" module
-const mysql = require("mysql2");
-
-//create mysql connection object
-const connection = mysql.createPool(
-    {
-        host: 'localhost',
-        user: 'root',
-        password: 'root',
-        database: '40108404',
-        port: '3306',
-        connectionLimit: 10,
-    }
-);
-
-//establish connection to mysql database
-connection.getConnection((err) => {
-    if (err) {
-        return console.log(err.message)
-    } else {
-        return console.log(`Connection to local MySQL DB.`)
-    };
-});
+const connection = require("../connection");
 
 //set up a route handler for HTTP GET requests to the "/expansions" endpoint
 router.get("/expansions", (req, res) => {
