@@ -23,7 +23,7 @@
         <div class="container">
 
             <h1 class="title is-size-5">
-                Expansion: <%=rowdata[0].expansion_name%>
+                Expansion: <%=cards[0].expansion_name%>
             </h1>
 
             <!--search, sort dropdown & filter button are in columns class to keep them side-by-side -->
@@ -291,7 +291,7 @@
             <!--render cards-->
             <div class="columns mt-5 is-multiline is-centered">
 
-                <% rowdata.forEach((card, index)=> { %>
+                <% cards.forEach((card, index)=> { %>
 
                     <div class="column is-3">
 
@@ -511,7 +511,7 @@
             const url = this.getAttribute('action');
             fetch(url, { method: 'DELETE' })
                 .then(response => {
-                    window.location.href = '/expansion?expansion_id=<%= rowdata[0].expansion_id %>';
+                    window.location.href = '/expansion?expansion_id=<%= cards[0].expansion_id %>';
                 });
         });
 

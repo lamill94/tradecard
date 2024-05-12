@@ -23,10 +23,10 @@
         <div class="container">
 
             <h1 class="title is-size-5 mb-1">
-                <%= rowdata[0].collection_name %>
+                <%= cards[0].collection_name %>
             </h1>
             <h1 class="title is-size-6 has-text-grey">
-                <%= rowdata[0].display_name %>
+                <%= cards[0].display_name %>
             </h1>
 
             <% if (isEmptyCollection) { %>
@@ -315,7 +315,7 @@
                     <!--render cards-->
                     <div class="columns mt-5 is-multiline is-variable is-centered">
 
-                        <% rowdata.forEach((card, index)=> { %>
+                        <% cards.forEach((card, index)=> { %>
 
                             <div class="column is-6-tablet is-3-desktop">
 
@@ -425,10 +425,10 @@
 
                                             <% } else { %>
 
-                                                <% if (rowdata[0].member_id===req.session.memberid ) { %>
+                                                <% if (cards[0].member_id===req.session.memberid ) { %>
 
                                                     <form id="removeCardFromCollectionForm"
-                                                        action="/collection/<%= card.card_id %>?member_collection_id=<%= rowdata[0].member_collection_id %>"
+                                                        action="/collection/<%= card.card_id %>?member_collection_id=<%= cards[0].member_collection_id %>"
                                                         method="DELETE">
                                                         <input type="hidden" name="_method" value="DELETE">
                                                         <button type="submit"
@@ -536,14 +536,14 @@
                         </table>
                         <% } %> <!--end of if commentary is populated-->
 
-                            <% if (isAuthenticated && rowdata[0].member_id !==req.session.memberid) { %>
+                            <% if (isAuthenticated && cards[0].member_id !==req.session.memberid) { %>
 
                                 <h1 class="title is-size-5">
                                     Leave a comment
                                 </h1>
 
                                 <form action="/collection/comment" method="POST">
-                                    <input type="hidden" name="collection_id" value="<%= rowdata[0].collection_id %>">
+                                    <input type="hidden" name="collection_id" value="<%= cards[0].collection_id %>">
                                     <input type="hidden" name="member_collection_id"
                                         value="<%= req.query.member_collection_id %>">
                                     <div class="field">
@@ -641,7 +641,7 @@
             const url = this.getAttribute('action');
             fetch(url, { method: 'DELETE' })
                 .then(response => {
-                    window.location.href = `/collection?member_collection_id=<%= rowdata[0].member_collection_id %>`;
+                    window.location.href = `/collection?member_collection_id=<%= cards[0].member_collection_id %>`;
                 });
         }
 

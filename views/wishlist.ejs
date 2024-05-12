@@ -26,7 +26,7 @@
                 My Wishlist
             </h1>
 
-            <% if (rowdata.length===0) { %>
+            <% if (cards.length===0) { %>
 
                 <p class="empty-wishlist-message">
                     No cards are currently in your wishlist.
@@ -316,7 +316,7 @@
 
                     <!--render cards-->
                     <div class="columns mt-5 is-multiline is-variable is-centered">
-                        <% rowdata.forEach((card, index)=> { %>
+                        <% cards.forEach((card, index)=> { %>
                             <div class="column is-6-tablet is-3-desktop">
                                 <div class="card mb-3">
                                     <div class="card-image has-text-centered px-5 pt-2 pb-0">
@@ -424,11 +424,11 @@
                             </div> <!--end of column-->
                             <% }) %> <!--end of card for loop-->
                     </div> <!--end of columns-->
-                    <% } %><!--end of if rowdata is empty-->
+                    <% } %><!--end of if cards is empty-->
         </div> <!--end of container-->
     </section> <!--end of section-->
 
-    <% if (rowdata.length!==0) { %>
+    <% if (cards.length!==0) { %>
         <footer class="footer pb-3">
         </footer>
         <% } %>

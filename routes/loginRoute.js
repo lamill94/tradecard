@@ -38,7 +38,7 @@ router.post('/login', (req, res) => {
 
             //if entered password matches stored password then set session to true and set their display 
             //name and memberid for use
-            if (bcrypt.compareSync(password, user.password)) {
+            if (bcrypt.compareSync(password, rows[0].password)) {
                 req.session.authen = true;
                 req.session.displayName = rows[0].display_name;
                 req.session.memberid = rows[0].member_id;

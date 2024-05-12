@@ -1,7 +1,7 @@
 //import modules
 const router = require("express").Router();
 const connection = require("../connection");
-const { sqlQueries, executeQuery } = require("../queries");
+const { sqlQueries, generateCardsInCollectionQuery, executeQuery } = require("../queries");
 
 //set up a route handler for HTTP GET requests to the "/collection" endpoint
 router.get("/collection", async (req, res) => {
@@ -21,140 +21,56 @@ router.get("/collection", async (req, res) => {
     const maxMarketPriceFilter = req.query.max_market_price;
     const sort = req.query.sort;
     const search = req.query.search;
+    const cardsInCollectionQuery = generateCardsInCollectionQuery({
+        minHpFilter, maxHpFilter, energyTypeFilter, stageFilter,
+        weaknessEnergyTypeFilter, resistanceEnergyTypeFilter, retreatCostFilter, expansionFilter, rarityFilter,
+        minMarketPriceFilter, maxMarketPriceFilter, sort, search, memberCollectionId
+    });
 
-    //push filter clauses & search to the filterClauses array
-    let filterClauses = [];
+    //execute queries
+    const cards = await executeQuery(cardsInCollectionQuery);
 
-    if (minHpFilter && maxHpFilter) {
-        filterClauses.push(`hp >= ${minHpFilter} AND hp <= ${maxHpFilter}`);
-    } else if (minHpFilter) {
-        filterClauses.push(`hp >= ${minHpFilter}`);
-    } else if (maxHpFilter) {
-        filterClauses.push(`hp <= ${maxHpFilter}`);
-    }
+    //check if there are no cards in collection
+    const isEmptyCollection = cards.length === 0;
 
-    if (energyTypeFilter) {
-        const energyTypes = energyTypeFilter.map(type => `'${type}'`).join(',');
-        filterClauses.push(`a.energy_type_name IN (${energyTypes})`);
-    }
+    //if collection is empty then nothing is returned so run another query to get collection details such as collection_name
+    if (isEmptyCollection) {
 
-    if (stageFilter) {
-        const stages = stageFilter.map(type => `'${type}'`).join(',');
-        filterClauses.push(`stage IN (${stages})`);
-    }
-
-    if (weaknessEnergyTypeFilter) {
-        const weaknessEnergyTypes = weaknessEnergyTypeFilter.map(type => `'${type}'`).join(',');
-        filterClauses.push(`b.energy_type_name IN (${weaknessEnergyTypes})`);
-    }
-
-    if (resistanceEnergyTypeFilter) {
-        const resistanceEnergyTypes = resistanceEnergyTypeFilter.map(type => `'${type}'`).join(',');
-        filterClauses.push(`c.energy_type_name IN (${resistanceEnergyTypes})`);
-    }
-
-    if (retreatCostFilter) {
-        const retreatCosts = retreatCostFilter.map(type => `${type}`).join(',');
-        filterClauses.push(`retreat_cost IN (${retreatCosts})`);
-    }
-
-    if (expansionFilter) {
-        const expansions = expansionFilter.map(type => `'${type}'`).join(',');
-        filterClauses.push(`expansion_name IN (${expansions})`);
-    }
-
-    if (rarityFilter) {
-        const rarities = rarityFilter.map(type => `'${type}'`).join(',');
-        filterClauses.push(`rarity_name IN (${rarities})`);
-    }
-
-    if (minMarketPriceFilter && maxMarketPriceFilter) {
-        filterClauses.push(`market_price >= ${minMarketPriceFilter} AND market_price <= ${maxMarketPriceFilter}`);
-    } else if (minMarketPriceFilter) {
-        filterClauses.push(`market_price >= ${minMarketPriceFilter}`);
-    } else if (maxMarketPriceFilter) {
-        filterClauses.push(`market_price <= ${maxMarketPriceFilter}`);
-    }
-
-    if (search) {
-        filterClauses.push(`card_name LIKE '%${search}%'`);
-    }
-
-    //combine all filter clauses into a single WHERE clause
-    let whereClause = filterClauses.length > 0 ? `WHERE member_collection_id = ${memberCollectionId} AND ${filterClauses.join(' AND ')}` : `WHERE member_collection_id = ${memberCollectionId}`;
-
-    //set orderByClause
-    let orderByClause = sort ? (Array.isArray(sort) ? `ORDER BY ${sort[0]}, ${sort[1]}` : `ORDER BY ${sort}`) : `ORDER BY release_date, card_number`;
-
-    //query to render the cards including whereClause & orderByClause
-    const cardsInCollectionSql = `SELECT member_collection_id, member_collection.member_id AS 'member_id', 
-    display_name, collection.collection_id AS 'collection_id', collection_name, card.card_id AS 'card_id', card_name, hp, a.energy_type_name, a.energy_type_url, 
-    stage, evolves_from, b.energy_type_name AS 'weakness_energy_type_name', 
-    b.energy_type_url AS 'weakness_energy_type_url', c.energy_type_name AS 'resistance_energy_type_name', 
-    c.energy_type_url AS 'resistance_energy_type_url', resistance_number, 
-    d.energy_type_url AS 'retreat_energy_type_url', retreat_cost, expansion_name, total_cards, expansion_url, 
-    release_date, card_number, rarity_name, market_price, image_url FROM member_collection
-    INNER JOIN member ON member_collection.member_id = member.member_id
-    INNER JOIN collection ON member_collection.collection_id = collection.collection_id
-    INNER JOIN collection_card ON collection.collection_id = collection_card.collection_id
-    INNER JOIN card ON collection_card.card_id = card.card_id
-    INNER JOIN energy_type a ON card.energy_type_id = a.energy_type_id
-    INNER JOIN stage ON card.stage_id = stage.stage_id
-    INNER JOIN energy_type b ON card.weakness_energy_type_id = b.energy_type_id
-    INNER JOIN energy_type c ON card.resistance_energy_type_id = c.energy_type_id
-    INNER JOIN energy_type d ON card.retreat_energy_type_id = d.energy_type_id
-    INNER JOIN expansion ON card.expansion_id = expansion.expansion_id
-    INNER JOIN rarity ON card.rarity_id = rarity.rarity_id
-    ${whereClause}
-    ${orderByClause}`;
-
-    //execute queries for cards, collections & filters
-    connection.query(cardsInCollectionSql, async (err, rows) => {
-        if (err) throw err;
-
-        //check if collection is empty
-        const isEmptyCollection = rows.length === 0;
-
-        //if collection is empty then nothing is returned so run another query to get 
-        //collection details such as collection_name
-        if (isEmptyCollection) {
-
-            const emptyCollectionsql = `SELECT * FROM member_collection
+        const emptyCollectionsql = `SELECT * FROM member_collection
                 INNER JOIN member ON member_collection.member_id = member.member_id
                 INNER JOIN collection ON member_collection.collection_id = collection.collection_id
                 WHERE member_collection_id = ?`;
 
-            connection.query(emptyCollectionsql, [memberCollectionId], (err, rows) => {
-                if (err) throw err;
-
-                res.render('collection', {
-                    rowdata: rows, isEmptyCollection: isEmptyCollection,
-                    isAuthenticated: req.session.authen, displayName: req.session.displayName
-                });
-            });
-
-            //else if collection isn't empty then render as normal
-        } else {
-
-            const myCollections = await executeQuery(sqlQueries.myCollectionsQuery, [memberid]);
-            const myWishlist = await executeQuery(sqlQueries.wishlistQuery, [memberid]);
-            const hp = await executeQuery(sqlQueries.hpQuery, []);
-            const energyTypes = await executeQuery(sqlQueries.energyTypeQuery, []);
-            const stages = await executeQuery(sqlQueries.stageQuery, []);
-            const retreatCosts = await executeQuery(sqlQueries.retreatCostQuery, []);
-            const expansions = await executeQuery(sqlQueries.expansionQuery, []);
-            const rarities = await executeQuery(sqlQueries.rarityQuery, []);
-            const marketPrices = await executeQuery(sqlQueries.marketPriceQuery, []);
-            const comments = await executeQuery(sqlQueries.commentsQuery, [memberCollectionId]);
+        connection.query(emptyCollectionsql, [memberCollectionId], (err, cards) => {
+            if (err) throw err;
 
             res.render('collection', {
-                req: req, rowdata: rows, hp: hp, myCollections: myCollections, myWishlist: myWishlist,
-                energyTypes: energyTypes, stages: stages, retreatCosts: retreatCosts, expansions: expansions,
-                rarities: rarities, marketPrices: marketPrices, isEmptyCollection: isEmptyCollection,
-                isAuthenticated: req.session.authen, displayName: req.session.displayName, comments: comments
+                cards: cards, isEmptyCollection: isEmptyCollection,
+                isAuthenticated: req.session.authen, displayName: req.session.displayName
             });
-        }
-    });
+        });
+
+        //else if collection isn't empty then render as normal
+    } else {
+
+        const myCollections = await executeQuery(sqlQueries.myCollectionsQuery, [memberid]);
+        const myWishlist = await executeQuery(sqlQueries.wishlistQuery, [memberid]);
+        const hp = await executeQuery(sqlQueries.hpQuery, []);
+        const energyTypes = await executeQuery(sqlQueries.energyTypeQuery, []);
+        const stages = await executeQuery(sqlQueries.stageQuery, []);
+        const retreatCosts = await executeQuery(sqlQueries.retreatCostQuery, []);
+        const expansions = await executeQuery(sqlQueries.expansionQuery, []);
+        const rarities = await executeQuery(sqlQueries.rarityQuery, []);
+        const marketPrices = await executeQuery(sqlQueries.marketPriceQuery, []);
+        const comments = await executeQuery(sqlQueries.commentsQuery, [memberCollectionId]);
+
+        res.render('collection', {
+            req: req, cards: cards, hp: hp, myCollections: myCollections, myWishlist: myWishlist,
+            energyTypes: energyTypes, stages: stages, retreatCosts: retreatCosts, expansions: expansions,
+            rarities: rarities, marketPrices: marketPrices, isEmptyCollection: isEmptyCollection,
+            isAuthenticated: req.session.authen, displayName: req.session.displayName, comments: comments
+        });
+    }
 });
 
 //set up a route handler for HTTP POST requests to the "/collection" endpoint
