@@ -1,15 +1,18 @@
-//import the "mysql2" module
+// Load environment variables
+require('dotenv').config();
+
+// Import the "mysql2" module
 const mysql = require("mysql2");
 
-//create mysql connection object
+// Create MySQL connection object
 const connection = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: '40108404',
-    port: '3306',
-    connectionLimit: 10,
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    port: process.env.DB_PORT,
+    connectionLimit: process.env.DB_CONNECTION_LIMIT,
 });
 
-//export the mysql connection
+// Export the MySQL connection
 module.exports = connection;

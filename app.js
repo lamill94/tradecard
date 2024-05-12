@@ -1,5 +1,5 @@
-//import Express.js framework, cookie-parser package (to parse cookies in incoming requests) & express-session
-//package (to manage session data in express.js applications)
+//import modules
+require('dotenv').config();
 const express = require("express");
 const cookieParser = require('cookie-parser');
 const sessions = require('express-session');
