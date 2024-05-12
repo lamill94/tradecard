@@ -1,117 +1,172 @@
-.navbar.has-shadow {
+/*set font and background colour for nav bar*/
+.navbar {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background-color: #A0ABFF;
 }
 
+/*set background colour for navbar menu in mobile view*/
+@media screen and (max-width: 768px) {
+    .navbar-menu {
+        background-color: #ECEEFF;
+    }
+}
+
+/*set font & background colour for body*/
 body {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif !important;
+    background-color: #D9DDFF !important;
+    min-height: 100vh;
 }
 
+/*set footer background colour*/
+.footer {
+    background-color: #C6CCFF;
+}
+
+/*apply a space underneath the search bar in mobile view*/
+@media screen and (max-width: 768px) {
+    .field.has-addons.mr-3 {
+        margin-bottom: 1rem;
+    }
+}
+
+/*make scale increase/decrease when hovering over card gradual*/
 .card.mb-3 {
     transition: transform 0.3s;
 }
 
+/*scale card size by 105% when hovering over card*/
 .card.mb-3:hover {
     transform: scale(1.05);
 }
 
+/*size for energy type icons in filter and card view*/
 .energy-type-image {
     width: 19px;
-    height: auto;
 }
 
+/*set font to red when collection is empty*/
 .empty-collection-message {
     color: red;
 }
 
+/*set font to red when wishlist is empty*/
 .empty-wishlist-message {
     color: red;
 }
 
+/*increase default font size for dropdown items by 1px*/
+.dropdown-item.has-text-grey {
+    font-size: 15px;
+}
+
+/*center 'Add to collection' dropdown*/
 .dropdown-wrapper {
     display: flex;
     justify-content: center;
 }
 
+/*make create collection button fill the whole dropdown-content*/
 .dropdown-content {
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
-    max-height: 200px;
-    overflow-y: auto;
 }
 
+/*remove border for the create colleciton button*/
 .button.has-text-grey.create-collection {
     border: none;
 }
 
+/*DONT THINK THIS IS NEEDED
 .heart-icon {
     align-items: center;
+}*/
+
+/*set background colour for the filter menus*/
+.section.px-5.py-4 {
+    background-color: #ECEEFF;
 }
 
+/*set background colour for table in collection*/
+.table.is-bordered {
+    background-color: #ECEEFF;
+}
+
+/*set background colour for rating dropdown in collection*/
+.rating.background {
+    background-color: #ECEEFF;
+}
+
+/*formatting the filter menu in the browse view*/
 .browse-filter-menu-container {
     position: absolute;
-    top: 50px;
+    top: 100px;
     left: 0;
     width: 100%;
-    background-color: white;
     border: 1px solid lightgray;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1000;
 }
 
+/*don't show the filter menu when the filter button hasn't been clicked*/
 .browse-filter-menu-container:not(.show) {
     display: none;
 }
 
+/*formatting the filter menu in the collection view*/
 .collection-filter-menu-container {
     position: absolute;
     top: 120px;
     left: 0;
     width: 100%;
-    background-color: white;
     border: 1px solid lightgray;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1000;
 }
 
+/*don't show the filter menu when the filter button hasn't been clicked*/
 .collection-filter-menu-container:not(.show) {
     display: none;
 }
 
+/*formatting the filter menu in the wishlist view*/
 .wishlist-filter-menu-container {
     position: absolute;
     top: 100px;
     left: 0;
     width: 100%;
-    background-color: white;
     border: 1px solid lightgray;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1000;
 }
 
+/*don't show the filter menu when the filter button hasn't been clicked*/
 .wishlist-filter-menu-container:not(.show) {
     display: none;
 }
 
+/*formatting the filter menu in the expansion view*/
 .expansion-filter-menu-container {
     position: absolute;
     top: 100px;
     left: 0;
     width: 100%;
-    background-color: white;
     border: 1px solid lightgray;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1000;
 }
 
+/*don't show the filter menu when the filter button hasn't been clicked*/
 .expansion-filter-menu-container:not(.show) {
     display: none;
 }
 
+/*keeps min and max filters beside each other in mobile view*/
 .field.is-horizontal .field-body {
     display: flex;
 }
 
+/*CSS for the hyphen between min and max filters*/
 .hyphen-container {
     display: flex;
     align-items: center;
@@ -119,55 +174,69 @@ body {
     height: 100%;
 }
 
+/*gives space between hyphen & min/max filters in mobile view */
 @media screen and (max-width: 768px) {
     .hyphen-container {
         margin: 0 5px;
     }
 }
 
+/*CSS to keep Add to collection & wishlist beside each other*/
 .block.collection-wishlist {
     display: flex;
     align-items: center;
 }
 
-.section.home.pt-0 {
-    /*background-image: url('/wallpaper-10.png');
-    background-size: 1265px 475px;
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 475px;*/
-    background-color: #ef9648;
+/*set background colour for boxes*/
+.box {
+    background-color: #ECEEFF;
 }
 
+/*set background colour for cards*/
+.card {
+    background-color: #ECEEFF;
+}
+
+/*set font colour to red for empty field notifications*/
 .emptyFieldNotification {
     color: red;
 }
 
+/*set font colour to red for filled heart*/
+.fas.fa-heart {
+    color: red;
+}
+
+/*set font colour to red for heart outline*/
+.far.fa-heart {
+    color: red;
+}
+
+/*make scale increase/decrease when hovering over expansion card gradual*/
 .card.expansion {
     height: 100%;
     transition: transform 0.3s;
 }
 
+/*scale card size by 105% when hovering over expansion card*/
 .card.expansion:hover {
     transform: scale(1.05);
 }
 
+/*make every image in the expansion card the same height*/
 .card-image-expansion {
     height: 150px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
 }
 
+/*CSS to make image in the expansion card fit better*/ 
 .card-image-expansion img {
-    max-width: 100%;
     max-height: 100%;
     height: 150px;
     width: 220px;
     object-fit: contain;
 }
 
+/*font for input*/
 .input {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }

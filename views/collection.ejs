@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Collection</title>
-    <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <link rel="stylesheet" href="/styles.css">
 </head>
 
 <body>
@@ -37,67 +37,8 @@
 
                 <% } else { %>
 
-                    <!--sort, filter button & search are in this class to keep them side-by-side -->
-                    <div class="is-flex">
-
-                        <!--form for sort-->
-                        <form action="/collection" method="GET" class="mr-3">
-
-                            <% const sortQueryParams=['min_hp', 'max_hp' , 'min_market_price' , 'max_market_price'
-                                , 'search' , 'member_collection_id' ]; sortQueryParams.forEach(param=> { %>
-                                <input type="hidden" name="<%= req.query[param] ? param : '' %>"
-                                    value="<%= req.query[param] %>">
-                                <% }); %>
-
-                                    <% const sortArrayParams=['energy_type', 'stage' , 'weakness_energy_type'
-                                        , 'resistance_energy_type' , 'retreat_cost' , 'expansion_name' , 'rarity_name'
-                                        ]; sortArrayParams.forEach(param=>
-                                        generateHiddenInputs(param,
-                                        req.query[param]));
-                                        %>
-
-                                        <div class="dropdown" id="view-collection-dropdown">
-                                            <div class="dropdown-trigger">
-                                                <button class="button" aria-haspopup="true"
-                                                    aria-controls="dropdown-menu">
-                                                    <span>Sort by</span>
-                                                    <span class="icon is-small">
-                                                        <i class="fas fa-angle-down" aria-hidden="true"></i>
-                                                    </span>
-                                                </button>
-                                            </div>
-                                            <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                                                <div class="dropdown-content">
-                                                    <button type="submit" name="sort" value="release_date,card_number"
-                                                        class="dropdown-item">Card
-                                                        number</button>
-                                                    <button type="submit" name="sort" value="card_name"
-                                                        class="dropdown-item">Card
-                                                        name
-                                                        (A-Z)</button>
-                                                    <button type="submit" name="sort" value="card_name DESC"
-                                                        class="dropdown-item">Card name
-                                                        (Z-A)</button>
-                                                    <button type="submit" name="sort" value="market_price"
-                                                        class="dropdown-item">Market price
-                                                        (asc)</button>
-                                                    <button type="submit" name="sort" value="market_price DESC"
-                                                        class="dropdown-item">Market price
-                                                        (desc)</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                        </form>
-
-                        <!--filter button-->
-                        <a class="button filter-button is-info">
-                            <span class="icon-text">
-                                <span class="icon">
-                                    <i class="fas fa-filter"></i>
-                                </span>
-                                <span>Filter</span>
-                            </span>
-                        </a>
+                    <!--search, sort dropdown & filter button are in columns class to keep them side-by-side -->
+                    <div class="columns pl-3">
 
                         <!--form for search-->
                         <form action="/collection" method="GET">
@@ -115,18 +56,83 @@
                                         req.query[param]));
                                         %>
 
-                                        <div class="field has-addons ml-3">
+                                        <div class="field has-addons mr-3">
                                             <div class="control">
                                                 <input class="input" type="text" name="search"
                                                     value="<%=req.query.search%>" placeholder="Search cards...">
                                             </div>
                                             <div class="control">
-                                                <button type="submit" class="button is-info">
+                                                <button type="submit" class="button is-link">
                                                     Search
                                                 </button>
                                             </div>
                                         </div>
                         </form>
+
+                        <!--sort dropdown & filter button are in is-flex class to keep them side-by-side in mobile view-->
+                        <div class="is-flex">
+
+                            <!--form for sort-->
+                            <form action="/collection" method="GET" class="mr-3">
+
+                                <% const sortQueryParams=['min_hp', 'max_hp' , 'min_market_price' , 'max_market_price'
+                                    , 'search' , 'member_collection_id' ]; sortQueryParams.forEach(param=> { %>
+                                    <input type="hidden" name="<%= req.query[param] ? param : '' %>"
+                                        value="<%= req.query[param] %>">
+                                    <% }); %>
+
+                                        <% const sortArrayParams=['energy_type', 'stage' , 'weakness_energy_type'
+                                            , 'resistance_energy_type' , 'retreat_cost' , 'expansion_name'
+                                            , 'rarity_name' ]; sortArrayParams.forEach(param=>
+                                            generateHiddenInputs(param,
+                                            req.query[param]));
+                                            %>
+
+                                            <div class="dropdown" id="view-collection-dropdown">
+                                                <div class="dropdown-trigger">
+                                                    <button class="button is-link is-light is-focused"
+                                                        aria-haspopup="true" aria-controls="dropdown-menu">
+                                                        <span>Sort by</span>
+                                                        <span class="icon is-small">
+                                                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                                <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                                    <div class="dropdown-content">
+                                                        <button type="submit" name="sort"
+                                                            value="release_date,card_number"
+                                                            class="dropdown-item has-text-grey">Card
+                                                            number</button>
+                                                        <button type="submit" name="sort" value="card_name"
+                                                            class="dropdown-item has-text-grey">Card
+                                                            name
+                                                            (A-Z)</button>
+                                                        <button type="submit" name="sort" value="card_name DESC"
+                                                            class="dropdown-item has-text-grey">Card name
+                                                            (Z-A)</button>
+                                                        <button type="submit" name="sort" value="market_price"
+                                                            class="dropdown-item has-text-grey">Market price
+                                                            (asc)</button>
+                                                        <button type="submit" name="sort" value="market_price DESC"
+                                                            class="dropdown-item has-text-grey">Market price
+                                                            (desc)</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                            </form>
+
+                            <!--filter button-->
+                            <a class="button filter-button is-link is-focused">
+                                <span class="icon-text">
+                                    <span class="icon">
+                                        <i class="fas fa-filter"></i>
+                                    </span>
+                                    <span>Filter</span>
+                                </span>
+                            </a>
+
+                        </div>
 
                     </div>
 
@@ -299,7 +305,7 @@
                                         </div>
 
                                         <div>
-                                            <button type="submit" class="button is-primary">Apply
+                                            <button type="submit" class="button is-link is-focused">Apply
                                                 Filters</button>
                                         </div>
                             </form>
@@ -346,7 +352,7 @@
                                                             action="/wishlist/<%= card.card_id %>?redirect=collection"
                                                             method="DELETE">
                                                             <input type="hidden" name="_method" value="DELETE">
-                                                            <button type="submit" class="has-text-grey">
+                                                            <button type="submit">
                                                                 <span class="icon-text ml-1">
                                                                     <span class="icon">
                                                                         <i class="fas fa-heart"></i>
@@ -362,7 +368,7 @@
                                                                     value="<%= card.card_id %>">
                                                                 <input type="hidden" name="member_collection_id"
                                                                     value="<%= req.query.member_collection_id %>">
-                                                                <button type="submit" class="has-text-grey">
+                                                                <button type="submit">
                                                                     <span class="icon-text ml-1">
                                                                         <span class="icon">
                                                                             <i class="far fa-heart"></i>
@@ -396,8 +402,8 @@
 
                                             <div class="dropdown" id="collection-dropdown">
                                                 <div class="dropdown-trigger">
-                                                    <button class="button has-text-grey" aria-haspopup="true"
-                                                        aria-controls="dropdown-menu">
+                                                    <button class="button is-link is-light is-focused"
+                                                        aria-haspopup="true" aria-controls="dropdown-menu">
                                                         <span class="icon">
                                                             <i class="fas fa-plus-circle"></i>
                                                         </span>
@@ -425,7 +431,8 @@
                                                         action="/collection/<%= card.card_id %>?member_collection_id=<%= rowdata[0].member_collection_id %>"
                                                         method="DELETE">
                                                         <input type="hidden" name="_method" value="DELETE">
-                                                        <button type="submit" class="button has-text-grey">
+                                                        <button type="submit"
+                                                            class="button is-link is-light is-focused">
                                                             <span class="icon">
                                                                 <i class="fas fa-minus-circle"></i>
                                                             </span>
@@ -444,7 +451,7 @@
 
                                                             <div class="dropdown" id="collection-dropdown">
                                                                 <div class="dropdown-trigger">
-                                                                    <button class="button has-text-grey"
+                                                                    <button class="button is-link is-light is-focused"
                                                                         aria-haspopup="true"
                                                                         aria-controls="dropdown-menu">
                                                                         <span class="icon">
@@ -461,7 +468,8 @@
                                                                     <div class="dropdown-content">
                                                                         <% myCollections.forEach((collection, index)=> {
                                                                             %>
-                                                                            <button type="submit" class="dropdown-item"
+                                                                            <button type="submit"
+                                                                                class="dropdown-item has-text-grey"
                                                                                 name="member_collection_id"
                                                                                 value="<%= collection.member_collection_id %>">
                                                                                 <%= collection.collection_name %>
@@ -481,7 +489,7 @@
                                     <% } else { %>
 
                                         <div class="has-text-centered">
-                                            <a class="button has-text-grey" href="/login">
+                                            <a class="button is-link is-light is-focused" href="/login">
                                                 <span class="icon-text">
                                                     <span class="icon">
                                                         <i class="fas fa-plus-circle"></i>
@@ -502,7 +510,7 @@
                             Member comments
                         </h1>
 
-                        <table class="table is-bordered is-striped">
+                        <table class="table is-bordered">
                             <thead>
                                 <tr>
                                     <th>Comment</th>
@@ -542,7 +550,7 @@
                                         <label class="label">Rating</label>
                                         <div class="control">
                                             <div class="select">
-                                                <select name="rating">
+                                                <select name="rating" class="rating background">
                                                     <option disabled selected>Select rating</option>
                                                     <option>1</option>
                                                     <option>2</option>
@@ -564,7 +572,7 @@
 
                                     <div class="field is-grouped">
                                         <div class="control">
-                                            <button class="button is-info">Submit</button>
+                                            <button class="button is-link is-focused">Submit</button>
                                         </div>
                                     </div>
                                 </form>
@@ -575,7 +583,14 @@
         </div> <!--end of container-->
     </section> <!--end of section-->
 
+    <% if (!isEmptyCollection) { %>
+    <footer class="footer pb-3">
+    </footer>
+    <% } %>
+
     <script>
+
+        //JS FOR ALL THE DROPDOWN MENUS
 
         //ensures that the JS executes only after the DOM content has been fully loaded and parsed
         document.addEventListener('DOMContentLoaded', function () {
@@ -611,7 +626,7 @@
 
         //JS for the filter menu
         document.addEventListener('DOMContentLoaded', function () {
-            const filterButton = document.querySelector('.button.filter-button.is-info');
+            const filterButton = document.querySelector('.button.filter-button.is-link.is-focused');
             const filterMenuContainer = document.querySelector('.collection-filter-menu-container');
 
             filterButton.addEventListener('click', function () {
@@ -620,6 +635,7 @@
         });
 
         // JS code to override the form submission method to send a DELETE request
+
         function handleFormSubmission(event) {
             event.preventDefault();
             const url = this.getAttribute('action');

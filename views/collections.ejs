@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Collections</title>
-    <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <link rel="stylesheet" href="/styles.css">
 </head>
 
 <body>
@@ -51,7 +51,7 @@
                                                     </div>
 
                                                     <div class="control">
-                                                        <button class="button is-info">
+                                                        <button class="button is-link is-focused">
                                                             <span class="icon-text">
                                                                 <span class="icon">
                                                                     <i class="fas fa-plus-circle"></i>
@@ -73,13 +73,13 @@
 
                                             <% if (myCollections.length===0) { %>
 
-                                                <p>You currently have no Collections.</p>
+                                                <p>You currently have no collections.</p>
 
                                                 <% } else { %>
 
                                                     <div class="columns is-multiline is-variable">
                                                         <% myCollections.forEach((collection, index)=> { %>
-                                                            <div class="column is-6-tablet is-3-desktop">
+                                                            <div class="column is-3">
                                                                 <div class="card">
 
                                                                     <a
@@ -91,7 +91,7 @@
 
                                                                     <div class="card-content pt-3 pb-4 px-3">
 
-                                                                        <div class="block mb-3">
+                                                                        <div class="block mb-4">
 
                                                                             <% if (emptyNewNameNotification) { %>
                                                                                 <p class="emptyFieldNotification">
@@ -114,7 +114,7 @@
                                                                                             </div>
                                                                                             <div class="control">
                                                                                                 <button
-                                                                                                    class="button is-light">
+                                                                                                    class="button is-link">
                                                                                                     Rename
                                                                                                 </button>
                                                                                             </div>
@@ -129,7 +129,7 @@
                                                                             <input type="hidden" name="_method"
                                                                                 value="DELETE">
                                                                             <button type="submit"
-                                                                                class="button is-info">
+                                                                                class="button is-link is-dark">
                                                                                 <span class="icon">
                                                                                     <i class="fas fa-trash"></i>
                                                                                 </span>
@@ -152,7 +152,7 @@
                                         </h1>
 
                                         <div class="block">
-                                            <table class="table is-bordered is-striped">
+                                            <table class="table is-bordered">
                                                 <thead>
                                                     <tr>
                                                         <th>Collection</th>
@@ -184,7 +184,7 @@
                                             </h1>
 
                                             <div class="block">
-                                                <table class="table is-bordered is-striped">
+                                                <table class="table is-bordered">
                                                     <thead>
                                                         <tr>
                                                             <th>Collection</th>
@@ -213,6 +213,11 @@
 
         </div>
     </section>
+
+    <% if (isAuthenticated) { %>
+    <footer class="footer pb-3">
+    </footer>
+    <% } %>
 
     <script>
 

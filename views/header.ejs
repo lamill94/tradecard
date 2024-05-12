@@ -9,10 +9,10 @@
 </head>
 
 <body>
-    <nav class="navbar has-shadow" role="navigation" aria-label="main navigation">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item" href="/">
-                <img src="/pikachu.png" alt="site logo" style="max-height: 60px">
+                <img src="/logo.png" alt="site logo" style="max-height: 60px">
                 <strong>Poképax</strong>
             </a>
 
@@ -107,7 +107,7 @@
 
                         <% if (isAuthenticated) { %>
 
-                            <a class="button is-info" href="/account">
+                            <a class="button is-link is-focused" href="/account">
                                 <span class="icon-text">
                                     <span class="icon">
                                         <i class="fas fa-user"></i>
@@ -118,7 +118,7 @@
                                 </span>
                             </a>
 
-                            <a class="button is-light" href="/logout">
+                            <a class="button is-link is-light is-focused" href="/logout">
                                 <span class="icon-text">
                                     <span class="icon">
                                         <i class="fas fa-sign-out-alt"></i>
@@ -129,7 +129,7 @@
 
                             <% } else { %>
 
-                                <a class="button is-info" href="/signup">
+                                <a class="button is-link is-focused" href="/signup">
                                     <span class="icon-text">
                                         <span class="icon">
                                             <i class="fas fa-user-plus"></i>
@@ -138,7 +138,7 @@
                                     </span>
                                 </a>
 
-                                <a class="button is-light" href="/login">
+                                <a class="button is-link is-light is-focused" href="/login">
                                     <span class="icon-text">
                                         <span class="icon">
                                             <i class="fas fa-sign-in-alt"></i>
