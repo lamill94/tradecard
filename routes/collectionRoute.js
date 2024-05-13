@@ -165,7 +165,7 @@ router.post('/collection/comment', (req, res) => {
     }
 });
 
-//set up a route handler for HTTP DELETE requests to the "/collection" endpoint
+//set up a route handler for HTTP DELETE requests to the "/collection/:cardId" endpoint
 router.post('/collection/:cardId', (req, res) => {
 
     const memberCollectionId = req.query.member_collection_id;
@@ -175,6 +175,22 @@ router.post('/collection/:cardId', (req, res) => {
     const removeFromCollectionSql = `DELETE FROM collection_card WHERE collection_id IN (SELECT collection_id FROM member_collection WHERE member_collection_id = ?) AND card_id = ?`;
 
     connection.query(removeFromCollectionSql, [memberCollectionId, cardId], (err, result) => {
+        if (err) throw err;
+
+        res.redirect(`/collection?member_collection_id=${memberCollectionId}`);
+    });
+});
+
+//set up a route handler for HTTP DELETE requests to the "/collection/deleteComment" endpoint
+router.post('/collection/comment/:collectionCommentId', (req, res) => {
+
+    const memberCollectionId = req.query.member_collection_id;
+    const collectionCommentId = req.params.collectionCommentId
+
+    // sql query to remove comment from the collection_comment table
+    const removeCommentQuery = `DELETE FROM collection_comment WHERE collection_comment_id = ?`;
+
+    connection.query(removeCommentQuery, [collectionCommentId], (err, result) => {
         if (err) throw err;
 
         res.redirect(`/collection?member_collection_id=${memberCollectionId}`);

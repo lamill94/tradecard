@@ -536,8 +536,11 @@
 
                                         <td class="delete-cell">
                                             <% if (comment.commenter_id===req.session.memberid) { %>
-                                                <form id="removeCommentForm" action="" method="POST">
+                                                <form id="removeCommentForm" action="/collection/comment/<%= comment.collection_comment_id %>?member_collection_id=<%= cards[0].member_collection_id %>"
+                                                    method="POST">
                                                     <input type="hidden" name="_method" value="DELETE">
+                                                    <!--<input type="hidden" name="collection_comment_id"
+                                                        value="<%= comment.collection_comment_id %>">-->
                                                     <button type="submit" class="button is-link is-dark py-0 px-2">
                                                         <span class="icon">
                                                             <i class="fas fa-trash"></i>
@@ -668,8 +671,8 @@
                 // JS code to override the form submission method to send a DELETE request
 
                 document.addEventListener('DOMContentLoaded', function () {
-                    document.querySelector('.columns').addEventListener('submit', function (event) {
-                        if (event.target.id === 'removeCardFromWishlistForm' || event.target.id === 'removeCardFromCollectionForm') {
+                    document.querySelector('.columns, #removeCommentForm').addEventListener('submit', function (event) {
+                        if (event.target.id === 'removeCardFromWishlistForm' || event.target.id === 'removeCardFromCollectionForm' || event.target.id === 'removeCommentForm') {
                             event.preventDefault();
                             const url = event.target.getAttribute('action');
                             fetch(url, { method: 'DELETE' })
