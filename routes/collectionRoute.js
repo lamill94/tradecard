@@ -166,7 +166,7 @@ router.post('/collection/comment', (req, res) => {
 });
 
 //set up a route handler for HTTP DELETE requests to the "/collection" endpoint
-router.delete('/collection/:cardId', (req, res) => {
+router.post('/collection/:cardId', (req, res) => {
 
     const memberCollectionId = req.query.member_collection_id;
     const cardId = req.params.cardId;

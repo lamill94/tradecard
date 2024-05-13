@@ -348,10 +348,12 @@
                                                         card.card_id)) {
                                                         %>
 
-                                                        <form id="removeCardForm"
+                                                        <form id="removeCardFromWishlistForm"
                                                             action="/wishlist/<%= card.card_id %>?redirect=collection"
-                                                            method="DELETE">
+                                                            method="POST">
                                                             <input type="hidden" name="_method" value="DELETE">
+                                                            <input type="hidden" name="member_collection_id"
+                                                                value="<%= req.query.member_collection_id %>">
                                                             <button type="submit">
                                                                 <span class="icon-text ml-1">
                                                                     <span class="icon">
@@ -429,7 +431,7 @@
 
                                                     <form id="removeCardFromCollectionForm"
                                                         action="/collection/<%= card.card_id %>?member_collection_id=<%= cards[0].member_collection_id %>"
-                                                        method="DELETE">
+                                                        method="POST">
                                                         <input type="hidden" name="_method" value="DELETE">
                                                         <button type="submit"
                                                             class="button is-link is-light is-focused">
@@ -510,8 +512,8 @@
                             Member comments
                         </h1>
 
-                        <table class="table is-bordered">
-                            <thead class="custom-thead">
+                        <table class="table">
+                            <thead class="custom-thead is-bordered">
                                 <tr>
                                     <th>Comment</th>
                                     <th>Rating</th>
@@ -531,9 +533,20 @@
                                         <td>
                                             <%= comment.display_name %>
                                         </td>
-                                        <td>
-                                            Delete
+
+                                        <td class="delete-cell">
+                                            <% if (comment.commenter_id===req.session.memberid) { %>
+                                                <form id="removeCommentForm" action="" method="POST">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <button type="submit" class="button is-link is-dark py-0 px-2">
+                                                        <span class="icon">
+                                                            <i class="fas fa-trash"></i>
+                                                        </span>
+                                                    </button>
+                                                </form>
+                                                <% } %>
                                         </td>
+
                                     </tr>
                                     <% }) %> <!--end of comments loop-->
                             </tbody>
@@ -552,50 +565,52 @@
                                     </p>
                                     <% } %>
 
-                                <% if (req.query.rating_missing) { %>
-                                    <p class="redFontNotification">
-                                        Please ensure that rating is populated before submitting
-                                    </p>
-                                    <% } %>
+                                        <% if (req.query.rating_missing) { %>
+                                            <p class="redFontNotification">
+                                                Please ensure that rating is populated before submitting
+                                            </p>
+                                            <% } %>
 
-                                <form action="/collection/comment" method="POST">
-                                    <input type="hidden" name="collection_id" value="<%= cards[0].collection_id %>">
-                                    <input type="hidden" name="member_collection_id"
-                                        value="<%= req.query.member_collection_id %>">
-                                    <div class="field">
-                                        <label class="label">Rating</label>
-                                        <div class="control">
-                                            <div class="select">
-                                                <select name="rating" class="rating background">
-                                                    <option disabled selected>Select rating</option>
-                                                    <option>1</option>
-                                                    <option>2</option>
-                                                    <option>3</option>
-                                                    <option>4</option>
-                                                    <option>5</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
+                                                <form action="/collection/comment" method="POST">
+                                                    <input type="hidden" name="collection_id"
+                                                        value="<%= cards[0].collection_id %>">
+                                                    <input type="hidden" name="member_collection_id"
+                                                        value="<%= req.query.member_collection_id %>">
+                                                    <div class="field">
+                                                        <label class="label">Rating</label>
+                                                        <div class="control">
+                                                            <div class="select">
+                                                                <select name="rating" class="rating background">
+                                                                    <option disabled selected>Select rating</option>
+                                                                    <option>1</option>
+                                                                    <option>2</option>
+                                                                    <option>3</option>
+                                                                    <option>4</option>
+                                                                    <option>5</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-                                    <div class="field">
-                                        <label class="label">Comment</label>
-                                        <div class="control">
-                                            <textarea name="comment" class="textarea"
-                                                placeholder="Leave comment..."></textarea>
-                                        </div>
-                                    </div>
+                                                    <div class="field">
+                                                        <label class="label">Comment</label>
+                                                        <div class="control">
+                                                            <textarea name="comment" class="textarea"
+                                                                placeholder="Leave comment..."></textarea>
+                                                        </div>
+                                                    </div>
 
-                                    <div class="field is-grouped">
-                                        <div class="control">
-                                            <button class="button is-link is-focused">Submit</button>
-                                        </div>
-                                    </div>
-                                </form>
+                                                    <div class="field is-grouped">
+                                                        <div class="control">
+                                                            <button class="button is-link is-focused">Submit</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
 
-                                <% } %> <!--end of is authenticated & collection doesn't belong to user-->
+                                                <% } %>
+                                                    <!--end of is authenticated & collection doesn't belong to user-->
 
-                                    <% } %> <!--end of collection is empty-->
+                                                    <% } %> <!--end of collection is empty-->
         </div> <!--end of container-->
     </section> <!--end of section-->
 
@@ -652,24 +667,18 @@
 
                 // JS code to override the form submission method to send a DELETE request
 
-                function handleFormSubmission(event) {
-                    event.preventDefault();
-                    const url = this.getAttribute('action');
-                    fetch(url, { method: 'DELETE' })
-                        .then(response => {
-                            window.location.href = `/collection?member_collection_id=<%= cards[0].member_collection_id %>`;
-                        });
-                }
-
-                const removeCardForm = document.getElementById('removeCardForm');
-                if (removeCardForm) {
-                    removeCardForm.addEventListener('submit', handleFormSubmission);
-                }
-
-                const removeCardFromCollectionForm = document.getElementById('removeCardFromCollectionForm');
-                if (removeCardFromCollectionForm) {
-                    removeCardFromCollectionForm.addEventListener('submit', handleFormSubmission);
-                }
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.querySelector('.columns').addEventListener('submit', function (event) {
+                        if (event.target.id === 'removeCardFromWishlistForm' || event.target.id === 'removeCardFromCollectionForm') {
+                            event.preventDefault();
+                            const url = event.target.getAttribute('action');
+                            fetch(url, { method: 'DELETE' })
+                                .then(response => {
+                                    window.location.href = `/collection?member_collection_id=<%= cards[0].member_collection_id %>`;
+                                });
+                        }
+                    });
+                });
 
             </script>
 

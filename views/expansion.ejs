@@ -77,7 +77,8 @@
 
                                     <div class="dropdown" id="expansion-dropdown">
                                         <div class="dropdown-trigger">
-                                            <button class="button is-link is-light is-focused" aria-haspopup="true" aria-controls="dropdown-menu">
+                                            <button class="button is-link is-light is-focused" aria-haspopup="true"
+                                                aria-controls="dropdown-menu">
                                                 <span>Sort by</span>
                                                 <span class="icon is-small">
                                                     <i class="fas fa-angle-down" aria-hidden="true"></i>
@@ -322,10 +323,12 @@
 
                                             <% if (myWishlist.some(item=> item.card_id === card.card_id)) { %>
 
-                                                <form id="removeCardForm"
+                                                <form id="removeCardFromWishlistForm"
                                                     action="/wishlist/<%= card.card_id %>?redirect=expansion"
-                                                    method="DELETE">
+                                                    method="POST">
                                                     <input type="hidden" name="_method" value="DELETE">
+                                                    <input type="hidden" name="expansion_id"
+                                                        value="<%= req.query.expansion_id %>">
                                                     <button type="submit">
                                                         <span class="icon-text ml-1">
                                                             <span class="icon">
@@ -406,8 +409,8 @@
 
                                             <div class="dropdown" id="collection-dropdown">
                                                 <div class="dropdown-trigger">
-                                                    <button class="button is-link is-light is-focused" aria-haspopup="true"
-                                                        aria-controls="dropdown-menu">
+                                                    <button class="button is-link is-light is-focused"
+                                                        aria-haspopup="true" aria-controls="dropdown-menu">
                                                         <span class="icon">
                                                             <i class="fas fa-plus-circle"></i>
                                                         </span>
@@ -506,13 +509,26 @@
         });
 
         // JS code to override the form submission method to send a DELETE request
-        document.getElementById('removeCardForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const url = this.getAttribute('action');
-            fetch(url, { method: 'DELETE' })
-                .then(response => {
-                    window.location.href = '/expansion?expansion_id=<%= cards[0].expansion_id %>';
-                });
+        //document.getElementById('removeCardFromWishlistForm').addEventListener('submit', function (event) {
+        //event.preventDefault();
+        //const url = this.getAttribute('action');
+        //fetch(url, { method: 'DELETE' })
+        //.then(response => {
+        //window.location.href = '/expansion?expansion_id=<%= cards[0].expansion_id %>';
+        //});
+        //});
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('.columns').addEventListener('submit', function (event) {
+                if (event.target.classList.contains('removeCardFromWishlistForm')) {
+                    event.preventDefault();
+                    const url = event.target.getAttribute('action');
+                    fetch(url, { method: 'DELETE' })
+                        .then(response => {
+                            window.location.href = '/expansion?expansion_id=<%= cards[0].expansion_id %>';
+                        });
+                }
+            });
         });
 
     </script>

@@ -84,7 +84,7 @@ router.post('/wishlist', (req, res) => {
 });
 
 //set up a route handler for HTTP DELETE requests to the "/wishlist" endpoint
-router.delete('/wishlist/:cardId', (req, res) => {
+router.post('/wishlist/:cardId', (req, res) => {
 
     const memberid = req.session.memberid;
     const memberCollectionId = req.body.member_collection_id;

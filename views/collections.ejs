@@ -215,30 +215,34 @@
     </section>
 
     <% if (isAuthenticated) { %>
-    <footer class="footer pb-3">
-    </footer>
-    <% } %>
+        <footer class="footer pb-3">
+        </footer>
+        <% } %>
 
-    <script>
+            <script>
 
-        // JS to close notification
-        const deleteButton = document.querySelector('.delete');
+                // JS to close notification
+                const deleteButton = document.querySelector('.delete');
 
-        deleteButton.addEventListener('click', () => {
-            deleteButton.parentNode.style.display = 'none';
-        });
-
-        // JS code to override the form submission method to send a DELETE request
-        document.getElementById('deleteCollectionForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const url = this.getAttribute('action');
-            fetch(url, { method: 'DELETE' })
-                .then(response => {
-                    window.location.href = `/collections`;
+                deleteButton.addEventListener('click', () => {
+                    deleteButton.parentNode.style.display = 'none';
                 });
-        });
 
-    </script>
+                // JS code to override the form submission method to send a DELETE request
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.querySelector('.columns').addEventListener('submit', function (event) {
+                        if (event.target.classList.contains('deleteCollectionForm')) {
+                            event.preventDefault();
+                            const url = event.target.getAttribute('action');
+                            fetch(url, { method: 'DELETE' })
+                                .then(response => {
+                                    window.location.href = '/collections';
+                                });
+                        }
+                    });
+                });
+
+            </script>
 
 </body>
 

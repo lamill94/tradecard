@@ -92,9 +92,9 @@
 
                                         <% if (myWishlist.some(item=> item.card_id === cardData[0].card_id)) { %>
 
-                                            <form id="removeCardForm"
+                                            <form id="removeCardFromWishlistForm"
                                                 action="/wishlist/<%= cardData[0].card_id %>?redirect=card"
-                                                method="DELETE">
+                                                method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="is-size-4 ml-3">
                                                     <span class="heart-icon">
@@ -287,13 +287,17 @@
         });
 
         // JS code to override the form submission method to send a DELETE request
-        document.getElementById('removeCardForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const url = this.getAttribute('action');
-            fetch(url, { method: 'DELETE' })
-                .then(response => {
-                    window.location.href = `/card?card_id=<%= cardData[0].card_id %>`;
-                });
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('.columns').addEventListener('submit', function (event) {
+                if (event.target.classList.contains('removeCardFromWishlistForm')) {
+                    event.preventDefault();
+                    const url = event.target.getAttribute('action');
+                    fetch(url, { method: 'DELETE' })
+                        .then(response => {
+                            window.location.href = `/card?card_id=<%= cardData[0].card_id %>`;
+                        });
+                }
+            });
         });
 
     </script>

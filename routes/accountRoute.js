@@ -175,7 +175,6 @@ router.post('/account/delete', (req, res) => {
                         const deleteCollectionCommentsSql = `DELETE FROM collection_comment WHERE collection_id IN (${collectionIds})`;
 
                         connection.query(deleteCollectionCommentsSql, (err, result) => {
-                            if (err) throw err;
 
                             const deleteCollectionSql = `DELETE FROM collection WHERE collection_id IN (${collectionIds})`;
 

@@ -93,6 +93,12 @@ body {
     border: none !important;
 }
 
+/*set background colour for delete cell in comment table*/
+.delete-cell {
+    background-color: #D9DDFF !important;
+    border: none !important;
+}
+
 /*formatting the filter menu in the browse view*/
 .browse-filter-menu-container {
     position: absolute;

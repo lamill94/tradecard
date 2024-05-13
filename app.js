@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require("express");
 const cookieParser = require('cookie-parser');
 const sessions = require('express-session');
+const methodOverride = require('method-override');
 
 //import routes
 const routes = [
@@ -45,6 +46,9 @@ app.use(sessions({
     cookie: { maxAge: oneHour },
     resave: false
 }));
+
+//add method-override middleware
+app.use(methodOverride('_method'));
 
 //mount routers onto Express application
 mountRoutes();

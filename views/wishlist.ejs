@@ -340,9 +340,9 @@
 
                                             <div class="column is-one-fifth">
 
-                                                <form id="removeCardForm"
+                                                <form id="removeCardFromWishlistForm"
                                                     action="/wishlist/<%= card.card_id %>?redirect=wishlist"
-                                                    method="DELETE">
+                                                    method="POST">
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <button type="submit">
                                                         <span class="icon-text ml-1">
@@ -480,13 +480,17 @@
                 });
 
                 // JS code to override the form submission method to send a DELETE request
-                document.getElementById('removeCardForm').addEventListener('submit', function (event) {
-                    event.preventDefault();
-                    const url = this.getAttribute('action');
-                    fetch(url, { method: 'DELETE' })
-                        .then(response => {
-                            window.location.href = '/wishlist';
-                        });
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.querySelector('.columns').addEventListener('submit', function (event) {
+                        if (event.target.classList.contains('removeCardFromWishlistForm')) {
+                            event.preventDefault();
+                            const url = event.target.getAttribute('action');
+                            fetch(url, { method: 'DELETE' })
+                                .then(response => {
+                                    window.location.href = '/wishlist';
+                                });
+                        }
+                    });
                 });
 
             </script>
