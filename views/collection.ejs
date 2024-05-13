@@ -19,8 +19,16 @@
                 <% }); } } %>
     </header>
 
-    <section class="section">
+    <section class="section pt-5">
         <div class="container">
+
+            <nav class="breadcrumb mb-0" aria-label="breadcrumbs">
+                <ul>
+                    <li class="breadcrumb separator"><a href="/">Home</a></li>
+                    <li class="breadcrumb separator"><a href="/collections">Collections</a></li>
+                    <li class="is-active"><a aria-current="page"><%= cards[0].collection_name %></a></li>
+                </ul>
+            </nav>
 
             <h1 class="title is-size-5 mb-1">
                 <%= cards[0].collection_name %>
@@ -536,11 +544,10 @@
 
                                         <td class="delete-cell">
                                             <% if (comment.commenter_id===req.session.memberid) { %>
-                                                <form id="removeCommentForm" action="/collection/comment/<%= comment.collection_comment_id %>?member_collection_id=<%= cards[0].member_collection_id %>"
+                                                <form id="removeCommentForm"
+                                                    action="/collection/comment/<%= comment.collection_comment_id %>?member_collection_id=<%= cards[0].member_collection_id %>"
                                                     method="POST">
                                                     <input type="hidden" name="_method" value="DELETE">
-                                                    <!--<input type="hidden" name="collection_comment_id"
-                                                        value="<%= comment.collection_comment_id %>">-->
                                                     <button type="submit" class="button is-link is-dark py-0 px-2">
                                                         <span class="icon">
                                                             <i class="fas fa-trash"></i>

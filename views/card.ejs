@@ -15,8 +15,16 @@
         <%- include('header')%>
     </header>
 
-    <section class="section">
-        <container class="container">
+    <section class="section pt-5">
+        <div class="container">
+
+            <nav class="breadcrumb mb-0" aria-label="breadcrumbs">
+                <ul>
+                    <li class="breadcrumb separator"><a href="/">Home</a></li>
+                    <li class="is-active"><a aria-current="page"><%= cardData[0].card_name %></a></li>
+                </ul>
+            </nav>
+
             <div class="columns is-centered">
 
                 <div class="column is-3">
@@ -244,7 +252,7 @@
                     </div>
                 </div>
             </div>
-        </container>
+            </container>
     </section>
 
     <footer class="footer pb-3">

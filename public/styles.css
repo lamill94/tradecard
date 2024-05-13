@@ -242,3 +242,9 @@ body {
 .input {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
+
+/*change breadcrumb separators to black*/
+.breadcrumb.separator::after {
+    content: '/';
+    color: black;
+}

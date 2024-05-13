@@ -19,11 +19,21 @@
                 <% }); } } %>
     </header>
 
-    <section class="section">
+    <section class="section pt-5">
         <div class="container">
 
+            <nav class="breadcrumb mb-0" aria-label="breadcrumbs">
+                <ul>
+                    <li class="breadcrumb separator"><a href="/">Home</a></li>
+                    <li class="breadcrumb separator"><a href="/expansions">Expansions</a></li>
+                    <li class="is-active"><a aria-current="page">
+                            <%=cards[0].expansion_name%>
+                        </a></li>
+                </ul>
+            </nav>
+
             <h1 class="title is-size-5">
-                Expansion: <%=cards[0].expansion_name%>
+                <%=cards[0].expansion_name%>
             </h1>
 
             <!--search, sort dropdown & filter button are in columns class to keep them side-by-side -->
