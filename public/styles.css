@@ -77,24 +77,20 @@ body {
     border: none;
 }
 
-/*DONT THINK THIS IS NEEDED
-.heart-icon {
-    align-items: center;
-}*/
-
 /*set background colour for the filter menus*/
 .section.px-5.py-4 {
     background-color: #ECEEFF;
 }
 
-/*set background colour for table in collection*/
-.table.is-bordered {
-    background-color: #ECEEFF;
+/*set background colour for table header in collection & collections*/
+.custom-thead {
+    background-color: #ECEEFF !important;
 }
 
-/*set background colour for rating dropdown in collection*/
-.rating.background {
-    background-color: #ECEEFF;
+/*set background colour for spare cell in comment table*/
+.spare-cell {
+    background-color: #D9DDFF !important;
+    border: none !important;
 }
 
 /*formatting the filter menu in the browse view*/
@@ -198,7 +194,7 @@ body {
 }
 
 /*set font colour to red for empty field notifications*/
-.emptyFieldNotification {
+.redFontNotification {
     color: red;
 }
 
@@ -228,7 +224,7 @@ body {
     height: 150px;
 }
 
-/*CSS to make image in the expansion card fit better*/ 
+/*CSS to make image in the expansion card fit better*/
 .card-image-expansion img {
     max-height: 100%;
     height: 150px;

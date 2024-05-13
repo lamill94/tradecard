@@ -120,22 +120,49 @@ router.post('/collection/comment', (req, res) => {
     const rating = req.body.rating;
     const comment = req.body.comment;
 
-    //insert comment & rating into the comment table
-    const addCommentSql = `INSERT INTO comment (commentary, rating, commenter_id) VALUES( ? , ? , ? );`;
+    //if rating isn't populated then show empty rating notification
+    if (!rating) {
 
-    connection.query(addCommentSql, [comment, rating, memberid], (err, rows) => {
-        if (err) throw err;
-        const newCommentId = rows.insertId;
+        res.redirect(`/collection?member_collection_id=${memberCollectionId}&rating_missing=true`);
 
-        //then insert new comment_id and collection_id into collection_comment table 
-        const addCommentCollectionSql = `INSERT INTO collection_comment (collection_id, comment_id) VALUES ( ? , ? );`;
+        //else if rating is populated
+    } else {
 
-        connection.query(addCommentCollectionSql, [collectionId, newCommentId], (err, rows) => {
+        //check if user has already left rating/comment
+        const checkuser = `SELECT * FROM collection_comment
+        INNER JOIN comment ON collection_comment.comment_id = comment.comment_id
+        WHERE collection_id = ${collectionId} AND commenter_id = ${memberid}`;
+
+        connection.query(checkuser, (err, rows) => {
             if (err) throw err;
+            const numRows = rows.length;
 
-            res.redirect(`/collection?member_collection_id=${memberCollectionId}`);
+            //if user has already left rating/comment then redirect with notification
+            if (numRows > 0) {
+                res.redirect(`/collection?member_collection_id=${memberCollectionId}&already_commented=true`);
+
+                //else if user hasn't left rating/comment
+            } else {
+
+                //insert comment & rating into the comment table
+                const addCommentSql = `INSERT INTO comment (commentary, rating, commenter_id) VALUES( ? , ? , ? );`;
+
+                connection.query(addCommentSql, [comment, rating, memberid], (err, rows) => {
+                    if (err) throw err;
+                    const newCommentId = rows.insertId;
+
+                    //then insert new comment_id and collection_id into collection_comment table 
+                    const addCommentCollectionSql = `INSERT INTO collection_comment (collection_id, comment_id) VALUES ( ? , ? );`;
+
+                    connection.query(addCommentCollectionSql, [collectionId, newCommentId], (err, rows) => {
+                        if (err) throw err;
+
+                        res.redirect(`/collection?member_collection_id=${memberCollectionId}`);
+                    });
+                });
+            }
         });
-    });
+    }
 });
 
 //set up a route handler for HTTP DELETE requests to the "/collection" endpoint

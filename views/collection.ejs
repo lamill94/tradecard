@@ -511,11 +511,12 @@
                         </h1>
 
                         <table class="table is-bordered">
-                            <thead>
+                            <thead class="custom-thead">
                                 <tr>
                                     <th>Comment</th>
                                     <th>Rating</th>
                                     <th>Member</th>
+                                    <th class="spare-cell"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -530,6 +531,9 @@
                                         <td>
                                             <%= comment.display_name %>
                                         </td>
+                                        <td>
+                                            Delete
+                                        </td>
                                     </tr>
                                     <% }) %> <!--end of comments loop-->
                             </tbody>
@@ -541,6 +545,18 @@
                                 <h1 class="title is-size-5">
                                     Leave a comment
                                 </h1>
+
+                                <% if (req.query.already_commented) { %>
+                                    <p class="redFontNotification">
+                                        You can only leave one comment/rating
+                                    </p>
+                                    <% } %>
+
+                                <% if (req.query.rating_missing) { %>
+                                    <p class="redFontNotification">
+                                        Please ensure that rating is populated before submitting
+                                    </p>
+                                    <% } %>
 
                                 <form action="/collection/comment" method="POST">
                                     <input type="hidden" name="collection_id" value="<%= cards[0].collection_id %>">
@@ -584,78 +600,78 @@
     </section> <!--end of section-->
 
     <% if (!isEmptyCollection) { %>
-    <footer class="footer pb-3">
-    </footer>
-    <% } %>
+        <footer class="footer pb-3">
+        </footer>
+        <% } %>
 
-    <script>
+            <script>
 
-        //JS FOR ALL THE DROPDOWN MENUS
+                //JS FOR ALL THE DROPDOWN MENUS
 
-        //ensures that the JS executes only after the DOM content has been fully loaded and parsed
-        document.addEventListener('DOMContentLoaded', function () {
+                //ensures that the JS executes only after the DOM content has been fully loaded and parsed
+                document.addEventListener('DOMContentLoaded', function () {
 
-            //selects all elements with the class dropdown and store them in a NodeList called dropdowns
-            const dropdowns = document.querySelectorAll('.dropdown');
+                    //selects all elements with the class dropdown and store them in a NodeList called dropdowns
+                    const dropdowns = document.querySelectorAll('.dropdown');
 
-            //iterate over each dropdown element in the dropdowns NodeList
-            dropdowns.forEach(function (dropdown) {
+                    //iterate over each dropdown element in the dropdowns NodeList
+                    dropdowns.forEach(function (dropdown) {
 
-                //selects the dropdown trigger button within the current dropdown element
-                const trigger = dropdown.querySelector('.dropdown-trigger');
+                        //selects the dropdown trigger button within the current dropdown element
+                        const trigger = dropdown.querySelector('.dropdown-trigger');
 
-                //selects the dropdown menu within the current dropdown element
-                const menu = dropdown.querySelector('.dropdown-menu');
+                        //selects the dropdown menu within the current dropdown element
+                        const menu = dropdown.querySelector('.dropdown-menu');
 
-                //listen for clicks on the dropdown trigger button
-                trigger.addEventListener('click', function (event) {
+                        //listen for clicks on the dropdown trigger button
+                        trigger.addEventListener('click', function (event) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            dropdown.classList.toggle('is-active');
+                        });
+
+                        //listen for clicks anywhere in the document
+                        document.addEventListener('click', function (event) {
+                            const isClickInside = dropdown.contains(event.target);
+                            if (!isClickInside) {
+                                dropdown.classList.remove('is-active');
+                            }
+                        });
+                    });
+                });
+
+                //JS for the filter menu
+                document.addEventListener('DOMContentLoaded', function () {
+                    const filterButton = document.querySelector('.button.filter-button.is-link.is-focused');
+                    const filterMenuContainer = document.querySelector('.collection-filter-menu-container');
+
+                    filterButton.addEventListener('click', function () {
+                        filterMenuContainer.classList.toggle('show');
+                    });
+                });
+
+                // JS code to override the form submission method to send a DELETE request
+
+                function handleFormSubmission(event) {
                     event.preventDefault();
-                    event.stopPropagation();
-                    dropdown.classList.toggle('is-active');
-                });
+                    const url = this.getAttribute('action');
+                    fetch(url, { method: 'DELETE' })
+                        .then(response => {
+                            window.location.href = `/collection?member_collection_id=<%= cards[0].member_collection_id %>`;
+                        });
+                }
 
-                //listen for clicks anywhere in the document
-                document.addEventListener('click', function (event) {
-                    const isClickInside = dropdown.contains(event.target);
-                    if (!isClickInside) {
-                        dropdown.classList.remove('is-active');
-                    }
-                });
-            });
-        });
+                const removeCardForm = document.getElementById('removeCardForm');
+                if (removeCardForm) {
+                    removeCardForm.addEventListener('submit', handleFormSubmission);
+                }
 
-        //JS for the filter menu
-        document.addEventListener('DOMContentLoaded', function () {
-            const filterButton = document.querySelector('.button.filter-button.is-link.is-focused');
-            const filterMenuContainer = document.querySelector('.collection-filter-menu-container');
+                const removeCardFromCollectionForm = document.getElementById('removeCardFromCollectionForm');
+                if (removeCardFromCollectionForm) {
+                    removeCardFromCollectionForm.addEventListener('submit', handleFormSubmission);
+                }
 
-            filterButton.addEventListener('click', function () {
-                filterMenuContainer.classList.toggle('show');
-            });
-        });
-
-        // JS code to override the form submission method to send a DELETE request
-
-        function handleFormSubmission(event) {
-            event.preventDefault();
-            const url = this.getAttribute('action');
-            fetch(url, { method: 'DELETE' })
-                .then(response => {
-                    window.location.href = `/collection?member_collection_id=<%= cards[0].member_collection_id %>`;
-                });
-        }
-
-        const removeCardForm = document.getElementById('removeCardForm');
-        if (removeCardForm) {
-            removeCardForm.addEventListener('submit', handleFormSubmission);
-        }
-
-        const removeCardFromCollectionForm = document.getElementById('removeCardFromCollectionForm');
-        if (removeCardFromCollectionForm) {
-            removeCardFromCollectionForm.addEventListener('submit', handleFormSubmission);
-        }
-
-    </script>
+            </script>
 
 </body>
 
