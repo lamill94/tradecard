@@ -519,15 +519,6 @@
         });
 
         // JS code to override the form submission method to send a DELETE request
-        //document.getElementById('removeCardFromWishlistForm').addEventListener('submit', function (event) {
-        //event.preventDefault();
-        //const url = this.getAttribute('action');
-        //fetch(url, { method: 'DELETE' })
-        //.then(response => {
-        //window.location.href = '/expansion?expansion_id=<%= cards[0].expansion_id %>';
-        //});
-        //});
-
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelector('.columns').addEventListener('submit', function (event) {
                 if (event.target.classList.contains('removeCardFromWishlistForm')) {
